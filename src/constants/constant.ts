@@ -1,0 +1,48 @@
+// constant.ts
+
+// Database table names (centralized for consistency)
+export enum DBTables {
+  USER_PROFILES = "user_profiles",
+  WALLETS = "wallets",
+  TRANSACTIONS = "transactions",
+  MONTHLY_SUMMARIES = "monthly_summaries",
+}
+
+// Wallet types
+export enum WalletType {
+  BANK = "bank",
+  CASH = "cash",
+}
+
+// Transaction types
+export enum TransactionType {
+  INCOME = "income",
+  EXPENSE = "expense",
+}
+
+// App theme
+export enum Theme {
+  LIGHT = "light",
+  DARK = "dark",
+}
+
+// Currency options (add more as needed)
+export enum Currency {
+  INR = "INR",
+  USD = "USD",
+  EUR = "EUR",
+}
+
+// Categories (you can expand this or make them dynamic later)
+export enum TransactionCategory {
+  SALARY = "Salary",
+  GROCERIES = "Groceries",
+  UTILITIES = "Utilities",
+  FOOD = "Food",
+  TRANSPORT = "Transport",
+  RENT = "Rent",
+  INVESTMENT = "Investment",
+  ENTERTAINMENT = "Entertainment",
+  SUBSCRIPTION = "Subscription",
+  OTHER = "Other",
+}
