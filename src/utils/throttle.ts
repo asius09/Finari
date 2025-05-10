@@ -13,7 +13,7 @@ export function throttle<T extends (...arg: unknown[]) => void>(
 ): T {
   let lastCall = 0;
   return function (...args: Parameters<T>) {
-    let now = new Date().getTime();
+    const now = new Date().getTime();
     if (now - lastCall >= delay) {
       lastCall = now;
       fn(...args);

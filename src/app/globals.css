@@ -1,26 +1,163 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
 
+/* Optional custom variant for dark */
+@custom-variant dark (&:is(.dark *));
+
+/* Inline theme variables to use in Tailwind */
 @theme inline {
+  --color-primary-light: var(--primary-light);
+  --color-primary-dark: var(--primary-dark);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-border: var(--input-border);
+  --color-ring: var(--ring);
+  --color-placeholder: var(--placeholder);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-navbar-bg: var(--navbar-bg);
+  --color-navbar-text: var(--navbar-text);
+  --color-navbar-active-text: var(--navbar-active-text);
+  --color-navbar-hover-bg: var(--navbar-hover-bg);
+  --color-logout-text: var(--logout-text);
+  --color-logout-hover: var(--logout-hover);
+
+  --color-positive: var(--positive);
+  --color-positive-bg: var(--positive-bg);
+  --color-negative: var(--negative);
+  --color-negative-bg: var(--negative-bg);
+  --color-success: var(--success);
+  --color-success-bg: var(--success-bg);
+  --color-error: var(--error);
+  --color-error-bg: var(--error-bg);
+  --color-warning: var(--warning);
+  --color-warning-bg: var(--warning-bg);
+  --color-info: var(--info);
+  --color-info-bg: var(--info-bg);
+
+  --color-filter-chip: var(--filter-chip);
+  --color-filter-border: var(--filter-border);
+  --color-filter-text: var(--filter-text);
+  --color-filter-hover: var(--filter-hover);
+  --color-filter-active: var(--filter-active);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --primary-light: #7c3aed;
+  --primary-dark: #c78bff;
+
+  --background: #fafaff;
+  --foreground: #1e132f;
+
+  --card: #ffffff;
+  --card-foreground: #1e132f;
+  --popover: #ffffff;
+  --popover-foreground: #1e132f;
+  --primary: #7c3aed;
+  --primary-foreground: #ffffff;
+  --secondary: #f5f0ff;
+  --secondary-foreground: #38255c;
+  --muted: #eae4ff;
+  --muted-foreground: #756c84;
+  --accent: #f472b6;
+  --accent-foreground: #1e132f;
+  --destructive: #dc2626;
+  --border: #e5e5f0;
+  --input: #f9f9fb;
+  --input-border: #dcd8e8;
+  --input-hover: #c4a6ff;
+  --placeholder: #a8a3b3;
+  --ring: #c4a6ff;
+
+  --navbar-bg: #f5f0ff;
+  --navbar-text: #38255c;
+  --navbar-active-text: #7a5cfa;
+  --navbar-hover-bg: #eae4ff;
+  --logout-text: #8b5cf6;
+  --logout-hover: #6d28d9;
+
+  --positive: #16a34a;
+  --positive-bg: #dcfce7;
+  --negative: #dc2626;
+  --negative-bg: #fee2e2;
+  --success: #10b981;
+  --success-bg: #d1fae5;
+  --error: #ef4444;
+  --error-bg: #fee2e2;
+  --warning: #f59e0b;
+  --warning-bg: #fef3c7;
+  --info: #3b82f6;
+  --info-bg: #dbeafe;
+
+  --filter-chip: #eae4ff;
+  --filter-border: #cfc2f5;
+  --filter-text: #38255c;
+  --filter-hover: #ded0ff;
+  --filter-active: #d2bfff;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.dark {
+  --background: #15121c;
+  --foreground: #eae4f8;
+
+  --card: #1e1b29;
+  --card-foreground: #eae4f8;
+  --popover: #1e1b29;
+  --popover-foreground: #eae4f8;
+  --primary: #c4a6ff;
+  --primary-foreground: #1e132f;
+  --secondary: #1a132b;
+  --secondary-foreground: #ede9f8;
+  --muted: #2a1e45;
+  --muted-foreground: #a49fbc;
+  --accent: #fbacd6;
+  --accent-foreground: #1e132f;
+  --destructive: #f87171;
+  --border: #3f3752;
+  --input: #2b2537;
+  --input-border: #4b3d66;
+  --placeholder: #706887;
+  --ring: #856cff;
+
+  --navbar-bg: #1a132b;
+  --navbar-text: #ede9f8;
+  --navbar-active-text: #a88bff;
+  --navbar-hover-bg: #2a1e45;
+  --logout-text: #d8b4fe;
+  --logout-hover: #e9d5ff;
+
+  --positive: #86efac;
+  --positive-bg: #113b1e;
+  --negative: #f87171;
+  --negative-bg: #4d1d1d;
+  --success: #6ee7b7;
+  --success-bg: #164c38;
+  --error: #f87171;
+  --error-bg: #4b1b1b;
+  --warning: #fcd34d;
+  --warning-bg: #4d3d14;
+  --info: #93c5fd;
+  --info-bg: #1e3a8a;
+
+  --filter-chip: #3b2b5b;
+  --filter-border: #5a487a;
+  --filter-text: #ede9f8;
+  --filter-hover: #4a3b66;
+  --filter-active: #6a52b5;
 }
