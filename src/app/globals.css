@@ -1,43 +1,62 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
-
 /* Optional custom variant for dark */
 @custom-variant dark (&:is(.dark *));
 
 /* Inline theme variables to use in Tailwind */
 @theme inline {
+  /* Primary color variations */
   --color-primary-light: var(--primary-light);
   --color-primary-dark: var(--primary-dark);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-disabled: var(--priamry-disabled);
+  --color-primary-foreground: var(--primary-foreground);
+
+  /* Background color */
+  --color-background: var(--background);
+
+  /* Text and foreground colors */
+  --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-inverted-foreground: var(--inverted-foreground);
+
+  /* Card and popover colors */
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  /* Secondary and muted colors */
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
+
+  /* Destructive color (error states) */
   --color-destructive: var(--destructive);
-  --color-border: var(--border);
+
+  /* Input field colors */
   --color-input: var(--input);
   --color-input-border: var(--input-border);
-  --color-ring: var(--ring);
+  --color-input-hover: var(--input-hover);
   --color-placeholder: var(--placeholder);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
+  --color-ring: var(--ring);
 
+  /* Navbar/sidebar colors */
   --color-navbar-bg: var(--navbar-bg);
   --color-navbar-text: var(--navbar-text);
   --color-navbar-active-text: var(--navbar-active-text);
   --color-navbar-hover-bg: var(--navbar-hover-bg);
+
+  /* Logout button colors */
   --color-logout-text: var(--logout-text);
   --color-logout-hover: var(--logout-hover);
 
+  /* Status and feedback colors */
   --color-positive: var(--positive);
   --color-positive-bg: var(--positive-bg);
   --color-negative: var(--negative);
@@ -51,6 +70,7 @@
   --color-info: var(--info);
   --color-info-bg: var(--info-bg);
 
+  /* Filter component colors */
   --color-filter-chip: var(--filter-chip);
   --color-filter-border: var(--filter-border);
   --color-filter-text: var(--filter-text);
@@ -59,105 +79,146 @@
 }
 
 :root {
+  /* Light and dark shades of primary color */
   --primary-light: #7c3aed;
   --primary-dark: #c78bff;
 
-  --background: #fafaff;
-  --foreground: #1e132f;
+  /* Primary brand colors */
+  --primary: #7c3aed; /* Main brand color */
+  --primary-hover: #6b21a8; /* Hover state */
+  --primary-action: #5b1691; /* Active/click state */
+  --primary-disabled: #e9dffc; /* Disabled state */
+  --primary-foreground: #ffffff; /* Text color on primary background */
 
-  --card: #ffffff;
-  --card-foreground: #1e132f;
-  --popover: #ffffff;
-  --popover-foreground: #1e132f;
-  --primary: #7c3aed;
-  --primary-foreground: #ffffff;
-  --secondary: #f5f0ff;
-  --secondary-foreground: #38255c;
-  --muted: #eae4ff;
-  --muted-foreground: #756c84;
-  --accent: #f472b6;
-  --accent-foreground: #1e132f;
-  --destructive: #dc2626;
-  --border: #e5e5f0;
-  --input: #f9f9fb;
-  --input-border: #dcd8e8;
-  --input-hover: #c4a6ff;
-  --placeholder: #a8a3b3;
-  --ring: #c4a6ff;
+  /* Background color */
+  --background: #fafaff; /* Main background color */
 
-  --navbar-bg: #f5f0ff;
-  --navbar-text: #38255c;
-  --navbar-active-text: #7a5cfa;
-  --navbar-hover-bg: #eae4ff;
-  --logout-text: #8b5cf6;
-  --logout-hover: #6d28d9;
+  /* Text and foreground colors */
+  --foreground: #1e132f; /* Main text color */
+  --muted-foreground: #756c84; /* Secondary text color */
+  --inverted-foreground: #ffffff; /* Text color on dark backgrounds */
 
-  --positive: #16a34a;
-  --positive-bg: #dcfce7;
-  --negative: #dc2626;
-  --negative-bg: #fee2e2;
-  --success: #10b981;
-  --success-bg: #d1fae5;
-  --error: #ef4444;
-  --error-bg: #fee2e2;
-  --warning: #f59e0b;
-  --warning-bg: #fef3c7;
-  --info: #3b82f6;
-  --info-bg: #dbeafe;
+  /* Card and popover colors */
+  --card: #ffffff; /* Card background */
+  --card-foreground: #1e132f; /* Text color on cards */
+  --border: #e5e5f0; /* Border color */
+  --popover: #ffffff; /* Popover background */
+  --popover-foreground: #1e132f; /* Popover text color */
 
-  --filter-chip: #eae4ff;
-  --filter-border: #cfc2f5;
-  --filter-text: #38255c;
-  --filter-hover: #ded0ff;
-  --filter-active: #d2bfff;
+  /* Navbar and sidebar colors */
+  --secondary: #f5f0ff; /* Secondary background */
+  --secondary-foreground: #38255c; /* Secondary text */
+  --muted: #eae4ff; /* Muted background */
+  --muted-forground: #eae4ff; /* Muted text */
+
+  /* Error/destructive color */
+  --destructive: #dc2626; /* Error/delete color */
+
+  /* Input field colors */
+  --input: #f9f9fb; /* Input background */
+  --input-border: #dcd8e8; /* Input border */
+  --input-hover: #c4a6ff; /* Input hover state */
+  --placeholder: #a8a3b3; /* Placeholder text */
+  --ring: #c4a6ff; /* Focus ring color */
+
+  /* Navbar specific colors */
+  --navbar-bg: #f5f0ff; /* Navbar background */
+  --navbar-text: #38255c; /* Navbar text */
+  --navbar-active-text: #7a5cfa; /* Active nav item text */
+  --navbar-hover-bg: #eae4ff; /* Navbar hover background */
+
+  /* Logout button colors */
+  --logout-text: #8b5cf6; /* Logout text color */
+  --logout-hover: #6d28d9; /* Logout hover state */
+
+  /* Status and feedback colors */
+  --positive: #16a34a; /* Positive/valid state */
+  --positive-bg: #dcfce7; /* Positive background */
+  --negative: #dc2626; /* Negative state */
+  --negative-bg: #fee2e2; /* Negative background */
+  --success: #10b981; /* Success state */
+  --success-bg: #d1fae5; /* Success background */
+  --error: #ef4444; /* Error state */
+  --error-bg: #fee2e2; /* Error background */
+  --warning: #f59e0b; /* Warning state */
+  --warning-bg: #fef3c7; /* Warning background */
+  --info: #3b82f6; /* Info state */
+  --info-bg: #dbeafe; /* Info background */
+
+  /* Filter component colors */
+  --filter-chip: #eae4ff; /* Filter chip background */
+  --filter-border: #cfc2f5; /* Filter border */
+  --filter-text: #38255c; /* Filter text */
+  --filter-hover: #ded0ff; /* Filter hover state */
+  --filter-active: #d2bfff; /* Active filter state */
 }
 
 .dark {
-  --background: #15121c;
-  --foreground: #eae4f8;
+  /* Dark mode primary colors */
+  --primary: #c4a6ff; /* Main brand color */
+  --primary-hover: #d3bfff; /* Hover state */
+  --primary-action: #b088ff; /* Active/click state */
+  --primary-disabled: #3b2b5b; /* Disabled state */
+  --primary-foreground: #1e132f; /* Text on primary background */
 
-  --card: #1e1b29;
-  --card-foreground: #eae4f8;
-  --popover: #1e1b29;
-  --popover-foreground: #eae4f8;
-  --primary: #c4a6ff;
-  --primary-foreground: #1e132f;
-  --secondary: #1a132b;
-  --secondary-foreground: #ede9f8;
-  --muted: #2a1e45;
-  --muted-foreground: #a49fbc;
-  --accent: #fbacd6;
-  --accent-foreground: #1e132f;
-  --destructive: #f87171;
-  --border: #3f3752;
-  --input: #2b2537;
-  --input-border: #4b3d66;
-  --placeholder: #706887;
-  --ring: #856cff;
+  /* Dark mode background */
+  --background: #15121c; /* Main background */
 
-  --navbar-bg: #1a132b;
-  --navbar-text: #ede9f8;
-  --navbar-active-text: #a88bff;
-  --navbar-hover-bg: #2a1e45;
-  --logout-text: #d8b4fe;
-  --logout-hover: #e9d5ff;
+  /* Dark mode text colors */
+  --foreground: #eae4f8; /* Main text */
+  --muted-foreground: #a49fbc; /* Secondary text */
+  --inverted-foreground: #ffffff; /* Text on dark backgrounds */
 
-  --positive: #86efac;
-  --positive-bg: #113b1e;
-  --negative: #f87171;
-  --negative-bg: #4d1d1d;
-  --success: #6ee7b7;
-  --success-bg: #164c38;
-  --error: #f87171;
-  --error-bg: #4b1b1b;
-  --warning: #fcd34d;
-  --warning-bg: #4d3d14;
-  --info: #93c5fd;
-  --info-bg: #1e3a8a;
+  /* Dark mode card and popover */
+  --card: #1e1b29; /* Card background */
+  --card-foreground: #eae4f8; /* Card text */
+  --border: #3f3752; /* Border color */
+  --popover: #1e1b29; /* Popover background */
+  --popover-foreground: #eae4f8; /* Popover text */
 
-  --filter-chip: #3b2b5b;
-  --filter-border: #5a487a;
-  --filter-text: #ede9f8;
-  --filter-hover: #4a3b66;
-  --filter-active: #6a52b5;
+  /* Dark mode navbar colors */
+  --secondary: #1a132b; /* Secondary background */
+  --secondary-foreground: #ede9f8; /* Secondary text */
+  --muted: #2a1e45; /* Muted background */
+  --muted-foreground: #a49fbc; /* Muted text */
+
+  /* Dark mode error color */
+  --destructive: #f87171; /* Error/delete color */
+
+  /* Dark mode input colors */
+  --input: #2b2537; /* Input background */
+  --input-border: #4b3d66; /* Input border */
+  --placeholder: #706887; /* Placeholder text */
+  --ring: #856cff; /* Focus ring color */
+
+  /* Dark mode navbar specific */
+  --navbar-bg: #1a132b; /* Navbar background */
+  --navbar-text: #ede9f8; /* Navbar text */
+  --navbar-active-text: #a88bff; /* Active nav item */
+  --navbar-hover-bg: #2a1e45; /* Navbar hover */
+
+  /* Dark mode logout button */
+  --logout-text: #d8b4fe; /* Logout text */
+  --logout-hover: #e9d5ff; /* Logout hover */
+
+  /* Dark mode status colors */
+  --positive: #86efac; /* Positive state */
+  --positive-bg: #113b1e; /* Positive background */
+  --negative: #f87171; /* Negative state */
+  --negative-bg: #4d1d1d; /* Negative background */
+  --success: #6ee7b7; /* Success state */
+  --success-bg: #164c38; /* Success background */
+  --error: #f87171; /* Error state */
+  --error-bg: #4b1b1b; /* Error background */
+  --warning: #fcd34d; /* Warning state */
+  --warning-bg: #4d3d14; /* Warning background */
+  --info: #93c5fd; /* Info state */
+  --info-bg: #1e3a8a; /* Info background */
+
+  /* Dark mode filter colors */
+  --filter-chip: #3b2b5b; /* Filter chip background */
+  --filter-border: #5a487a; /* Filter border */
+  --filter-text: #ede9f8; /* Filter text */
+  --filter-hover: #4a3b66; /* Filter hover */
+  --filter-active: #6a52b5; /* Active filter */
 }

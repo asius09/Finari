@@ -3,7 +3,7 @@ import { signupFormSchema } from '@/schema/signupForm.schema';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -14,109 +14,196 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardHeader, CardTitle, CardFooter } from '../ui/card';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+  CardContent,
+} from '../ui/card';
 import { Logo } from '@/components/common/Logo';
+import { useState } from 'react';
+import { apiResponseSchema } from '@/schema/ApiResponse.schema';
+import { toast } from 'sonner';
+import { CustomToast } from '@/components/common/CustomToast';
+import { Loader, Eye, EyeOff } from 'lucide-react';
 
 export const SignupForm = () => {
+  const [loading, setLoading] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  toast.custom(t => <CustomToast type="signup-success" />);
+
   const signupForm = useForm<z.infer<typeof signupFormSchema>>({
     resolver: zodResolver(signupFormSchema),
     defaultValues: { fullName: '', email: '', password: '' },
   });
 
-  function onSubmit(data: z.infer<typeof signupFormSchema>) {
-    console.log('submitting');
-    console.log(data);
+  async function onSubmit(data: z.infer<typeof signupFormSchema>) {
+    try {
+      setLoading(true);
+
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      const responseData = apiResponseSchema.parse(await response.json());
+
+      if (responseData.success) {
+        toast.custom(t => <CustomToast type="signup-success" />);
+      } else {
+        toast.custom(t => (
+          <CustomToast type="signup-error" message={responseData.message} />
+        ));
+      }
+    } catch (error) {
+      console.error('Signup error:', error);
+      toast.custom(t => (
+        <CustomToast
+          type="signup-error"
+          message="Something went wrong. Please try again."
+        />
+      ));
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function handleGoogleSignup() {}
+  function handleGoogleSignup() {
+    // TODO: Implement Google signup
+  }
+
   return (
     <Card className="w-full max-w-sm min-w-xs p-6">
       <CardHeader>
-        <CardTitle className="flex-1 shrink-0 whitespace-nowrap text-2xl flex justify-center items-center font-bold">
+        <CardTitle className="flex-1 shrink-0 whitespace-nowrap mb-4 text-2xl flex justify-center items-center font-bold">
           Create your{' '}
           <Logo
-            size={'small'}
+            size="small"
             aspectRatio={2}
-            variant={'full'}
-            className={'mx-1 mb-0.5'}
+            variant="full"
+            className="mx-1 mb-0.5"
           />{' '}
           Account
         </CardTitle>
       </CardHeader>
-      <Form {...signupForm}>
-        <form
-          onSubmit={signupForm.handleSubmit(onSubmit)}
-          className="space-y-4"
-        >
-          <FormField
-            control={signupForm.control}
-            name="fullName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Enter Full Name</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Full Name e.g. Adiba Firoz"
-                    className="rounded-xl"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={signupForm.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Enter Email</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Email e.g. adiba@example.com"
-                    className="rounded-xl"
-                    type="email"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={signupForm.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Enter Password</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Password"
-                    className="rounded-xl"
-                    type="password"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button
-            type="submit"
-            variant={'gradient'}
-            className="font-bold py-6 w-full text-lg"
+      <CardContent>
+        <Form {...signupForm}>
+          <form
+            onSubmit={signupForm.handleSubmit(onSubmit)}
+            className="space-y-4"
           >
-            Enter Finari
-          </Button>
-        </form>
-      </Form>
+            <FormField
+              control={signupForm.control}
+              name="fullName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Full Name*</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Full Name e.g. Adiba Firoz"
+                      className="rounded-xl"
+                      type="text"
+                      disabled={loading}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={signupForm.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email*</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Email e.g. adiba@example.com"
+                      className="rounded-xl"
+                      disabled={loading}
+                      type="email"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={signupForm.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password*</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Input
+                        placeholder="Password"
+                        className="rounded-xl"
+                        disabled={loading}
+                        type={passwordVisible ? 'text' : 'password'}
+                        {...field}
+                      />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        type="button"
+                        onClick={() => setPasswordVisible(prev => !prev)}
+                        className="absolute inset-y-0 right-0 z-10 flex items-center px-2"
+                        aria-label={
+                          passwordVisible ? 'Hide password' : 'Show password'
+                        }
+                      >
+                        {passwordVisible ? (
+                          <EyeOff size={16} />
+                        ) : (
+                          <Eye size={16} />
+                        )}
+                      </Button>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button
+              type="submit"
+              variant="gradient"
+              className="font-medium w-full h-10"
+              disabled={loading}
+            >
+              {loading ? <Loader className="animate-spin" /> : 'Enter Finari'}
+            </Button>
+          </form>
+        </Form>
+        <p className="text-center text-xs mt-4">
+          Already have an account?{' '}
+          <Link
+            href="/login"
+            className="text-primary hover:underline transition-colors cursor-pointer"
+            aria-label="Navigate to login page"
+          >
+            Login
+          </Link>
+        </p>
+      </CardContent>
       <CardFooter className="flex flex-col items-center">
-        <div className="w-full flex items-center gap-x-4 text-muted-foreground text-sm py-4">
+        <div className="w-full flex items-center gap-x-4 text-muted-foreground text-xs py-4">
           <div className="flex-1 border-t border-border"></div>
           <span>OR</span>
           <div className="flex-1 border-t border-border"></div>
         </div>
-        <Button className="font-bold py-6 w-full text-lg" variant={'outline'}>
+        <Button
+          className="font-medium w-full h-10"
+          variant="outline"
+          onClick={handleGoogleSignup}
+          disabled={loading}
+        >
           <i className="ri-google-fill"></i>
           Google
         </Button>
