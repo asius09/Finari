@@ -1,10 +1,10 @@
-'use client';
-import { signupFormSchema } from '@/schema/signupForm.schema';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+"use client";
+import { signupFormSchema } from "@/schema/signupForm.schema";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -12,40 +12,42 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Card,
   CardHeader,
   CardTitle,
   CardFooter,
   CardContent,
-} from '../ui/card';
-import { Logo } from '@/components/common/Logo';
-import { useState } from 'react';
-import { apiResponseSchema } from '@/schema/ApiResponse.schema';
-import { toast } from 'sonner';
-import { CustomToast } from '@/components/common/CustomToast';
-import { Loader, Eye, EyeOff } from 'lucide-react';
+} from "../ui/card";
+import { Logo } from "@/components/common/Logo";
+import { useState } from "react";
+import { apiResponseSchema } from "@/schema/ApiResponse.schema";
+import { toast } from "sonner";
+import { CustomToast } from "@/components/common/CustomToast";
+import { Loader, Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { AppRoutes } from "@/constants/constant";
 
 export const SignupForm = () => {
+  const route = useRouter();
   const [loading, setLoading] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
-  toast.custom(t => <CustomToast type="signup-success" />);
 
   const signupForm = useForm<z.infer<typeof signupFormSchema>>({
     resolver: zodResolver(signupFormSchema),
-    defaultValues: { fullName: '', email: '', password: '' },
+    defaultValues: { fullName: "", email: "", password: "" },
   });
 
   async function onSubmit(data: z.infer<typeof signupFormSchema>) {
     try {
       setLoading(true);
 
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
       });
@@ -54,13 +56,14 @@ export const SignupForm = () => {
 
       if (responseData.success) {
         toast.custom(t => <CustomToast type="signup-success" />);
+        route.replace(AppRoutes.LOGIN);
       } else {
         toast.custom(t => (
           <CustomToast type="signup-error" message={responseData.message} />
         ));
       }
     } catch (error) {
-      console.error('Signup error:', error);
+      console.error("Signup error:", error);
       toast.custom(t => (
         <CustomToast
           type="signup-error"
@@ -80,13 +83,13 @@ export const SignupForm = () => {
     <Card className="w-full max-w-sm min-w-xs p-6">
       <CardHeader>
         <CardTitle className="flex-1 shrink-0 whitespace-nowrap mb-4 text-2xl flex justify-center items-center font-bold">
-          Create your{' '}
+          Create your{" "}
           <Logo
             size="small"
             aspectRatio={2}
             variant="full"
             className="mx-1 mb-0.5"
-          />{' '}
+          />{" "}
           Account
         </CardTitle>
       </CardHeader>
@@ -146,7 +149,7 @@ export const SignupForm = () => {
                         placeholder="Password"
                         className="rounded-xl"
                         disabled={loading}
-                        type={passwordVisible ? 'text' : 'password'}
+                        type={passwordVisible ? "text" : "password"}
                         {...field}
                       />
                       <Button
@@ -156,7 +159,7 @@ export const SignupForm = () => {
                         onClick={() => setPasswordVisible(prev => !prev)}
                         className="absolute inset-y-0 right-0 z-10 flex items-center px-2"
                         aria-label={
-                          passwordVisible ? 'Hide password' : 'Show password'
+                          passwordVisible ? "Hide password" : "Show password"
                         }
                       >
                         {passwordVisible ? (
@@ -177,12 +180,12 @@ export const SignupForm = () => {
               className="font-medium w-full h-10"
               disabled={loading}
             >
-              {loading ? <Loader className="animate-spin" /> : 'Enter Finari'}
+              {loading ? <Loader className="animate-spin" /> : "Enter Finari"}
             </Button>
           </form>
         </Form>
         <p className="text-center text-xs mt-4">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <Link
             href="/login"
             className="text-primary hover:underline transition-colors cursor-pointer"

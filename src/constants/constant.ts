@@ -46,3 +46,17 @@ export enum TransactionCategory {
   SUBSCRIPTION = "Subscription",
   OTHER = "Other",
 }
+
+// App routes
+export enum AppRoutes {
+  HOME = "/",
+  LOGIN = "/login",
+  SIGNUP = "/signup",
+  DASHBOARD = "/dashboard",
+  TRANSACTIONS = "/transactions",
+  WALLETS = "/wallets",
+  PROFILE = "/profile",
+  SETTINGS = "/settings",
+  HELP = "/help",
+  NOT_FOUND = "/404",
+}
