@@ -9,8 +9,9 @@
 5. [Project Roadmap](#project-roadmap)
 6. [Installation](#installation)
 7. [Configuration](#configuration)
-8. [Contributing](#contributing)
-9. [License](#license)
+8. [Commit Standards](#commit-standards)
+9. [Contributing](#contributing)
+10. [License](#license)
 
 ## Introduction
 
@@ -69,7 +70,7 @@ Finari is a minimalist, AI-assisted personal finance app designed to track every
 - [x] Ready Global CSS for schema
 - [x] Create layout and theme (dark/light mode optional)
 - [x] Setup Redux for global state
-- [ ] Build auth pages: login, register, reset password
+- [x] Build auth pages: login, register, reset password
 - [ ] Build dashboard page (show cards, charts, reminders)
 - [ ] Add forms to manually input data (transactions, assets, etc.)
 
@@ -134,13 +135,49 @@ Finari is a minimalist, AI-assisted personal finance app designed to track every
 
 The middleware configuration is located in `src/middleware.ts`. You can modify the `matcher` array to include or exclude specific paths from middleware processing.
 
+## Commit Standards
+
+| **Type**        | **Purpose**                                                           |
+| --------------- | --------------------------------------------------------------------- |
+| `feature`       | A new feature                                                         |
+| `fix`           | A bug fix                                                             |
+| `docs`          | Documentation only changes                                            |
+| `style`         | Changes that do not affect the meaning of the code (formatting, etc.) |
+| `refactor`      | Code change that neither fixes a bug nor adds a feature               |
+| `perf`          | Performance improvements                                              |
+| `test`          | Adding or updating tests                                              |
+| `chore`         | Build process or auxiliary tool changes                               |
+| `ci`            | CI/CD-related changes                                                 |
+| `revert`        | Revert a previous commit                                              |
+| `UI`            | A new page, form, input or anything related changes or added          |
+| `security`      | Security-related improvements or fixes                                |
+| `i18n`          | Internationalization and localization changes                         |
+| `accessibility` | Accessibility improvements                                            |
+| `hotfix`        | Critical production bug fix                                           |
+
+Examples:
+
+- `feat(auth): implement user login with Supabase`
+- `fix(cart): handle empty cart state in UI`
+- `docs(readme): add setup instructions`
+- `style(header): adjust spacing and font weights`
+- `refactor(auth): simplify session token logic`
+- `test(api): add unit test for login route`
+- `chore(deps): update all packages to latest`
+- `ci: add GitHub Actions workflow for linting`
+- `UI(dashboard): add new analytics cards`
+- `security(auth): implement rate limiting`
+- `i18n(settings): add French translation`
+- `accessibility(forms): add ARIA labels`
+- `hotfix(payments): fix currency conversion bug`
+
 ## Contributing
 
 We welcome contributions! Please follow these steps:
 
 1. Fork the repository
 2. Create a new branch for your feature
-3. Commit your changes
+3. Commit your changes following the commit standards
 4. Push to the branch
 5. Create a pull request
 
