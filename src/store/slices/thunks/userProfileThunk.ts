@@ -22,8 +22,12 @@ export const fetchUserProfile = createAsyncThunk<
         bio: data.bio,
       })
     );
-  } catch (err: any) {
-    dispatch(setError(err.message || "Failed to fetch profile"));
+  } catch (err: unknown) {
+    let errorMessage = "Failed to fetch profile";
+    if (err instanceof Error) {
+      errorMessage = err.message;
+    }
+    dispatch(setError(errorMessage));
   } finally {
     dispatch(setLoading(false));
   }

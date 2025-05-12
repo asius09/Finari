@@ -26,14 +26,14 @@ import { useState } from "react";
 import { apiResponseSchema } from "@/schema/ApiResponse.schema";
 import { toast } from "sonner";
 import { CustomToast } from "@/components/common/CustomToast";
-import { Loader, Eye, EyeOff } from "lucide-react";
+import { Loader } from "lucide-react";
 import { AppRoutes } from "@/constants/constant";
 import { useRouter } from "next/navigation";
+import { PasswordInput } from "../common/PasswordInput";
 
 export const LoginForm = () => {
   const route = useRouter();
   const [loading, setLoading] = useState(false);
-  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const signupForm = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
@@ -56,18 +56,29 @@ export const LoginForm = () => {
 
       if (responseData.success) {
         console.log("User logged in successfully:", responseData?.data);
-        toast.custom(t => <CustomToast type="login-success" />);
+        toast.custom(() => (
+          <CustomToast
+            type="success"
+            title="Login Successful"
+            message="You have been successfully logged in"
+          />
+        ));
         route.push(AppRoutes.HOME);
       } else {
-        toast.custom(t => (
-          <CustomToast type="login-error" message={responseData.message} />
+        toast.custom(() => (
+          <CustomToast
+            type="error"
+            title="Login Failed"
+            message={responseData.message}
+          />
         ));
       }
     } catch (error) {
       console.error("login error:", error);
-      toast.custom(t => (
+      toast.custom(() => (
         <CustomToast
-          type="login-error"
+          type="error"
+          title="Login Error"
           message="Something went wrong. Please try again."
         />
       ));
@@ -78,6 +89,76 @@ export const LoginForm = () => {
 
   function handleGoogleLogin() {
     // TODO: Implement Google Login
+  }
+
+  async function handleResetPassword(data: z.infer<typeof loginFormSchema>) {
+    try {
+      setLoading(true);
+      const email = data.email;
+      if (!email) {
+        console.warn("[ResetPassword] Email is required for password reset");
+        toast.custom(() => (
+          <CustomToast
+            type="error"
+            title="Reset Password Error"
+            message="Please enter your email address to reset password"
+          />
+        ));
+        return;
+      }
+      console.log(
+        "[ResetPassword] Initiating password reset for email:",
+        email
+      );
+
+      const response = await fetch(
+        `/api/auth/reset-password?email=${encodeURIComponent(email)}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const responseData = await response.json();
+      console.log("[ResetPassword] API response:", responseData);
+
+      if (responseData.success) {
+        console.log("[ResetPassword] Reset link sent successfully");
+        toast.custom(() => (
+          <CustomToast
+            type="success"
+            title="Reset Link Sent"
+            message="Password reset link sent to your email"
+          />
+        ));
+      } else {
+        console.warn(
+          "[ResetPassword] Failed to send reset link:",
+          responseData.message
+        );
+        toast.custom(() => (
+          <CustomToast
+            type="error"
+            title="Reset Password Error"
+            message={responseData.message || "Failed to send reset link"}
+          />
+        ));
+      }
+    } catch (error) {
+      console.error("[ResetPassword] Unexpected error:", error);
+      toast.custom(() => (
+        <CustomToast
+          type="error"
+          title="Reset Password Error"
+          message="Something went wrong. Please try again."
+        />
+      ));
+    } finally {
+      console.log("[ResetPassword] Process completed");
+      setLoading(false);
+    }
   }
 
   return (
@@ -125,36 +206,31 @@ export const LoginForm = () => {
                 <FormItem>
                   <FormLabel>Password*</FormLabel>
                   <FormControl>
-                    <div className="relative">
-                      <Input
-                        placeholder="Password"
-                        className="rounded-xl"
-                        disabled={loading}
-                        type={passwordVisible ? "text" : "password"}
-                        {...field}
-                      />
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        type="button"
-                        onClick={() => setPasswordVisible(prev => !prev)}
-                        className="absolute inset-y-0 right-0 z-10 flex items-center px-2"
-                        aria-label={
-                          passwordVisible ? "Hide password" : "Show password"
-                        }
-                      >
-                        {passwordVisible ? (
-                          <EyeOff size={16} />
-                        ) : (
-                          <Eye size={16} />
-                        )}
-                      </Button>
-                    </div>
+                    <PasswordInput
+                      value={field.value}
+                      onChange={field.onChange}
+                      className="w-full"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+            <div className="w-full flex items-center justify-end">
+              <Button
+                type="button"
+                variant={"link"}
+                className="text-sm p-0 h-5"
+                disabled={loading}
+                onClick={e => {
+                  e.preventDefault();
+                  const email = signupForm.getValues("email");
+                  handleResetPassword({ email, password: "" });
+                }}
+              >
+                Reset your Password?
+              </Button>
+            </div>
             <Button
               type="submit"
               variant="gradient"

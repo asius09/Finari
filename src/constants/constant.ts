@@ -58,5 +58,6 @@ export enum AppRoutes {
   PROFILE = "/profile",
   SETTINGS = "/settings",
   HELP = "/help",
+  UPDATE_PASSWORD = "/update-password",
   NOT_FOUND = "/404",
 }

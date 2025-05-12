@@ -26,14 +26,14 @@ import { useState } from "react";
 import { apiResponseSchema } from "@/schema/ApiResponse.schema";
 import { toast } from "sonner";
 import { CustomToast } from "@/components/common/CustomToast";
-import { Loader, Eye, EyeOff } from "lucide-react";
+import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { AppRoutes } from "@/constants/constant";
+import { PasswordInput } from "../common/PasswordInput";
 
 export const SignupForm = () => {
   const route = useRouter();
   const [loading, setLoading] = useState(false);
-  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const signupForm = useForm<z.infer<typeof signupFormSchema>>({
     resolver: zodResolver(signupFormSchema),
@@ -55,18 +55,29 @@ export const SignupForm = () => {
       const responseData = apiResponseSchema.parse(await response.json());
 
       if (responseData.success) {
-        toast.custom(t => <CustomToast type="signup-success" />);
-        route.replace(AppRoutes.LOGIN);
+        toast.custom(() => (
+          <CustomToast
+            type="success"
+            title="Account Created"
+            message="Account created successfully! Redirecting to login..."
+          />
+        ));
+        setTimeout(() => route.replace(AppRoutes.LOGIN), 2000);
       } else {
-        toast.custom(t => (
-          <CustomToast type="signup-error" message={responseData.message} />
+        toast.custom(() => (
+          <CustomToast
+            type="error"
+            title="Signup Failed"
+            message={responseData.message || "Failed to create account"}
+          />
         ));
       }
     } catch (error) {
       console.error("Signup error:", error);
-      toast.custom(t => (
+      toast.custom(() => (
         <CustomToast
-          type="signup-error"
+          type="error"
+          title="Error"
           message="Something went wrong. Please try again."
         />
       ));
@@ -144,31 +155,11 @@ export const SignupForm = () => {
                 <FormItem>
                   <FormLabel>Password*</FormLabel>
                   <FormControl>
-                    <div className="relative">
-                      <Input
-                        placeholder="Password"
-                        className="rounded-xl"
-                        disabled={loading}
-                        type={passwordVisible ? "text" : "password"}
-                        {...field}
-                      />
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        type="button"
-                        onClick={() => setPasswordVisible(prev => !prev)}
-                        className="absolute inset-y-0 right-0 z-10 flex items-center px-2"
-                        aria-label={
-                          passwordVisible ? "Hide password" : "Show password"
-                        }
-                      >
-                        {passwordVisible ? (
-                          <EyeOff size={16} />
-                        ) : (
-                          <Eye size={16} />
-                        )}
-                      </Button>
-                    </div>
+                    <PasswordInput
+                      value={field.value}
+                      onChange={field.onChange}
+                      className="w-full"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
