@@ -68,7 +68,7 @@ Finari is a minimalist, AI-assisted personal finance app designed to track every
 - [x] Setup colors schema and prepare shadcn components
 - [x] Ready Global CSS for schema
 - [x] Create layout and theme (dark/light mode optional)
-- [ ] Setup Redux for global state
+- [x] Setup Redux for global state
 - [ ] Build auth pages: login, register, reset password
 - [ ] Build dashboard page (show cards, charts, reminders)
 - [ ] Add forms to manually input data (transactions, assets, etc.)
