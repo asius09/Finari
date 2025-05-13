@@ -4,8 +4,8 @@
  * Enum for different date format types
  * - full: Full date with time and weekday (e.g., "Monday, January 1, 2023 at 12:00 PM")
  * - number: Numeric date format (e.g., "01/01/2023")
- * - relative: Relative time format (e.g., "Yesterday", "Today", "Jan 1")
  * - relative: Relative time format (e.g., "Yesterday", "Today", "Jan 1, 2023, 12:00 PM")
+ * - year: Year only format (e.g., "2023")
  */
 type DateType = "full" | "number" | "relative" | "year";
 
@@ -46,20 +46,19 @@ export const formatDate = (
   if (type === "relative") {
     // Check if date is today
     if (dateObj.toDateString() === now.toDateString()) {
-      return "Today";
+      return "Today, " + dateObj.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
     }
     // Check if date is yesterday
     if (dateObj.toDateString() === yesterday.toDateString()) {
-      return "Yesterday";
-    }
-    // Check if date is within the same year
-    if (dateObj.getFullYear() === now.getFullYear()) {
-      return dateObj.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
+      return "Yesterday, " + dateObj.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
       });
     }
-    // For dates older than current year
+    // For all other dates, show full date with time
     return dateObj.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",

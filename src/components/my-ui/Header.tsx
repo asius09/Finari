@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AppRoutes } from "@/constants/constant";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { AddTransactionBtn } from "./AddTransactionBtn";
 
 export const Header = () => {
   const theme = "dark";
@@ -54,6 +55,7 @@ export const Header = () => {
         </div>
       </div>
       <nav className="flex justify-end items-center  min-h-20">
+        <AddTransactionBtn />
         {headerBtns.map(btn => {
           return btn.title !== "theme" ? (
             <Button
