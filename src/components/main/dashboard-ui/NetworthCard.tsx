@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppSelector } from "@/store/hook";
 // import { formatCurrency } from "@/utils/formatCurrency";
-import { FinanceArrow } from "@/components/common/FinanceArrow";
+import { FinanceArrow } from "@/components/my-ui/FinanceArrow";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

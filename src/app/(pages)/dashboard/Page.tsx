@@ -3,6 +3,7 @@
 import { NetworthCard } from "@/components/main/dashboard-ui/NetworthCard";
 import { IncomeBreakDownChart } from "@/components/main/dashboard-ui/IncomeBreakDownChart";
 import { DebtVsAssets } from "@/components/main/dashboard-ui/DebtVsAssets";
+import { TransactionsContainer } from "@/components/main/transactions-ui/TransactionsContainer";
 
 export default function DashboardPage() {
   return (
@@ -29,21 +30,34 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1">
         {/* Recent Transactions */}
-        <div className="p-6 rounded-lg bg-popover">
-          <h2 className="text-lg font-semibold text-primary mb-4">
-            Recent Transactions
-          </h2>
-          <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <p className="text-sm">Groceries</p>
-              <p className="text-sm text-destructive">-$50.00</p>
-            </div>
-            <div className="flex justify-between items-center">
-              <p className="text-sm">Salary</p>
-              <p className="text-sm text-success">+$2,500.00</p>
-            </div>
-          </div>
-        </div>
+        <TransactionsContainer
+          title="Recent Transactions"
+          showViewMore={true}
+          transactions={[
+            {
+              id: "1",
+              user_id: "user_123",
+              wallet_id: "Bank Account",
+              amount: 1200,
+              type: "income",
+              category: "Salary",
+              description: "Monthly Salary",
+              date: new Date().toISOString(),
+              created_at: new Date().toISOString(),
+            },
+            {
+              id: "2",
+              user_id: "user_123",
+              wallet_id: "Cash",
+              amount: 50,
+              type: "expense",
+              category: "Food",
+              description: "Lunch at Cafe",
+              date: new Date().toISOString(),
+              created_at: new Date().toISOString(),
+            },
+          ]}
+        />
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
-import { AppSidebar } from "@/components/common/AppSidebar";
+import { AppSidebar } from "@/components/my-ui/AppSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { Header } from "@/components/common/Header";
+import { Header } from "@/components/my-ui/Header";
 
 interface SidebarLayoutProps {
   children: React.ReactNode;

@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const DebtVsAssets = () => {
   return (
-    <Card className="w-full min-w-xs p-4">
+    <Card className="w-full min-w-xs p-4 hidden md:block">
       <CardHeader>
         <CardTitle className="text-lg font-medium">Debt vs Assets</CardTitle>
       </CardHeader>

@@ -13,7 +13,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   Card,
   CardHeader,
@@ -21,15 +20,17 @@ import {
   CardFooter,
   CardContent,
 } from "../ui/card";
-import { Logo } from "@/components/common/Logo";
+import { Logo } from "@/components/my-ui/Logo";
 import { useState } from "react";
 import { apiResponseSchema } from "@/schema/ApiResponse.schema";
 import { toast } from "sonner";
-import { CustomToast } from "@/components/common/CustomToast";
+import { CustomToast } from "@/components/my-ui/CustomToast";
 import { Loader } from "lucide-react";
 import { AppRoutes } from "@/constants/constant";
 import { useRouter } from "next/navigation";
-import { PasswordInput } from "../common/PasswordInput";
+import { PasswordInput } from "../my-ui/PasswordInput";
+import { MyButton } from "../my-ui/MyButton";
+import { MyInput } from "../my-ui/MyInput";
 
 export const LoginForm = () => {
   const route = useRouter();
@@ -187,7 +188,7 @@ export const LoginForm = () => {
                 <FormItem>
                   <FormLabel>Email*</FormLabel>
                   <FormControl>
-                    <Input
+                    <MyInput
                       placeholder="Email e.g. adiba@example.com"
                       className="rounded-xl"
                       disabled={loading}
@@ -231,14 +232,14 @@ export const LoginForm = () => {
                 Reset your Password?
               </Button>
             </div>
-            <Button
+            <MyButton
               type="submit"
               variant="gradient"
               className="font-medium w-full h-10"
               disabled={loading}
             >
               {loading ? <Loader className="animate-spin" /> : "Enter Finari"}
-            </Button>
+            </MyButton>
           </form>
         </Form>
         <p className="text-center text-xs mt-4">

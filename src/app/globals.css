@@ -122,6 +122,13 @@
   --popover: #ffffff; /* Popover background */
   --popover-foreground: #1e132f; /* Popover text color */
 
+  /* Input and form field colors */
+  --input: #f9f9fb; /* Input background */
+  --input-border: #dcd8e8; /* Input border */
+  --input-hover: #c4a6ff; /* Input hover border */
+  --placeholder: #a8a3b3; /* Placeholder text */
+  --destructive: #dc2626; /* Destructive text color */
+
   /* Navbar and sidebar colors */
   --secondary: #f5f0ff; /* Secondary background */
   --secondary-foreground: #38255c; /* Secondary text */
@@ -184,6 +191,13 @@
   --border: #3f3752; /* Border color */
   --popover: #1e1b29; /* Popover background */
   --popover-foreground: #eae4f8; /* Popover text */
+
+  /* Dark mode input and placeholder colors */
+  --input: #2b2537; /* Dark mode input background */
+  --input-border: #4b3d66; /* Dark mode input border */
+  --input-hover: #856cff; /* Dark mode input hover border */
+  --placeholder: #706887; /* Dark mode placeholder text */
+  --destructive: #f87171; /* Destructive text color */
 
   /* Dark mode navbar colors */
   --secondary: #1a132b; /* Secondary background */
