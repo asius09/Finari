@@ -10,9 +10,9 @@ import { AppRoutes } from "@/constants/constant";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { AddTransactionBtn } from "./AddTransactionBtn";
+import { ModeToggle } from "./Theme";
 
 export const Header = () => {
-  const theme = "dark";
   const { full_name: fullName, avatarUrl } = useAppSelector(
     state => state.userProfile
   );
@@ -26,7 +26,6 @@ export const Header = () => {
     },
     {
       title: "theme",
-      icon: theme === "dark" ? Moon : Sun,
     },
   ];
 
@@ -54,10 +53,17 @@ export const Header = () => {
           </span>
         </div>
       </div>
-      <nav className="flex justify-end items-center  min-h-20">
+      <nav className="flex justify-end items-center gap-2 min-h-20">
         <AddTransactionBtn />
         {headerBtns.map(btn => {
-          return btn.title !== "theme" ? (
+          if (btn.title === "theme") {
+            return <ModeToggle key={btn.title} />;
+          }
+
+          if (!btn.icon) return null;
+
+          const IconComponent = btn.icon;
+          return (
             <Button
               key={btn.title}
               variant={"ghost"}
@@ -65,18 +71,8 @@ export const Header = () => {
               asChild
             >
               <Link href={btn.url || AppRoutes.HOME}>
-                {" "}
-                {/* TODO : REMOVE HOME*/}
-                <btn.icon className="size-5 fill-foreground hover:fill-primary transition-colors" />
+                <IconComponent className="size-5 fill-foreground hover:fill-primary transition-colors" />
               </Link>
-            </Button>
-          ) : (
-            <Button
-              key={btn.title}
-              variant={"ghost"}
-              className="hover:bg-primary/50 cursor-pointer transition-colors rounded-lg"
-            >
-              <btn.icon className="size-5 fill-foreground hover:fill-primary transition-colors " />
             </Button>
           );
         })}

@@ -4,7 +4,7 @@ import "./globals.css";
 import "remixicon/fonts/remixicon.css";
 import { Toaster } from "@/components/ui/sonner";
 import { StoreProvider } from "@/store/StoreProvider";
-import { Sidebar } from "@/components/common/AppSidebar";
+import { ThemeProvider } from "@/components/my-ui/Theme";
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -23,10 +23,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} antialiased bg-forground`}>
-        <main>
-          <StoreProvider>{children}</StoreProvider>
-        </main>
-        <Toaster visibleToasts={3} position="top-center" />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <main>
+            <StoreProvider>{children}</StoreProvider>
+          </main>
+          <Toaster visibleToasts={3} position="top-center" />
+        </ThemeProvider>
       </body>
     </html>
   );
