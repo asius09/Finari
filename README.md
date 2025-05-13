@@ -63,7 +63,7 @@ Finari is a minimalist, AI-assisted personal finance app designed to track every
 - [x] Configure Row-Level Security (RLS) and Policies
 - [x] Implement Supabase Auth (email/password or magic link)
 
-### Phase 3: Frontend Setup
+### Phase 3: Frontend Setup ✅
 
 - [x] Initialize Next.js + Tailwind project
 - [x] Setup colors schema and prepare shadcn components
@@ -71,8 +71,8 @@ Finari is a minimalist, AI-assisted personal finance app designed to track every
 - [x] Create layout and theme (dark/light mode optional)
 - [x] Setup Redux for global state
 - [x] Build auth pages: login, register, reset password
-- [ ] Build dashboard page (show cards, charts, reminders)
-- [ ] Add forms to manually input data (transactions, assets, etc.)
+- [x] Build dashboard page (show cards, charts, reminders)
+- [x] Add forms to manually input data (transactions, assets, etc.)
 
 ### Phase 4: Data Visualization
 
