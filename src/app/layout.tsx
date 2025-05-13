@@ -4,7 +4,7 @@ import "./globals.css";
 import "remixicon/fonts/remixicon.css";
 import { Toaster } from "@/components/ui/sonner";
 import { StoreProvider } from "@/store/StoreProvider";
-
+import { Sidebar } from "@/components/common/AppSidebar";
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],

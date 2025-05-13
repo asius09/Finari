@@ -1,5 +1,5 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
+@import "tailwindcss";
+@import "tw-animate-css";
 
 /* Optional custom variant for dark */
 @custom-variant dark (&:is(.dark *));
@@ -47,12 +47,29 @@
   --color-ring: var(--ring);
 
   /* Navbar/sidebar colors */
-  --color-navbar-bg: var(--navbar-bg);
-  --color-navbar-text: var(--navbar-text);
+  --color-navbar-bg: var(--sidebar-background);
+  --color-navbar-text: var(--sidebar-foreground);
   --color-navbar-active-text: var(--navbar-active-text);
   --color-navbar-hover-bg: var(--navbar-hover-bg);
-
-  /* Logout button colors */
+  --color-sidebar-bg: var(--sidebar-background); /* Sidebar background */
+  --color-sidebar-text: var(--sidebar-foreground); /* Sidebar text */
+  --color-sidebar-active-text: var(
+    --navbar-active-text
+  ); /* Use navbar active text */
+  --color-sidebar-hover-bg: var(
+    --navbar-hover-bg
+  ); /* Use navbar hover background */
+  --color-sidebar-ring: var(--ring); /* Use general ring color */
+  --color-sidebar-border: var(--border); /* Use general border color */
+  --color-sidebar-accent-foreground: var(
+    --navbar-active-text
+  ); /* Use navbar text */
+  --color-sidebar-accent: var(
+    --color-navbar-hover-bg
+  ); /* Use navbar background */
+  --color-sidebar-primary-foreground: var(--color-navbar-text);
+  --color-sidebar-primary: var(--color-navbar-bg);
+  --color-sidebar-background: var(--color-navbar-bg); /* Logout button colors */
   --color-logout-text: var(--logout-text);
   --color-logout-hover: var(--logout-hover);
 
@@ -110,22 +127,12 @@
   --secondary-foreground: #38255c; /* Secondary text */
   --muted: #eae4ff; /* Muted background */
   --muted-forground: #eae4ff; /* Muted text */
-
-  /* Error/destructive color */
-  --destructive: #dc2626; /* Error/delete color */
-
-  /* Input field colors */
-  --input: #f9f9fb; /* Input background */
-  --input-border: #dcd8e8; /* Input border */
-  --input-hover: #c4a6ff; /* Input hover state */
-  --placeholder: #a8a3b3; /* Placeholder text */
-  --ring: #c4a6ff; /* Focus ring color */
-
-  /* Navbar specific colors */
-  --navbar-bg: #f5f0ff; /* Navbar background */
-  --navbar-text: #38255c; /* Navbar text */
+  --navbar-bg: var(--secondary); /* Define navbar background */
+  --navbar-text: var(--secondary-foreground); /* Define navbar text */
   --navbar-active-text: #7a5cfa; /* Active nav item text */
   --navbar-hover-bg: #eae4ff; /* Navbar hover background */
+  --sidebar-background: var(--navbar-bg); /* Use navbar background */
+  --sidebar-foreground: var(--navbar-text); /* Use navbar text */
 
   /* Logout button colors */
   --logout-text: #8b5cf6; /* Logout text color */
@@ -151,6 +158,8 @@
   --filter-text: #38255c; /* Filter text */
   --filter-hover: #ded0ff; /* Filter hover state */
   --filter-active: #d2bfff; /* Active filter state */
+  --ring: #c4a6ff; /* Focus ring color */
+  --border: #e5e5f0; /* Border color */
 }
 
 .dark {
@@ -181,21 +190,12 @@
   --secondary-foreground: #ede9f8; /* Secondary text */
   --muted: #2a1e45; /* Muted background */
   --muted-foreground: #a49fbc; /* Muted text */
-
-  /* Dark mode error color */
-  --destructive: #f87171; /* Error/delete color */
-
-  /* Dark mode input colors */
-  --input: #2b2537; /* Input background */
-  --input-border: #4b3d66; /* Input border */
-  --placeholder: #706887; /* Placeholder text */
-  --ring: #856cff; /* Focus ring color */
-
-  /* Dark mode navbar specific */
-  --navbar-bg: #1a132b; /* Navbar background */
-  --navbar-text: #ede9f8; /* Navbar text */
+  --navbar-bg: var(--secondary); /* Define navbar background */
+  --navbar-text: var(--secondary-foreground); /* Define navbar text */
   --navbar-active-text: #a88bff; /* Active nav item */
   --navbar-hover-bg: #2a1e45; /* Navbar hover */
+  --sidebar-background: var(--navbar-bg); /* Use navbar background */
+  --sidebar-foreground: var(--navbar-text); /* Use navbar text */
 
   /* Dark mode logout button */
   --logout-text: #d8b4fe; /* Logout text */
@@ -221,4 +221,15 @@
   --filter-text: #ede9f8; /* Filter text */
   --filter-hover: #4a3b66; /* Filter hover */
   --filter-active: #6a52b5; /* Active filter */
+  --ring: #856cff; /* Focus ring color */
+  --border: #3f3752; /* Border color */
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
