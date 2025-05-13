@@ -60,4 +60,15 @@ export enum AppRoutes {
   HELP = "/help",
   UPDATE_PASSWORD = "/update-password",
   NOT_FOUND = "/404",
+  NOTIFICATION = "/notification",
 }
+
+//Greetings
+export enum Greetings {
+  GOOD_MORNING = "Good Morning",
+  GOOD_AFTERNOON = "Good Afternoon",
+  GOOD_EVENING = "Good Evening",
+  WELCOME_BACK = "Welcome Back",
+}
+
+
