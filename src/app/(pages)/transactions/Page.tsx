@@ -4,7 +4,7 @@ import { InputComposer } from "@/components/main/transactions-ui/transaction-com
 import { Card } from "@/components/ui/card";
 import { TransactionsContainer } from "@/components/main/transactions-ui/TransactionsContainer";
 import { transactionSchema } from "@/schema/transaction.schema";
-import { demoTransactions } from "@/data/transactions";
+import { demoTransactions } from "@/data/demo.transactions-data";
 import { z } from "zod";
 
 export default function TransactionsPage() {

@@ -4,7 +4,7 @@ import { NetworthCard } from "@/components/main/dashboard-ui/NetworthCard";
 import { IncomeBreakDownChart } from "@/components/main/dashboard-ui/IncomeBreakDownChart";
 import { DebtVsAssets } from "@/components/main/dashboard-ui/DebtVsAssets";
 import { TransactionsContainer } from "@/components/main/transactions-ui/TransactionsContainer";
-import { demoTransactions } from "@/data/transactions";
+import { demoTransactions } from "@/data/demo.transactions-data";
 
 export default function DashboardPage() {
   return (

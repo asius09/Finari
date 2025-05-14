@@ -4,7 +4,7 @@ import { useAppSelector } from "@/store/hook";
 import { useEffect, useState } from "react";
 import { formatDate } from "@/utils/formatDate";
 import { greetings } from "@/utils/greetings";
-import { Bell, Moon, Sun } from "lucide-react";
+import { Bell } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AppRoutes } from "@/constants/constant";
 import { Button } from "../ui/button";
@@ -13,9 +13,9 @@ import { AddTransactionBtn } from "./AddTransactionBtn";
 import { ModeToggle } from "./Theme";
 
 export const Header = () => {
-  const { full_name: fullName, avatarUrl } = useAppSelector(
-    state => state.userProfile
-  );
+  const profile = useAppSelector(state => state.userProfile.profile);
+  const fullName = profile?.full_name || "Adiba";
+  const avatarUrl = profile?.avatar_url || "";
   const [firstName, setFirstName] = useState<string>("");
 
   const headerBtns = [
@@ -47,7 +47,9 @@ export const Header = () => {
           <AvatarFallback>f</AvatarFallback>
         </Avatar>
         <div className="flex flex-col">
-          <p className="text-2xl text-foreground font-bold">{greetings()}</p>
+          <p className="text-2xl text-foreground font-semibold">
+            {greetings(firstName)}
+          </p>
           <span className="text-xs text-muted-foreground font-medium">
             {formatDate()}
           </span>

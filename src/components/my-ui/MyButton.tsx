@@ -7,7 +7,7 @@ const gradientButtonVariants = cva(buttonVariants(), {
   variants: {
     variant: {
       gradient:
-        "from-primary-light to-primary-dark bg-gradient-to-b text-white hover:scale-101 hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
+        "rounded-full from-primary-light to-primary-dark bg-gradient-to-b text-white hover:scale-101 hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
     },
     size: {
       default: "h-9 px-4 py-2 has-[>svg]:px-3",

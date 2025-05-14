@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
+import { MyInput } from "./MyInput";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
 
@@ -22,7 +22,7 @@ export const PasswordInput = ({
 
   return (
     <div className="relative">
-      <Input
+      <MyInput
         placeholder={placeholder}
         className={`rounded-xl ${className}`}
         disabled={disabled}
@@ -35,7 +35,7 @@ export const PasswordInput = ({
         size="icon"
         type="button"
         onClick={() => setPasswordVisible(prev => !prev)}
-        className="absolute inset-y-0 right-0 z-10 flex items-center px-2"
+        className="absolute inset-y-0 right-0 z-10 flex items-center px-3"
         aria-label={passwordVisible ? "Hide password" : "Show password"}
       >
         {passwordVisible ? <EyeOff size={16} /> : <Eye size={16} />}

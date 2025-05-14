@@ -1,29 +1,42 @@
-import { Home, List, Proportions, PieChart, Settings } from "lucide-react";
+import { AppRoutes } from "@/constants/constant";
+import {
+  List,
+  Proportions,
+  PieChart,
+  Settings,
+  WalletMinimal,
+  LayoutDashboard,
+} from "lucide-react";
 
 export const navbarRoutes = [
   {
     title: "Dashboard",
-    url: "/dashboard",
-    icon: Home,
+    url: AppRoutes.DASHBOARD,
+    icon: LayoutDashboard,
   },
   {
     title: "Transactions",
-    url: "/transactions",
+    url: AppRoutes.TRANSACTIONS,
     icon: List,
   },
   {
+    title: "Wallets",
+    url: AppRoutes.WALLETS,
+    icon: WalletMinimal,
+  },
+  {
     title: "Assets & Liabilities",
-    url: "/networth",
+    url: AppRoutes.NETWORTH,
     icon: PieChart,
   },
   {
     title: "Reports",
-    url: "/reports",
+    url: AppRoutes.REPORT,
     icon: Proportions,
   },
   {
     title: "Settings",
-    url: "/settings",
+    url: AppRoutes.SETTINGS,
     icon: Settings,
   },
 ];

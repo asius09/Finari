@@ -6,18 +6,9 @@ export enum DBTables {
   WALLETS = "wallets",
   TRANSACTIONS = "transactions",
   MONTHLY_SUMMARIES = "monthly_summaries",
-}
-
-// Wallet types
-export enum WalletType {
-  BANK = "bank",
-  CASH = "cash",
-}
-
-// Transaction types
-export enum TransactionType {
-  INCOME = "income",
-  EXPENSE = "expense",
+  //UPDATED TWO MORE TABLES
+  ASSETS = "assets", 
+  DEBTS = "debts",
 }
 
 // App theme
@@ -52,18 +43,21 @@ export enum AppRoutes {
   HOME = "/",
   LOGIN = "/login",
   SIGNUP = "/signup",
+  AUTH = "/auth",
+  UPDATE_PASSWORD = "/update-password",
   DASHBOARD = "/dashboard",
   TRANSACTIONS = "/transactions",
   WALLETS = "/wallets",
+  NETWORTH = "/net-worth",
+  REPORT = "/report",
+  NOTIFICATION = "/notification",
   PROFILE = "/profile",
   SETTINGS = "/settings",
   HELP = "/help",
-  UPDATE_PASSWORD = "/update-password",
   NOT_FOUND = "/404",
-  NOTIFICATION = "/notification",
 }
 
-//Greetings
+// Greetings
 export enum Greetings {
   GOOD_MORNING = "Good Morning",
   GOOD_AFTERNOON = "Good Afternoon",
@@ -71,4 +65,74 @@ export enum Greetings {
   WELCOME_BACK = "Welcome Back",
 }
 
+export type LoadingType = "idle" | "pending" | "succeeded" | "failed";
+export enum LoadingTypeEnum {
+  IDLE = "idle",
+  PENDING = "pending",
+  SUCCEEDED = "succeeded",
+  FAILED = "failed",
+}
 
+// Transaction Filters
+export interface TransactionFilters {
+  startDate?: string;
+  endDate?: string;
+  minAmount?: number;
+  maxAmount?: number;
+  type?: "income" | "expense";
+  category?: string;
+  walletId?: string;
+}
+
+// Error Types
+export enum ErrorType {
+  VALIDATION_ERROR = "ValidationError",
+  NETWORK_ERROR = "NetworkError",
+  AUTH_ERROR = "AuthError",
+  SERVER_ERROR = "ServerError",
+  UNKNOWN_ERROR = "UnknownError",
+}
+
+// Debt Types
+export enum DebtType {
+  LOAN = "loan",
+  CREDIT_CARD = "credit_card",
+  P2P = "p2p",
+  OTHER = "other",
+}
+
+// Repayment Frequency
+export enum RepaymentFrequency {
+  WEEKLY = "weekly",
+  BI_WEEKLY = "bi-weekly",
+  MONTHLY = "monthly",
+  QUARTERLY = "quarterly",
+  YEARLY = "yearly",
+  CUSTOM = "custom",
+}
+
+// Asset Types
+export enum AssetType {
+  CASH = "cash",
+  BANK_ACCOUNT = "bank_account",
+  INVESTMENT = "investment",
+  PROPERTY = "property",
+  PERSONAL_ITEM = "personal_item",
+  OTHER = "other",
+}
+
+// Transaction Types
+export enum TransactionType {
+  INCOME = "income",
+  EXPENSE = "expense",
+  TRANSFER = "transfer",
+}
+
+// Wallet Types
+export enum WalletType {
+  CASH = "cash",
+  BANK = "bank",
+  DIGITAL = "digital",
+  INVESTMENT = "investment",
+  OTHER = "other",
+}

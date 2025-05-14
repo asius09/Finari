@@ -21,8 +21,6 @@ import {
   CardContent,
 } from "../ui/card";
 import { Logo } from "@/components/my-ui/Logo";
-import { useState } from "react";
-import { apiResponseSchema } from "@/schema/ApiResponse.schema";
 import { toast } from "sonner";
 import { CustomToast } from "@/components/my-ui/CustomToast";
 import { Loader } from "lucide-react";
@@ -31,10 +29,14 @@ import { useRouter } from "next/navigation";
 import { PasswordInput } from "../my-ui/PasswordInput";
 import { MyButton } from "../my-ui/MyButton";
 import { MyInput } from "../my-ui/MyInput";
+import { loginUser } from "@/store/slices/authSlice";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
+import { LoadingTypeEnum } from "@/constants/constant";
 
 export const LoginForm = () => {
   const route = useRouter();
-  const [loading, setLoading] = useState(false);
+  const dispatch = useAppDispatch();
+  const { loading } = useAppSelector(state => state.auth);
 
   const signupForm = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
@@ -43,20 +45,10 @@ export const LoginForm = () => {
 
   async function onSubmit(data: z.infer<typeof loginFormSchema>) {
     try {
-      setLoading(true);
-
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const responseData = apiResponseSchema.parse(await response.json());
-
-      if (responseData.success) {
-        console.log("User logged in successfully:", responseData?.data);
+      const result = await dispatch(loginUser(data));
+      console.log("Login Form : Result of data; ", result.payload);
+      if (loginUser.fulfilled.match(result)) {
+        console.log("User logged in successfully");
         toast.custom(() => (
           <CustomToast
             type="success"
@@ -64,13 +56,14 @@ export const LoginForm = () => {
             message="You have been successfully logged in"
           />
         ));
-        route.push(AppRoutes.HOME);
-      } else {
+        route.push(AppRoutes.DASHBOARD);
+      } else if (loginUser.rejected.match(result)) {
+        const errorMessage = result.error?.message || "Login failed";
         toast.custom(() => (
           <CustomToast
             type="error"
             title="Login Failed"
-            message={responseData.message}
+            message={errorMessage}
           />
         ));
       }
@@ -83,8 +76,6 @@ export const LoginForm = () => {
           message="Something went wrong. Please try again."
         />
       ));
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -94,7 +85,6 @@ export const LoginForm = () => {
 
   async function handleResetPassword(data: z.infer<typeof loginFormSchema>) {
     try {
-      setLoading(true);
       const email = data.email;
       if (!email) {
         console.warn("[ResetPassword] Email is required for password reset");
@@ -158,7 +148,6 @@ export const LoginForm = () => {
       ));
     } finally {
       console.log("[ResetPassword] Process completed");
-      setLoading(false);
     }
   }
 
@@ -191,7 +180,7 @@ export const LoginForm = () => {
                     <MyInput
                       placeholder="Email e.g. adiba@example.com"
                       className="rounded-xl"
-                      disabled={loading}
+                      disabled={loading === LoadingTypeEnum.PENDING}
                       type="email"
                       {...field}
                     />
@@ -222,7 +211,7 @@ export const LoginForm = () => {
                 type="button"
                 variant={"link"}
                 className="text-sm p-0 h-5"
-                disabled={loading}
+                disabled={loading === LoadingTypeEnum.PENDING}
                 onClick={e => {
                   e.preventDefault();
                   const email = signupForm.getValues("email");
@@ -236,9 +225,13 @@ export const LoginForm = () => {
               type="submit"
               variant="gradient"
               className="font-medium w-full h-10"
-              disabled={loading}
+              disabled={loading === LoadingTypeEnum.PENDING}
             >
-              {loading ? <Loader className="animate-spin" /> : "Enter Finari"}
+              {loading === LoadingTypeEnum.PENDING ? (
+                <Loader className="animate-spin" />
+              ) : (
+                "Enter Finari"
+              )}
             </MyButton>
           </form>
         </Form>
@@ -263,7 +256,7 @@ export const LoginForm = () => {
           className="font-medium w-full h-10"
           variant="outline"
           onClick={handleGoogleLogin}
-          disabled={loading}
+          disabled={loading === LoadingTypeEnum.PENDING}
         >
           <i className="ri-google-fill"></i>
           Google
