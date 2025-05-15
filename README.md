@@ -76,7 +76,7 @@ Finari is a minimalist, AI-assisted personal finance app designed to track every
 
 ### Phase 4: Data Visualization
 
-- [ ] Integrate charts using Recharts or Nivo
+- [x] Integrate charts using tremor.so
 - [ ] Create donut chart for asset types
 - [ ] Bar graph for monthly income vs expense
 - [ ] Line chart for debt repayment over time

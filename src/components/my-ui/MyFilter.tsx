@@ -21,6 +21,7 @@ interface FilterProps {
   onFilterChange: (filter: string) => void;
   className?: string;
   filterType?: Filters;
+  customFilter?: string[];
 }
 
 export function MyFilter({
@@ -28,14 +29,17 @@ export function MyFilter({
   onFilterChange,
   className = "",
   filterType = Filters.TIME_FILTERS,
+  customFilter,
 }: FilterProps) {
-  const filterOptions = {
-    [Filters.TIME_FILTERS]: TIME_FILTERS,
-    [Filters.TRANSACTION_FILTERS]: TRANSACTION_FILTERS,
-    [Filters.DEBT_FILTERS]: DEBT_FILTERS,
-    [Filters.ASSET_FILTERS]: ASSET_FILTERS,
-    [Filters.WALLET_FILTERS]: WALLET_FILTERS,
-  }[filterType];
+  const filterOptions =
+    customFilter ||
+    {
+      [Filters.TIME_FILTERS]: TIME_FILTERS,
+      [Filters.TRANSACTION_FILTERS]: TRANSACTION_FILTERS,
+      [Filters.DEBT_FILTERS]: DEBT_FILTERS,
+      [Filters.ASSET_FILTERS]: ASSET_FILTERS,
+      [Filters.WALLET_FILTERS]: WALLET_FILTERS,
+    }[filterType];
 
   return (
     <DropdownMenu>
