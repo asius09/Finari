@@ -7,7 +7,7 @@ export enum DBTables {
   TRANSACTIONS = "transactions",
   MONTHLY_SUMMARIES = "monthly_summaries",
   //UPDATED TWO MORE TABLES
-  ASSETS = "assets", 
+  ASSETS = "assets",
   DEBTS = "debts",
 }
 
@@ -135,4 +135,55 @@ export enum WalletType {
   DIGITAL = "digital",
   INVESTMENT = "investment",
   OTHER = "other",
+}
+
+// Time Period Filters
+export const TIME_FILTERS = [
+  "1 Month",
+  "3 Months",
+  "6 Months",
+  "1 Year",
+  "All Time",
+] as const;
+export type TimeFilter = (typeof TIME_FILTERS)[number];
+
+// Transaction Filters
+export const TRANSACTION_FILTERS = [
+  "All",
+  "Income",
+  "Expense",
+  "Transfer",
+] as const;
+export type TransactionFilter = (typeof TRANSACTION_FILTERS)[number];
+
+// Wallet Filters
+export const WALLET_FILTERS = [
+  "All",
+  "Cash",
+  "Bank",
+  "Digital",
+  "Investment",
+] as const;
+export type WalletFilter = (typeof WALLET_FILTERS)[number];
+
+// Debt Filters
+export const DEBT_FILTERS = ["All", "Loan", "Credit Card", "P2P"] as const;
+export type DebtFilter = (typeof DEBT_FILTERS)[number];
+
+// Asset Filters
+export const ASSET_FILTERS = [
+  "All",
+  "Cash",
+  "Bank Account",
+  "Investment",
+  "Property",
+] as const;
+export type AssetFilter = (typeof ASSET_FILTERS)[number];
+
+export enum Filters {
+  TIME_FILTERS = "TIME_FILTERS",
+  TRANSACTION_FILTERS = "TRANSACTION_FILTERS",
+  WALLET_FILTERS = "WALLET_FILTERS",
+  DEBT_FILTERS = "DEBT_FILTERS",
+  ASSET_FILTERS = "ASSET_FILTERS",
 }

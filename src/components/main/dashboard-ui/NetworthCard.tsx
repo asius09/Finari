@@ -6,23 +6,15 @@ import { useAppSelector } from "@/store/hook";
 import { FinanceArrow } from "@/components/my-ui/FinanceArrow";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { NetworthChart } from "@/components/charts/NetworthChart";
 
 export const NetworthCard = () => {
   //   const { totalNetworth, networthChangePercentage } = useAppSelector(
   //     state => state.financialOverview
   //   );
 
-  const { currency } = useAppSelector(state => state.userProfile);
+  const { profile } = useAppSelector(state => state.userProfile);
+  const currency = profile?.currency;
   //if usd = $
 
   /*
@@ -80,45 +72,10 @@ libebilities - assets = networth
           </span>
         </Badge>
       </CardHeader>
-      <CardContent className="pt-2">
-        {/* Charts  */}
-        <div className="flex justify-end">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="gap-1 border-0">
-                <span>1 Year</span>
-                <ChevronDown className="h-2 w-2" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40">
-              <DropdownMenuLabel>
-                <span>Time Period</span>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <span>1 Month</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <span>3 Months</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <span>6 Months</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <span>1 Year</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <span>All Time</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-        <div className="h-32 bg-muted/50 rounded-lg flex items-center justify-center">
-          <span className="text-muted-foreground text-sm">
-            Chart Placeholder
-          </span>
-        </div>
-      </CardContent>
+
+      {/* Charts  */}
+
+      <NetworthChart />
     </Card>
   );
 };

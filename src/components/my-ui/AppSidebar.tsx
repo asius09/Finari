@@ -39,7 +39,7 @@ export function AppSidebar() {
                 navbarRoutes.map(route => (
                   <SidebarMenuItem
                     key={route.title}
-                    className="w-full group-data-[collapsible]:flex group-data-[collapsible]:items-center group-data-[collapsible]:justify-center"
+                    className="w-full group-data-collapsible:flex group-data-collapsible:items-center group-data-collapsible:justify-center"
                   >
                     <SidebarMenuButton
                       size={"lg"}

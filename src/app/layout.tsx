@@ -21,7 +21,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark" style={{ colorScheme: "dark" }}>
+    <html
+      lang="en"
+      className="dark antialiasing"
+      style={{ colorScheme: "dark" }}
+    >
       <body className={`${inter.variable} antialiased bg-forground`}>
         <ThemeProvider
           attribute="class"
