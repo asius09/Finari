@@ -6,21 +6,26 @@ import { loginFormSchema } from "@/schema/loginForm.schema";
 import { apiResponseSchema } from "@/schema/ApiResponse.schema";
 import { z } from "zod";
 
+interface User {
+  id: string;
+  // Add other user properties as needed
+}
+
 interface AuthState {
   isAuthenticated: boolean;
-  userId: string | null;
+  user: User | null;
   loading: LoadingType;
   error: string | null;
 }
 
 const initialState: AuthState = {
   isAuthenticated: false,
-  userId: null,
+  user: null,
   loading: "idle",
   error: null,
 };
 
-// Async Thunk for user login (returns userId)
+// Async Thunk for user login (returns user)
 export const loginUser = createAsyncThunk(
   "auth/login",
   async (credentials: z.infer<typeof loginFormSchema>) => {
@@ -47,8 +52,10 @@ export const loginUser = createAsyncThunk(
         throw new Error(errorMessage);
       }
 
-      const { data } = responseData;
-      return data;
+      const {
+        data: { user },
+      } = responseData;
+      return user;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new Error(error.message);
@@ -66,7 +73,10 @@ export const checkAuthStatus = createAsyncThunk(
       const response = await fetch("/api/auth/status");
       if (response.ok) {
         const data = await response.json();
-        return { isAuthenticated: data.isAuthenticated, userId: data.userId };
+        return {
+          isAuthenticated: data.isAuthenticated,
+          user: data.user as User,
+        };
       } else {
         throw new Error("Failed to check auth status");
       }
@@ -100,10 +110,10 @@ const authSlice = createSlice({
   reducers: {
     setAuthStateFromHydration(
       state,
-      action: PayloadAction<{ isAuthenticated: boolean; userId: string | null }>
+      action: PayloadAction<{ isAuthenticated: boolean; user: User | null }>
     ) {
       state.isAuthenticated = action.payload.isAuthenticated;
-      state.userId = action.payload.userId;
+      state.user = action.payload.user;
       state.loading = "succeeded";
       state.error = null;
     },
@@ -120,14 +130,14 @@ const authSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = "succeeded";
         state.isAuthenticated = true;
-        state.userId = action.payload as string;
+        state.user = action.payload;
         state.error = null;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = "failed";
         state.error = action.error?.message || "Login failed.";
         state.isAuthenticated = false;
-        state.userId = null;
+        state.user = null;
       })
       .addCase(logoutUser.pending, state => {
         state.loading = "pending";
@@ -136,7 +146,7 @@ const authSlice = createSlice({
       .addCase(logoutUser.fulfilled, state => {
         state.loading = "succeeded";
         state.isAuthenticated = false;
-        state.userId = null;
+        state.user = null;
         state.error = null;
       })
       .addCase(logoutUser.rejected, (state, action) => {
@@ -153,12 +163,12 @@ const authSlice = createSlice({
           state,
           action: PayloadAction<{
             isAuthenticated: boolean;
-            userId: string | null;
+            user: User | null;
           }>
         ) => {
           state.loading = "succeeded";
           state.isAuthenticated = action.payload.isAuthenticated;
-          state.userId = action.payload.userId;
+          state.user = action.payload.user;
           state.error = null;
         }
       )
@@ -166,7 +176,7 @@ const authSlice = createSlice({
         state.loading = "failed";
         state.error = action.error?.message || "Failed to check auth status.";
         state.isAuthenticated = false;
-        state.userId = null;
+        state.user = null;
       });
   },
 });
@@ -174,7 +184,7 @@ const authSlice = createSlice({
 export const { setAuthStateFromHydration, clearAuthError } = authSlice.actions;
 
 export const selectIsAuthenticated = (state: any) => state.auth.isAuthenticated;
-export const selectUserId = (state: any) => state.auth.userId;
+export const selectUser = (state: any) => state.auth.user;
 export const selectAuthLoading = (state: any) => state.auth.loading;
 export const selectAuthError = (state: any) => state.auth.error;
 

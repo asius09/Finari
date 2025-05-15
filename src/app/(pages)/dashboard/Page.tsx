@@ -16,7 +16,7 @@ export default function DashboardPage() {
           <NetworthCard />
           <DebtBreakdown />
         </div>
-        <BalanceCard wallets={demoWallets} size="small" />
+        <BalanceCard size="small" />
 
         <div className="grid grid-cols-1">
           {/* Recent Transactions */}

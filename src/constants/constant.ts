@@ -132,11 +132,10 @@ export enum TransactionType {
 export enum WalletType {
   CASH = "cash",
   BANK = "bank",
-  DIGITAL = "digital",
   INVESTMENT = "investment",
   OTHER = "other",
 }
-
+export const WalletTypes = ["cash", "bank", "investment"];
 // Time Period Filters
 export const TIME_FILTERS = [
   "1 Month",
@@ -187,5 +186,3 @@ export enum Filters {
   DEBT_FILTERS = "DEBT_FILTERS",
   ASSET_FILTERS = "ASSET_FILTERS",
 }
-
-

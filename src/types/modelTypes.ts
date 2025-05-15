@@ -1,3 +1,4 @@
+import { WalletTypes } from "@/constants/constant";
 // --- User Profile  ---
 export interface UserProfile {
   id: string; // UUID (same as auth.user id)
@@ -13,7 +14,7 @@ export interface Wallet {
   id: string; // UUID
   user_id: string; // FK to auth.users
   name: string; // e.g. Kotak Bank
-  type: "bank" | "cash";
+  type: "bank" | "cash" | "investment";
   balance: number; // updated based on transactions
   icon?: string; // optional icon name or URL
   created_at: string; // ISO timestamp
@@ -42,7 +43,6 @@ export interface MonthlySummary {
   total_saveing: number;
   created_at: string;
 }
-
 
 export interface Debt {
   id: string; // UUID
