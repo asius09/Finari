@@ -16,12 +16,18 @@ interface WalletState {
   wallets: Wallet[];
   loading: LoadingType;
   error: string | null;
+  totalBalance: number;
 }
 
 const initialState: WalletState = {
   wallets: [],
+  totalBalance: 0,
   loading: "idle",
   error: null,
+};
+
+const calculateTotalBalance = (wallets: Wallet[]): number => {
+  return wallets.reduce((sum, wallet) => sum + wallet.balance, 0);
 };
 
 export const fetchWallets = createAsyncThunk<Wallet[], string>(
@@ -106,8 +112,8 @@ export const addWallet = createAsyncThunk<
         errorData.message || `Failed to add wallet: ${response.status}`
       );
     }
-    const data: Wallet = await response.json();
-    return data;
+    const data = await response.json();
+    return data.data;
   } catch (error: unknown) {
     if (error instanceof Error) {
       return rejectWithValue(error.message || "Failed to add wallet");
@@ -146,21 +152,27 @@ const walletSlice = createSlice({
   name: "wallets",
   initialState,
   reducers: {
+    calculateBalance: state => {
+      state.totalBalance = calculateTotalBalance(state.wallets);
+    },
     updateWallet: (state, action: PayloadAction<Wallet>) => {
       const index = state.wallets.findIndex(
         wallet => wallet.id === action.payload.id
       );
       if (index !== -1) {
         state.wallets[index] = action.payload;
+        state.totalBalance = calculateTotalBalance(state.wallets);
       }
     },
     deleteWallet: (state, action: PayloadAction<string>) => {
       state.wallets = state.wallets.filter(
         wallet => wallet.id !== action.payload
       );
+      state.totalBalance = calculateTotalBalance(state.wallets);
     },
     hydrateWallets: (state, action: PayloadAction<Wallet[]>) => {
       state.wallets = action.payload;
+      state.totalBalance = calculateTotalBalance(action.payload);
       state.loading = "succeeded";
       state.error = null;
     },
@@ -174,6 +186,7 @@ const walletSlice = createSlice({
       .addCase(fetchWallets.fulfilled, (state, action) => {
         state.loading = "succeeded";
         state.wallets = action.payload;
+        state.totalBalance = calculateTotalBalance(action.payload);
       })
       .addCase(fetchWallets.rejected, (state, action) => {
         state.loading = "failed";
@@ -186,6 +199,7 @@ const walletSlice = createSlice({
       .addCase(addWallet.fulfilled, (state, action) => {
         state.loading = "succeeded";
         state.wallets.push(action.payload);
+        state.totalBalance = calculateTotalBalance(state.wallets);
       })
       .addCase(addWallet.rejected, (state, action) => {
         state.loading = "failed";
@@ -200,6 +214,7 @@ const walletSlice = createSlice({
         state.wallets = state.wallets.filter(
           wallet => wallet.id !== action.payload.id
         );
+        state.totalBalance = calculateTotalBalance(state.wallets);
       })
       .addCase(removeWallet.rejected, (state, action) => {
         state.loading = "failed";
@@ -218,6 +233,7 @@ const walletSlice = createSlice({
         state.wallets = state.wallets.map(wallet =>
           wallet.id === action.payload?.id ? action.payload : wallet
         );
+        state.totalBalance = calculateTotalBalance(state.wallets);
       });
   },
 });
@@ -231,5 +247,7 @@ export const selectWalletsLoading = (state: { wallets: WalletState }) =>
   state.wallets.loading;
 export const selectWalletsError = (state: { wallets: WalletState }) =>
   state.wallets.error;
+export const selectTotalBalance = (state: { wallets: WalletState }) =>
+  state.wallets.totalBalance;
 
 export default walletSlice.reducer;

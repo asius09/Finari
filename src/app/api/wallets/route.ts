@@ -35,13 +35,11 @@ import { NextResponse } from "next/server";
  *   "success": true,
  *   "message": "Wallet created successfully",
  *   "data": {
- *     "wallet": {
  *       "id": "wallet_123",
  *       "name": "My Wallet",
  *       "type": "cash",
  *       "balance": 1000,
  *       "created_at": "2023-01-01T00:00:00.000Z"
- *     }
  *   }
  * }
  *
@@ -110,11 +108,7 @@ export async function POST(
       );
     }
 
-    return successResponse(
-      { wallet: data },
-      "Wallet created successfully",
-      201
-    );
+    return successResponse(data, "Wallet created successfully", 201);
   } catch (error: unknown) {
     console.error("Unexpected error during wallet creation:", error);
     if (error instanceof Error) {
@@ -128,60 +122,58 @@ export async function POST(
 }
 
 /**
- * POST - /api/wallets?userId={userId}
+ * GET - /api/wallets?userId={userId}
  *
- * Creates a new wallet for the specified user.
+ * Fetches all wallets for the specified user.
  *
- * @param {Request} request - The incoming HTTP request containing wallet data
+ * @param {Request} request - The incoming HTTP request
  * @param {Object} params - URL parameters containing userId
- * @param {string} params.userId - The ID of the user creating the wallet
+ * @param {string} params.userId - The ID of the user to fetch wallets for
  *
  * @returns {NextResponse<ApiResponse>} Standardized API response using successResponse or errorResponse
  *
  * @example Request
  * fetch("/api/wallets?userId=123e4567-e89b-12d3-a456-426614174000", {
- *   method: "POST",
- *   headers: { "Content-Type": "application/json" },
- *   body: JSON.stringify({
- *     name: "My Wallet",
- *     type: "cash",
- *     balance: 1000
- *   })
+ *   method: "GET"
  * })
  *
  * @example Success Response
  * {
  *   "success": true,
- *   "message": "Wallet created successfully",
- *   "data": {
- *     "wallet": {
+ *   "message": "Wallets fetched successfully",
+ *   "data": [
+ *     {
  *       "id": "wallet_123",
  *       "name": "My Wallet",
  *       "type": "cash",
  *       "balance": 1000,
  *       "created_at": "2023-01-01T00:00:00.000Z"
+ *     },
+ *     {
+ *       "id": "wallet_456",
+ *       "name": "Savings",
+ *       "type": "bank",
+ *       "balance": 5000,
+ *       "created_at": "2023-01-02T00:00:00.000Z"
  *     }
- *   }
+ *   ]
  * }
  *
- * @example Error Response - Validation
+ * @example Error Response - Not Found
  * {
  *   "success": false,
- *   "message": "Validation failed",
- *   "errors": {
- *     "name": ["Wallet name is required"],
- *     "balance": ["Balance cannot be negative"]
- *   }
+ *   "message": "No wallets found for this user"
  * }
  *
  * @example Error Response - Server Error
  * {
  *   "success": false,
- *   "message": "Failed to create wallet"
+ *   "message": "Failed to fetch wallets from database"
  * }
  *
- * @status 201 Wallet created successfully
- * @status 400 Validation error
+ * @status 200 Wallets fetched successfully
+ * @status 400 User ID is required
+ * @status 404 No wallets found
  * @status 500 Internal server error
  */
 
@@ -307,6 +299,13 @@ export async function DELETE(
  * {
  *   "success": true,
  *   "message": "Wallet updated successfully"
+ * "data": {
+ *        "id": "wallet_123",
+ *        "name": "My Wallet",
+ *        "type": "cash",
+ *        "balance": 1000,
+ *        "created_at": "2023-01-01T00:00:00.000Z"
+ *        }
  * }
  *
  * @example Error Response - Missing ID
@@ -342,17 +341,19 @@ export async function PATCH(
       return errorResponse("Update data is required", 400);
     }
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from(DBTables.WALLETS)
       .update(body)
-      .eq("id", walletId);
+      .eq("id", walletId)
+      .select()
+      .single();
 
     if (error) {
       console.error("Database error updating wallet:", error);
       return errorResponse("Failed to update wallet in database", 500);
     }
 
-    return successResponse(null, "Wallet updated successfully", 200);
+    return successResponse(data, "Wallet updated successfully", 200);
   } catch (error: unknown) {
     console.error("Unexpected error during wallet update:", error);
     if (error instanceof Error) {

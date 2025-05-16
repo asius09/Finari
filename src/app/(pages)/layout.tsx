@@ -20,13 +20,11 @@ export default async function SidebarLayout({ children }: SidebarLayoutProps) {
   return (
     <SidebarProvider defaultOpen={true}>
       <InitialHydrate userId={userId}>
-        <div className="w-full min-h-screen flex bg-background overflow-hidden">
+        <div className="w-full min-h-screen flex bg-background overflow-x-hidden">
           <AppSidebar />
-          <main className="rounded-l-3xl w-full flex-1 flex flex-col gap-6 bg-background shadow-lg pt-6 px-6">
+          <main className="rounded-l-3xl w-full grid grid-rows-[auto_1fr] gap-6 bg-background pt-6 px-6">
             <Header />
-            <div className="overflow-x-clip">
-              {children}
-            </div>
+            <section id="main-content">{children}</section>
           </main>
         </div>
       </InitialHydrate>

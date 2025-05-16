@@ -20,7 +20,7 @@ const debtData = [
 
 export const DebtBreakdown = () => {
   return (
-    <Card className="w-full min-w-xs p-4 hidden md:block border-none shadow-none">
+    <Card className="w-full min-w-xs p-4">
       <CardHeader className="px-0 pt-0">
         <CardTitle className="text-lg font-medium">Debt Breakdown</CardTitle>
       </CardHeader>

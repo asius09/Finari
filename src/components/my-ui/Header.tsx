@@ -4,12 +4,12 @@ import { useAppSelector } from "@/store/hook";
 import { useEffect, useState } from "react";
 import { formatDate } from "@/utils/formatDate";
 import { greetings } from "@/utils/greetings";
-import { Bell } from "lucide-react";
+import { Bell, Plus } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AppRoutes } from "@/constants/constant";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { AddTransactionBtn } from "./AddTransactionBtn";
+import { TransactionComposer } from "@/components/main/transactions-ui/transaction-composers/TransactionComposer";
 import { ModeToggle } from "./Theme";
 
 export const Header = () => {
@@ -56,7 +56,17 @@ export const Header = () => {
         </div>
       </div>
       <nav className="flex justify-end items-center gap-2 min-h-20">
-        <AddTransactionBtn />
+        <TransactionComposer
+          btnChildren={
+            <>
+              <Plus className="h-4 w-4" /> Add Transaction
+            </>
+          }
+          btnClassName="w-40 h-10 p-2 bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"
+          formTitle="Add Transaction"
+          formDescription="Tell us what you spent or received"
+          isEdit={false}
+        />
         {headerBtns.map(btn => {
           if (btn.title === "theme") {
             return <ModeToggle key={btn.title} />;

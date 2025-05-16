@@ -7,9 +7,9 @@ interface TransactionsState {
   transactions: Transaction[];
   loading: LoadingType;
   error: string | null;
-  hasMore: boolean; // For infinite scrolling
-  totalCount: number | null; // Optional: Total number of transactions
-  filters: any; // Type this more specifically based on your filter options
+  hasMore: boolean;
+  totalCount: number | null;
+  filters: any; // TODO: Replace 'any' with specific filter interface
 }
 
 const initialState: TransactionsState = {
@@ -21,22 +21,93 @@ const initialState: TransactionsState = {
   filters: {},
 };
 
-// Async Thunk for fetching initial/filtered transactions (with pagination)
+// TODO: Add error handling middleware for consistent error reporting
+// TODO: Add caching mechanism for fetched transactions
+// TODO: Add transaction validation before API calls
+
+export const addTransaction = createAsyncThunk(
+  "transactions/addTransaction",
+  async ({
+    userId,
+    transaction,
+  }: {
+    userId: string;
+    transaction: Omit<Transaction, "created_at" | "id" | "user_id">;
+  }) => {
+    try {
+      const response = await fetch(`/api/transactions?user=${userId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...transaction }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.data;
+    } catch (error) {
+      console.error("Failed to add transaction:", error);
+      throw error;
+    }
+  }
+);
+
 export const fetchTransactions = createAsyncThunk(
   "transactions/fetchTransactions",
-  async (filters: any, { getState }) => {
-    const state = getState() as { transactions: TransactionsState };
-    const currentState = state.transactions;
-    const offset = currentState.transactions.length; // For pagination
-    const response = await fetch("/api/transactions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...filters, offset }),
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+  async (userId: string) => {
+    try {
+      const response = await fetch(`/api/transactions?user=${userId}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Failed to fetch transactions:", error);
+      throw error;
     }
-    return await response.json(); // Expecting { data: Transaction[], totalCount?: number }
+  }
+);
+
+export const updateTransaction = createAsyncThunk(
+  "transactions/updateTransaction",
+  async (transaction: Transaction) => {
+    try {
+      const response = await fetch(`/api/transactions?id=${transaction.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(transaction),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      return data.data;
+    } catch (error) {
+      console.error("Failed to update transaction:", error);
+      throw error;
+    }
+  }
+);
+
+export const deleteTransaction = createAsyncThunk(
+  "transactions/deleteTransaction",
+  async (transactionId: string) => {
+    try {
+      const response = await fetch(`/api/transactions?id=${transactionId}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return transactionId;
+    } catch (error) {
+      console.error("Failed to delete transaction:", error);
+      throw error;
+    }
   }
 );
 
@@ -58,7 +129,10 @@ const transactionsSlice = createSlice({
           state.transactions.length < state.totalCount);
     },
     addOptimisticTransaction(state, action: PayloadAction<Transaction>) {
-      state.transactions.unshift(action.payload); // Add to the beginning for immediate display
+      // Prevent duplicate transactions
+      if (!state.transactions.some(tx => tx.id === action.payload.id)) {
+        state.transactions.unshift(action.payload);
+      }
     },
     removeOptimisticTransaction(state, action: PayloadAction<string>) {
       state.transactions = state.transactions.filter(
@@ -75,8 +149,7 @@ const transactionsSlice = createSlice({
     },
     setFilters(state, action: PayloadAction<any>) {
       state.filters = action.payload;
-      // Note: You'll likely trigger `fetchTransactions` after setting filters
-      state.transactions = []; // Reset transactions on new filter
+      state.transactions = [];
       state.loading = "idle";
       state.hasMore = false;
     },
@@ -96,9 +169,15 @@ const transactionsSlice = createSlice({
           state,
           action: PayloadAction<{ data: Transaction[]; totalCount?: number }>
         ) => {
+          // Filter out duplicates before adding new transactions
+          const newTransactions = action.payload.data.filter(
+            newTx =>
+              !state.transactions.some(existingTx => existingTx.id === newTx.id)
+          );
+
           state.loading = "succeeded";
           state.error = null;
-          state.transactions = [...state.transactions, ...action.payload.data];
+          state.transactions = [...state.transactions, ...newTransactions];
           state.totalCount = action.payload.totalCount ?? state.totalCount;
           state.hasMore =
             action.payload.data.length > 0 &&
@@ -109,6 +188,55 @@ const transactionsSlice = createSlice({
       .addCase(fetchTransactions.rejected, (state, action) => {
         state.loading = "failed";
         state.error = action.error.message || "Failed to fetch transactions.";
+      })
+      .addCase(addTransaction.pending, state => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(addTransaction.fulfilled, (state, action) => {
+        // Add new transaction to the beginning of the list
+        if (!state.transactions.some(tx => tx.id === action.payload.id)) {
+          state.transactions.unshift(action.payload);
+        }
+        state.loading = "succeeded";
+        state.error = null;
+      })
+      .addCase(addTransaction.rejected, (state, action) => {
+        state.loading = "failed";
+        state.error = action.error.message || "Failed to add transaction.";
+      })
+      .addCase(updateTransaction.pending, state => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(updateTransaction.fulfilled, (state, action) => {
+        const index = state.transactions.findIndex(
+          tx => tx.id === action.payload.id
+        );
+        if (index !== -1) {
+          state.transactions[index] = action.payload;
+        }
+        state.loading = "succeeded";
+        state.error = null;
+      })
+      .addCase(updateTransaction.rejected, (state, action) => {
+        state.loading = "failed";
+        state.error = action.error.message || "Failed to update transaction.";
+      })
+      .addCase(deleteTransaction.pending, state => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(deleteTransaction.fulfilled, (state, action) => {
+        state.transactions = state.transactions.filter(
+          tx => tx.id !== action.payload
+        );
+        state.loading = "succeeded";
+        state.error = null;
+      })
+      .addCase(deleteTransaction.rejected, (state, action) => {
+        state.loading = "failed";
+        state.error = action.error.message || "Failed to delete transaction.";
       });
   },
 });

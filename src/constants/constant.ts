@@ -38,6 +38,32 @@ export enum TransactionCategory {
   OTHER = "Other",
 }
 
+export const TRANSACTION_CATEGORY_FILTERS = [
+  TransactionCategory.SALARY,
+  TransactionCategory.GROCERIES,
+  TransactionCategory.UTILITIES,
+  TransactionCategory.FOOD,
+  TransactionCategory.TRANSPORT,
+  TransactionCategory.RENT,
+  TransactionCategory.INVESTMENT,
+  TransactionCategory.ENTERTAINMENT,
+  TransactionCategory.SUBSCRIPTION,
+  TransactionCategory.OTHER,
+];
+
+export const categoryFilters = [
+  "Salary",
+  "Groceries",
+  "Utilities",
+  "Food",
+  "Transport",
+  "Rent",
+  "Investment",
+  "Entertainment",
+  "Subscription",
+  "Other",
+];
+
 // App routes
 export enum AppRoutes {
   HOME = "/",
@@ -73,16 +99,7 @@ export enum LoadingTypeEnum {
   FAILED = "failed",
 }
 
-// Transaction Filters
-export interface TransactionFilters {
-  startDate?: string;
-  endDate?: string;
-  minAmount?: number;
-  maxAmount?: number;
-  type?: "income" | "expense";
-  category?: string;
-  walletId?: string;
-}
+
 
 // Error Types
 export enum ErrorType {
@@ -137,32 +154,27 @@ export enum WalletType {
 }
 export const WalletTypes = ["cash", "bank", "investment"];
 // Time Period Filters
-export const TIME_FILTERS = [
+export const PERIOD_FILTERS = [
   "1 Month",
   "3 Months",
   "6 Months",
   "1 Year",
+  "3 Year",
   "All Time",
 ] as const;
-export type TimeFilter = (typeof TIME_FILTERS)[number];
+export type PeriodFilter = (typeof PERIOD_FILTERS)[number];
 
 // Transaction Filters
-export const TRANSACTION_FILTERS = [
+export const TRANSACTION_TYPE_FILTERS = [
   "All",
   "Income",
   "Expense",
   "Transfer",
 ] as const;
-export type TransactionFilter = (typeof TRANSACTION_FILTERS)[number];
+export type TransactionTypeFilter = (typeof TRANSACTION_TYPE_FILTERS)[number];
 
 // Wallet Filters
-export const WALLET_FILTERS = [
-  "All",
-  "Cash",
-  "Bank",
-  "Digital",
-  "Investment",
-] as const;
+export const WALLET_FILTERS = ["All", "Cash", "Bank", "Investment"] as const;
 export type WalletFilter = (typeof WALLET_FILTERS)[number];
 
 // Debt Filters
@@ -178,11 +190,3 @@ export const ASSET_FILTERS = [
   "Property",
 ] as const;
 export type AssetFilter = (typeof ASSET_FILTERS)[number];
-
-export enum Filters {
-  TIME_FILTERS = "TIME_FILTERS",
-  TRANSACTION_FILTERS = "TRANSACTION_FILTERS",
-  WALLET_FILTERS = "WALLET_FILTERS",
-  DEBT_FILTERS = "DEBT_FILTERS",
-  ASSET_FILTERS = "ASSET_FILTERS",
-}

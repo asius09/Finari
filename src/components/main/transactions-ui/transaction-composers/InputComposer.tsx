@@ -1,4 +1,5 @@
 "use client";
+// Import necessary modules and components
 import { transactionInputSchema } from "@/schema/transaction.schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,7 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowDownLeft,
   ArrowUpRight,
@@ -39,12 +40,42 @@ import { MyButton } from "@/components/my-ui/MyButton";
 import { MyInput } from "@/components/my-ui/MyInput";
 import { TapSelection } from "@/components/my-ui/TapSelection";
 import { MyTextarea } from "@/components/my-ui/MyTextarea";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
+import {
+  addTransaction,
+  updateTransaction as updateTransactionAction,
+} from "@/store/slices/transactionSlice";
+import { toast } from "sonner";
+import { CustomToast } from "@/components/my-ui/CustomToast";
+import { CATEGORY_FILTERS } from "@/constants/filter-constant";
+import { Transaction } from "@/types/modelTypes";
 
+// Define the type for transaction form values using Zod schema
 type TransactionFormValues = z.infer<typeof transactionInputSchema>;
 
-export const InputComposer = () => {
+// Main InputComposer component
+export const InputComposer = ({
+  setOpen,
+  transactionId,
+  isEdit = false,
+}: {
+  setOpen: (open: boolean) => void;
+  transactionId?: string;
+  isEdit: boolean;
+}) => {
+  // State for loading status and selected date
   const [loading, setLoading] = useState<boolean>(false);
   const currency = "₹";
+  const dispatch = useAppDispatch();
+  const { wallets } = useAppSelector(state => state.wallet);
+  const { user } = useAppSelector(state => state.auth);
+  const { transactions } = useAppSelector(state => state.transaction);
+  const userId = user?.id;
+
+  const [transactionToUpdate, setTransactionToUpdate] =
+    useState<Transaction | null>(null);
+
+  // Initialize form with validation schema and default values
   const form = useForm<TransactionFormValues>({
     resolver: zodResolver(transactionInputSchema),
     defaultValues: {
@@ -55,10 +86,32 @@ export const InputComposer = () => {
       description: "",
       date: new Date().toISOString(),
     },
+    mode: "onChange",
+    shouldFocusError: true,
   });
 
-  const [date, setDate] = useState<Date>();
+  useEffect(() => {
+    if (transactionId) {
+      const foundTransaction = transactions.find(
+        transaction => transactionId === transaction.id
+      );
+      if (foundTransaction) {
+        setTransactionToUpdate(foundTransaction);
+        form.reset({
+          wallet_id: foundTransaction.wallet_id,
+          amount: foundTransaction.amount,
+          type: foundTransaction.type,
+          category: foundTransaction.category,
+          description: foundTransaction.description,
+          date: foundTransaction.date,
+        });
+      }
+    }
+  }, [transactionId, isEdit]);
 
+  const [date, setDate] = useState<Date | undefined>(new Date());
+
+  // Transaction type options with icons and styling
   const transactionTypes = [
     {
       title: "Income",
@@ -79,18 +132,91 @@ export const InputComposer = () => {
       iconClass: "text-info",
     },
   ];
-  const categories = ["Food", "Bills", "Salary", "Transport", "Entertainment"];
-  const wallets = ["Cash", "Bank Account", "Credit Card"];
 
-  const handleSubmit = (values: TransactionFormValues) => {
-    console.log("Transaction submitted:", values);
-    // TODO: Implement form submission logic
+  // Form submission handler
+  const handleSubmit = async (values: TransactionFormValues) => {
+    if (!userId) {
+      console.error("User ID is required to create a transaction");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      let response;
+      if (transactionId) {
+        if (!transactionToUpdate) {
+          throw new Error("Transaction to update not found");
+        }
+        const updatedTransaction: Transaction = {
+          ...values,
+          id: transactionToUpdate.id,
+          created_at: transactionToUpdate.created_at,
+          user_id: transactionToUpdate.user_id,
+        };
+        response = await dispatch(updateTransactionAction(updatedTransaction));
+      } else {
+        // Include transactionId in the payload if it exists
+        response = await dispatch(
+          addTransaction({
+            userId,
+            transaction: {
+              ...values,
+            },
+          })
+        );
+      }
+
+      if (response.meta.requestStatus === "fulfilled") {
+        form.reset({
+          wallet_id: "",
+          amount: 0,
+          type: "expense",
+          category: "",
+          description: "",
+          date: new Date().toISOString(),
+        });
+        toast.custom(() => (
+          <CustomToast
+            type="success"
+            title={
+              transactionId ? "Transaction Updated" : "Transaction Created"
+            }
+            message={`Your transaction was successfully ${transactionId ? "updated" : "created"}`}
+          />
+        ));
+        setOpen(false);
+      } else {
+        throw new Error(
+          transactionId
+            ? "Failed to update transaction"
+            : "Failed to create transaction"
+        );
+      }
+    } catch (error) {
+      console.error(
+        `Error ${transactionId ? "updating" : "creating"} transaction:`,
+        error
+      );
+      toast.custom(() => (
+        <CustomToast
+          type="error"
+          title={`Transaction ${transactionId ? "Update" : "Creation"} Error`}
+          message={
+            error instanceof Error
+              ? error.message
+              : `Failed to ${transactionId ? "update" : "create"} transaction`
+          }
+        />
+      ));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-        {/* Amount Input */}
+        {/* Amount Input Field */}
         <FormField
           control={form.control}
           name="amount"
@@ -106,9 +232,15 @@ export const InputComposer = () => {
                     type="number"
                     placeholder="0.00"
                     {...field}
+                    value={field.value === 0 ? "" : field.value}
                     onChange={e => {
                       const value = parseFloat(e.target.value);
                       field.onChange(isNaN(value) ? 0 : value);
+                    }}
+                    onFocus={e => {
+                      if (field.value === 0) {
+                        e.target.value = "";
+                      }
                     }}
                     className={cn(
                       "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none pl-7",
@@ -124,7 +256,7 @@ export const InputComposer = () => {
           )}
         />
 
-        {/* Type Selector */}
+        {/* Transaction Type Selector */}
         <FormField
           control={form.control}
           name="type"
@@ -142,7 +274,7 @@ export const InputComposer = () => {
           )}
         />
 
-        {/* Category Dropdown */}
+        {/* Category Dropdown Selector */}
         <FormField
           control={form.control}
           name="category"
@@ -166,7 +298,7 @@ export const InputComposer = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  {categories.map(category => (
+                  {CATEGORY_FILTERS.map(category => (
                     <DropdownMenuItem
                       key={category}
                       onSelect={() => field.onChange(category)}
@@ -181,7 +313,9 @@ export const InputComposer = () => {
           )}
         />
 
+        {/* Date and Wallet Selection Row */}
         <div className="flex gap-4">
+          {/* Date Picker */}
           <FormField
             control={form.control}
             name="date"
@@ -210,9 +344,9 @@ export const InputComposer = () => {
                     <Calendar
                       mode="single"
                       selected={date || new Date()}
-                      onSelect={selectedDate => {
-                        setDate(selectedDate);
-                        field.onChange(selectedDate?.toISOString());
+                      onSelect={date => {
+                        setDate(date);
+                        field.onChange(date?.toISOString());
                       }}
                       initialFocus
                     />
@@ -222,6 +356,8 @@ export const InputComposer = () => {
               </FormItem>
             )}
           />
+
+          {/* Wallet Selector */}
           <FormField
             control={form.control}
             name="wallet_id"
@@ -238,17 +374,23 @@ export const InputComposer = () => {
                         !field.value && "text-muted-foreground"
                       )}
                     >
-                      {field.value || "Select wallet"}
+                      {wallets.find(w => w.id === field.value)?.name ||
+                        "Select wallet"}
                       <ChevronDown className="h-4 w-4 ml-2" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     {wallets.map(wallet => (
                       <DropdownMenuItem
-                        key={wallet}
-                        onSelect={() => field.onChange(wallet)}
+                        key={wallet.id}
+                        onSelect={() => field.onChange(wallet.id)}
                       >
-                        {wallet}
+                        {wallet.name
+                          .split(" ")
+                          .map(
+                            word => word.charAt(0).toUpperCase() + word.slice(1)
+                          )
+                          .join(" ")}
                       </DropdownMenuItem>
                     ))}
                   </DropdownMenuContent>
@@ -258,10 +400,10 @@ export const InputComposer = () => {
           />
         </div>
 
-        {/* Note Input */}
+        {/* Note/Description Input */}
         <FormField
           control={form.control}
-          name="note"
+          name="description"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Note</FormLabel>

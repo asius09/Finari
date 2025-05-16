@@ -22,7 +22,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark" style={{ colorScheme: "dark" }}>
-      <body className={`${inter.variable} antialiased bg-forground`}>
+      <body
+        className={`${inter.variable} antialiased bg-forground max-w-screen h-screen overflow-x-hidden`}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

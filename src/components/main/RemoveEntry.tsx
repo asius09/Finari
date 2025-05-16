@@ -12,45 +12,26 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
-import { useAppDispatch } from "@/store/hook";
-import { removeWallet } from "@/store/slices/walletSlice";
-import { toast } from "sonner";
-import { CustomToast } from "@/components/my-ui/CustomToast";
 import React from "react";
 import { cn } from "@/lib/utils";
 
 interface DeleteWalletAlertProps {
-  walletId: string;
   btnClassName?: string;
-  title?: string;
+  btnTitle?: string;
+  title: string;
+  content: string;
   icon?: React.ElementType;
+  handleDelete: () => void;
 }
 
-export const DeleteWalletAlert = ({
-  walletId,
+export const RemoveEntry = ({
   btnClassName,
+  btnTitle,
   title,
+  content,
   icon: Icon = Trash2,
+  handleDelete,
 }: DeleteWalletAlertProps) => {
-  const dispatch = useAppDispatch();
-
-  const handleDelete = async () => {
-    try {
-      await dispatch(removeWallet({ walletId }));
-      toast.custom(() => (
-        <CustomToast type="success" message="Wallet deleted successfully" />
-      ));
-    } catch (error) {
-      console.error("Failed to delete wallet:", error);
-      toast.custom(() => (
-        <CustomToast
-          type="error"
-          message="Failed to delete wallet. Please try again."
-        />
-      ));
-    }
-  };
-
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -58,28 +39,26 @@ export const DeleteWalletAlert = ({
           variant="ghost"
           size="sm"
           className={cn(
-            "text-error hover:bg-error/5 flex flex-row justify-start items-center gap-2",
+            "text-error hover:bg-error/50 flex flex-row justify-start items-center gap-2",
             btnClassName
           )}
         >
           <Icon className="h-4 w-4" />
-          {title}
+          {btnTitle}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>
-            Are you sure you want to delete this wallet?
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone. All transactions and data related to
-            this wallet will be permanently deleted.
-          </AlertDialogDescription>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogDescription>{content}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            onClick={handleDelete}
+            onClick={e => {
+              e.preventDefault();
+              handleDelete();
+            }}
             className="bg-error hover:bg-error/50"
           >
             Delete Wallet

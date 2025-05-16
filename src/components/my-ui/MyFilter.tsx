@@ -7,13 +7,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 import {
-  TIME_FILTERS,
-  TRANSACTION_FILTERS,
+  PERIOD_FILTERS,
+  TRANSACTION_TYPE_FILTERS,
   DEBT_FILTERS,
   ASSET_FILTERS,
   WALLET_FILTERS,
   Filters,
-} from "@/constants/constant";
+  CATEGORY_FILTERS,
+} from "@/constants/filter-constant";
 import { cn } from "@/lib/utils";
 
 interface FilterProps {
@@ -25,20 +26,21 @@ interface FilterProps {
 }
 
 export function MyFilter({
-  selectedFilter = TIME_FILTERS[0],
+  selectedFilter = PERIOD_FILTERS[0],
   onFilterChange,
   className = "",
-  filterType = Filters.TIME_FILTERS,
+  filterType = Filters.PERIOD_FILTERS,
   customFilter,
 }: FilterProps) {
   const filterOptions =
     customFilter ||
     {
-      [Filters.TIME_FILTERS]: TIME_FILTERS,
-      [Filters.TRANSACTION_FILTERS]: TRANSACTION_FILTERS,
+      [Filters.PERIOD_FILTERS]: PERIOD_FILTERS,
+      [Filters.TRANSACTION_TYPE_FILTERS]: TRANSACTION_TYPE_FILTERS,
       [Filters.DEBT_FILTERS]: DEBT_FILTERS,
       [Filters.ASSET_FILTERS]: ASSET_FILTERS,
       [Filters.WALLET_FILTERS]: WALLET_FILTERS,
+      [Filters.CATEGORY_FILTERS]: CATEGORY_FILTERS,
     }[filterType];
 
   return (

@@ -9,8 +9,8 @@ export const transactionSchema = z.object({
   type: z.enum(["income", "expense", "investment"]),
   category: z.string().min(1, "Category is required"),
   description: z.string().optional(),
-  date: z.string().datetime(),
-  created_at: z.string().datetime(),
+  date: z.string().date(),
+  created_at: z.string().datetime({ offset: true }),
 });
 
 // Schema for form input
@@ -23,17 +23,5 @@ export const transactionInputSchema = z.object({
   type: z.enum(["income", "expense", "investment"]),
   category: z.string().min(1, "Category is required"),
   description: z.string().optional(),
-  date: z.string().default(new Date().toISOString()),
+  date: z.string().min(1, "Date is required"),
 });
-
-/*
-id: string;
-user_id: string; // FK to auth.user.id
-wallet_id: string; // FK to Wallet
-amount: number;
-type: "income" | "expense";
-category: string; // e.g., 'Food', 'Bills', 'Salary'
-description?: string;
-date: string; // ISO date string
-created_at: string;
-*/

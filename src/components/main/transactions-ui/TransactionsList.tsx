@@ -1,105 +1,150 @@
-import { transactionSchema } from "@/schema/transaction.schema";
-import { z } from "zod";
-import { formatDate } from "@/utils/formatDate";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Pencil } from "lucide-react";
+import { TransactionItem } from "./TransactionItem";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { AppRoutes, LoadingTypeEnum } from "@/constants/constant";
+import { Filters } from "@/constants/filter-constant";
+import { MyFilter } from "@/components/my-ui/MyFilter";
+import { useAppSelector } from "@/store/hook";
+import { Transaction } from "@/types/modelTypes";
 
 type TransactionsListProps = {
-  transactions: z.infer<typeof transactionSchema>[];
+  title: string;
+  showViewMore?: boolean;
+  showFilters?: boolean; //if its true then all the filter will show
+  showCategoryFilter?: boolean;
+  showTypeFilter?: boolean;
+  showPeriodFilter?: boolean;
+  showWalletFilter?: boolean;
 };
 
-export const TransactionsList = ({ transactions }: TransactionsListProps) => {
-  const getAmountColor = (type: string) => {
-    switch (type) {
-      case "income":
-        return "text-positive";
-      case "expense":
-        return "text-negative";
-      case "investment":
-        return "text-info";
-      default:
-        return "text-foreground";
-    }
-  };
-
-  const getBadgeClass = (type: string) => {
-    switch (type) {
-      case "income":
-        return "bg-positive-bg text-positive";
-      case "expense":
-        return "bg-negative-bg text-negative";
-      case "investment":
-        return "bg-info-bg text-info";
-      default:
-        return "bg-muted text-muted-foreground";
-    }
-  };
-
-  const getWalletPrefix = (type: string) => {
-    switch (type) {
-      case "expense":
-        return "from";
-      case "investment":
-        return "through";
-      default:
-        return "in";
-    }
-  };
+export const TransactionsList = ({
+  title,
+  showFilters = false,
+  showViewMore = false,
+  showCategoryFilter = false,
+  showPeriodFilter = false,
+  showWalletFilter = false,
+  showTypeFilter = false,
+}: TransactionsListProps) => {
+  const { transactions, loading, error } = useAppSelector(
+    state => state.transaction
+  );
+  const displayTransactions: Transaction[] = transactions;
 
   return (
-    <div>
-      {transactions.map(transaction => {
-        const { amount, type, category, description, date, wallet_id, id } =
-          transaction;
-        return (
-          <div
-            key={id}
-            className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer gap-4 border-b"
-          >
-            <div className="flex items-center gap-3 flex-1 min-w-0">
-              <Avatar className="h-9 w-9 border">
-                <AvatarImage src="" />
-                <AvatarFallback className="bg-muted">
-                  {description?.charAt(0).toUpperCase() || "T"}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground line-clamp-1">
-                  {description}
-                </p>
-                <p className="text-xs text-muted-foreground line-clamp-1">
-                  {formatDate(date, "relative")}
-                </p>
-              </div>
-            </div>
+    <div className="space-y-4 w-full overflow-x-auto">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+        <h2 className="text-lg font-semibold whitespace-nowrap">{title}</h2>
 
-            <div className="flex-1 flex justify-center min-w-0">
-              <Badge className={`text-xs font-medium ${getBadgeClass(type)}`}>
-                {category}
-              </Badge>
-            </div>
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          {showFilters ? (
+            <div className="flex flex-wrap gap-2">
+              {/* Category Filter */}
+              <MyFilter
+                selectedFilter="Category"
+                filterType={Filters.CATEGORY_FILTERS}
+                onFilterChange={value => console.log(value)}
+              />
 
-            <div className="flex-1 text-right min-w-0">
-              <p className={`text-base font-semibold ${getAmountColor(type)}`}>
-                ₹{amount.toFixed(2)}
-              </p>
-              <p className="text-xs text-muted-foreground line-clamp-1">
-                {getWalletPrefix(type)} {wallet_id}
-              </p>
-            </div>
+              {/* Period Filter  */}
+              <MyFilter
+                selectedFilter="Period"
+                filterType={Filters.PERIOD_FILTERS}
+                onFilterChange={value => console.log(value)}
+              />
 
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 w-8 p-0 hover:bg-muted-foreground/50"
+              {/* Wallet Filter */}
+              <MyFilter
+                selectedFilter="Wallet"
+                filterType={Filters.WALLET_FILTERS}
+                onFilterChange={value => console.log(value)}
+              />
+
+              {/* Type Filter */}
+              <MyFilter
+                selectedFilter="Type"
+                filterType={Filters.TRANSACTION_TYPE_FILTERS}
+                onFilterChange={value => console.log(value)}
+              />
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {showCategoryFilter && (
+                <MyFilter
+                  filterType={Filters.PERIOD_FILTERS}
+                  onFilterChange={value => console.log(value)}
+                />
+              )}
+
+              {showPeriodFilter && (
+                <MyFilter
+                  selectedFilter="Period"
+                  filterType={Filters.PERIOD_FILTERS}
+                  onFilterChange={value => console.log(value)}
+                />
+              )}
+              {showWalletFilter && (
+                <MyFilter
+                  selectedFilter="Wallet"
+                  filterType={Filters.WALLET_FILTERS}
+                  onFilterChange={value => console.log(value)}
+                />
+              )}
+
+              {showTypeFilter && (
+                <MyFilter
+                  selectedFilter="Type"
+                  filterType={Filters.TRANSACTION_TYPE_FILTERS}
+                  onFilterChange={value => console.log(value)}
+                />
+              )}
+            </div>
+          )}
+
+          {showViewMore && (
+            <Link
+              className="text-sm flex justify-center items-center gap-1 hover:underline whitespace-nowrap"
+              href={AppRoutes.TRANSACTIONS}
             >
-              <Pencil className="h-4 w-4 text-muted-foreground" />
-            </Button>
+              View More <ArrowRight className="h-4 w-4" />
+            </Link>
+          )}
+        </div>
+      </div>
+
+      <div className="min-w-[600px] sm:min-w-0">
+        {loading === LoadingTypeEnum.PENDING ? (
+          <div className="space-y-4">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div
+                key={i}
+                className="animate-pulse flex items-center justify-between p-4 border rounded-lg"
+              >
+                <div className="space-y-2">
+                  <div className="h-4 bg-gray-200 rounded w-24"></div>
+                  <div className="h-3 bg-gray-200 rounded w-32"></div>
+                </div>
+                <div className="h-4 bg-gray-200 rounded w-16"></div>
+              </div>
+            ))}
           </div>
-        );
-      })}
+        ) : error && loading === LoadingTypeEnum.FAILED ? (
+          <div className="p-4 text-center text-red-500">
+            Error loading transactions: {error}
+          </div>
+        ) : displayTransactions?.length > 0 ? (
+          displayTransactions.map(transaction => (
+            <TransactionItem
+              key={"list" + transaction.id}
+              transaction={transaction}
+            />
+          ))
+        ) : (
+          <div className="p-4 text-center text-gray-500">
+            No transactions found
+          </div>
+        )}
+      </div>
     </div>
   );
 };

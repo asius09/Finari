@@ -3,11 +3,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "../../ui/avatar";
 import { Wallet as WalletType } from "@/types/modelTypes";
-import { Wallet, Eye, EyeClosed, MoreVertical } from "lucide-react";
+import { Wallet, Eye, EyeClosed } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { MyFilter } from "@/components/my-ui/MyFilter";
-import { Filters, LoadingTypeEnum, TIME_FILTERS } from "@/constants/constant";
+import { LoadingTypeEnum } from "@/constants/constant";
+import { Filters, PERIOD_FILTERS } from "@/constants/filter-constant";
 import { LineChart } from "@/components/tremorCharts/LineChart";
 import { Separator } from "@/components/ui/separator";
 import { chartColors } from "@/lib/charUtils";
@@ -16,7 +17,9 @@ import { SparkBarChart } from "@/components/tremorCharts/SparkChart";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { Skeleton } from "@/components/ui/skeleton";
 import { removeWallet } from "@/store/slices/walletSlice";
-import { DeleteWalletAlert } from "./DeleteWalletAlert";
+import { RemoveEntry } from "../RemoveEntry";
+import { toast } from "sonner";
+import { CustomToast } from "@/components/my-ui/CustomToast";
 
 interface BalanceCardProps {
   size?: "small" | "large";
@@ -24,20 +27,20 @@ interface BalanceCardProps {
 
 export const BalanceCard = ({ size = "large" }: BalanceCardProps) => {
   const dispatch = useAppDispatch();
-  const { wallets, loading } = useAppSelector(state => state.wallet);
-
-  // Calculate total balance
-  const totalBalance = wallets?.reduce<number>(
-    (sum, wallet) => sum + wallet.balance,
-    0
+  const { wallets, loading, totalBalance } = useAppSelector(
+    state => state.wallet
   );
-  const [showBalance, setShowBalance] = useState(false);
-  const [period, setPeriod] = useState<string>(TIME_FILTERS[0]);
+  const [showBalance, setShowBalance] = useState<boolean>(false);
+  const [selectedWallet, setSelectedWallet] = useState<string>("Total Balance");
+
+  // Filter State
+  const [period, setPeriod] = useState<string>(PERIOD_FILTERS[0]);
+
+  // Users Specific Filters
   const walletFilter = [
     ...(wallets?.map(wallet => wallet.name) || []),
     "Total Balance",
   ];
-  const [selectedWallet, setSelectedWallet] = useState("Total Balance");
 
   const getWalletColor = () => {
     if (selectedWallet === "Total Balance") {
@@ -60,37 +63,62 @@ export const BalanceCard = ({ size = "large" }: BalanceCardProps) => {
   const [chartColor, setChartColor] =
     useState<keyof typeof chartColors>(getWalletColor());
 
-  useEffect(() => {
-    setChartColor(getWalletColor());
-  }, [selectedWallet]);
-
   const totalBalanceWallet: WalletType = {
     id: crypto.randomUUID(),
-    user_id: "demo-user",
+    user_id: crypto.randomUUID(),
     name: "Total Balance",
     type: "cash",
     balance: totalBalance,
-    icon: "wallet",
+    icon: undefined,
     created_at: new Date().toISOString(),
   };
+
+  // Selected Wallet - @defaul{Total Balance}
+  const [visibleWallet, setVisibleWallet] =
+    useState<WalletType>(totalBalanceWallet);
+
   // Format currency
   const currencyFormatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
   });
 
-  const handleRemoveWallet = async (id: string): Promise<void> => {
+  const handleDelete = async (id: string) => {
     try {
       await dispatch(removeWallet({ walletId: id }));
-    } catch (error: unknown) {
-      console.error("Error removing wallet:", error);
+      toast.custom(() => (
+        <CustomToast type="success" message="Wallet deleted successfully" />
+      ));
+    } catch (error) {
+      console.error("Failed to delete wallet:", error);
+      toast.custom(() => (
+        <CustomToast
+          type="error"
+          message="Failed to delete wallet. Please try again."
+        />
+      ));
     }
   };
+  useEffect(() => {
+    if (selectedWallet !== totalBalanceWallet.name) {
+      const wallet = wallets.find(wallet => wallet.name === selectedWallet) as
+        | WalletType
+        | undefined;
+      if (wallet) {
+        setVisibleWallet(wallet);
+      }
+    } else {
+      setVisibleWallet(totalBalanceWallet);
+    }
+    setChartColor(getWalletColor());
+  }, [selectedWallet, wallets, totalBalance]);
 
+  // Chip Type Balance Card for
   if (size === "small")
     return (
       <div className="w-full">
         <div className="flex flex-row gap-4 overflow-x-auto pb-3">
+          {/* Loading State  */}
           {loading === LoadingTypeEnum.PENDING
             ? Array.from({ length: 3 }).map((_, i) => (
                 <Card
@@ -104,7 +132,8 @@ export const BalanceCard = ({ size = "large" }: BalanceCardProps) => {
                   </div>
                 </Card>
               ))
-            : wallets.map(wallet => (
+            : [totalBalanceWallet, ...wallets].map(wallet => (
+                // Main Cards
                 <Card
                   key={wallet.id}
                   className="w-48 h-16 rounded-lg flex flex-row justify-start items-center p-2 gap-2 flex-shrink-0"
@@ -128,24 +157,10 @@ export const BalanceCard = ({ size = "large" }: BalanceCardProps) => {
       </div>
     );
 
-  const [visibleWallet, setVisibleWallet] =
-    useState<WalletType>(totalBalanceWallet);
-
-  useEffect(() => {
-    if (selectedWallet !== totalBalanceWallet.name) {
-      let wallet = wallets.find(wallet => wallet.name === selectedWallet);
-      if (wallet) {
-        setVisibleWallet(wallet);
-      }
-    } else {
-      setVisibleWallet(totalBalanceWallet);
-    }
-  }, [selectedWallet]);
-
   if (loading === LoadingTypeEnum.PENDING) {
     return (
-      <div className="w-full flex flex-row gap-4 justify-start items-start overflow-x-auto pb-3">
-        <Card className="w-96 flex-shrink-0 p-4">
+      <div className="w-full flex flex-col md:flex-row gap-4 justify-start items-start overflow-x-auto pb-3">
+        <Card className="w-full md:w-96 flex-shrink-0 p-4">
           <CardHeader className="flex flex-row justify-between items-start">
             <div className="space-y-0.5">
               <Skeleton className="h-6 w-32" />
@@ -183,22 +198,26 @@ export const BalanceCard = ({ size = "large" }: BalanceCardProps) => {
   }
 
   return (
-    <div className="w-full flex flex-row gap-4 justify-start items-start overflow-x-auto pb-3">
-      <Card key={visibleWallet.id} className="w-96 flex-shrink-0 p-4">
+    <div className="w-full flex flex-col lg:flex-row gap-4 justify-start items-start overflow-x-hidden">
+      {/* Main Wallet Card */}
+      <Card key={visibleWallet.id} className="w-full lg:w-96 flex-shrink-0 p-4">
         <CardHeader className="flex flex-row justify-between items-start">
           <div className="space-y-0.5">
+            {/* Wallet Filter Dropdown */}
             <MyFilter
               onFilterChange={filter => setSelectedWallet(filter)}
               customFilter={walletFilter}
               selectedFilter={selectedWallet}
-              className="outline-none  has-[>svg]:px-0 p-0 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:ring-transparent cursor-pointer"
+              className="outline-none has-[>svg]:px-0 p-0 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:ring-transparent cursor-pointer"
             />
+            {/* Wallet Balance Display */}
             <p className="text-xl font-semibold">
               {showBalance
                 ? currencyFormatter.format(visibleWallet.balance)
                 : "*****"}
             </p>
           </div>
+          {/* Show/Hide Balance Toggle Button */}
           <Button
             variant="ghost"
             size="sm"
@@ -212,13 +231,18 @@ export const BalanceCard = ({ size = "large" }: BalanceCardProps) => {
             )}
           </Button>
         </CardHeader>
+
+        {/* Conditional Rendering based on Selected Wallet */}
         {selectedWallet === totalBalanceWallet.name ? (
           <CardContent>
+            {/* Wallets List Header */}
             <div className="flex items-center gap-2 pb-2">
               <Wallet className="h-4 w-4 text-foreground/80" />
               <p className="text-sm font-medium text-foreground/80">Wallets</p>
             </div>
             <Separator className="bg-foreground/10" />
+
+            {/* Wallets List */}
             {wallets.map(wallet => (
               <div
                 key={wallet.id}
@@ -228,48 +252,25 @@ export const BalanceCard = ({ size = "large" }: BalanceCardProps) => {
                   <Wallet className="h-4 w-4 text-foreground/80" />
                   <p className="text-sm text-foreground/80">{wallet.name}</p>
                 </div>
+
                 <div className="flex flex-row items-center">
-                  <p className="text-sm font-medium text-foreground">
+                  <p className="text-sm font-medium text-foreground mr-3 lg:mr-0">
                     {showBalance
                       ? currencyFormatter.format(wallet.balance)
                       : "*****"}
                   </p>
-                  {/**
-              *      <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-muted-foreground hover:text-primary focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent border-none ring-0"
-                      >
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-40">
-                      <DropdownMenuItem>
-                        <DeleteWalletAlert walletId={wallet.id} />
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <WalletComposer
-                          isEdit={true}
-                          walletId={wallet.id}
-                          buttonContent={{
-                            icon: <Wallet className="h-4 w-4" />,
-                            title: "Edit",
-                          }}
-                          btnClassName="flex flex-start justify-start items-center hover:bg-muted-foreground/5"
-                        />
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-              */}
-                  <div className="flex flex-row items-center justify-start">
-                    <DeleteWalletAlert walletId={wallet.id} />
+                  {/* Wallet Actions */}
+                  <div className="flex flex-row items-center justify-start gap-4 lg:gap-0">
+                    <RemoveEntry
+                      handleDelete={() => handleDelete(wallet.id)}
+                      title=" Are you sure you want to delete this wallet?"
+                      content="This action cannot be undone. All transactions and data related to this wallet will be permanently deleted."
+                    />
                     <WalletComposer
                       isEdit={true}
                       walletId={wallet.id}
                       buttonContent={{
-                        icon: <Wallet className="h-4 w-4" />,
+                        icon: <Wallet className="h-6 w-6 lg:h-4 lg:w-4" />,
                         title: "",
                       }}
                       btnClassName="flex flex-start justify-center items-center hover:bg-muted-foreground/5 w-6 h-6"
@@ -278,10 +279,12 @@ export const BalanceCard = ({ size = "large" }: BalanceCardProps) => {
                 </div>
               </div>
             ))}
-            <WalletComposer />
+            {/* Add New Wallet Button */}
+            <WalletComposer btnClassName="py-6 lg:py-2" />
           </CardContent>
         ) : (
           <CardContent className="space-y-1">
+            {/* Balance Overview Header */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Wallet className="h-4 w-4 text-foreground/80" />
@@ -289,14 +292,17 @@ export const BalanceCard = ({ size = "large" }: BalanceCardProps) => {
                   Balance Overview
                 </p>
               </div>
+              {/* Period Filter */}
               <MyFilter
                 onFilterChange={filter => setPeriod(filter)}
                 selectedFilter={period}
-                filterType={Filters.TIME_FILTERS}
+                filterType={Filters.PERIOD_FILTERS}
                 className="text-xs text-foreground/80 p-0 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:ring-transparent cursor-pointer"
               />
             </div>
             <Separator className="bg-foreground/10" />
+
+            {/* Sparkline Chart */}
             <div className="w-full">
               <SparkBarChart
                 data={[
@@ -323,17 +329,20 @@ export const BalanceCard = ({ size = "large" }: BalanceCardProps) => {
         )}
       </Card>
 
+      {/* Balance History Card */}
       <Card className="w-full flex-1 flex-shrink-0 p-4">
         <CardHeader className="flex flex-row justify-between items-center">
           <CardTitle className="text-lg">Balance History</CardTitle>
+          {/* Period Filter */}
           <MyFilter
             onFilterChange={filter => setPeriod(filter)}
             selectedFilter={period}
-            filterType={Filters.TIME_FILTERS}
+            filterType={Filters.PERIOD_FILTERS}
             className="outline-none has-[>svg]:px-0 p-0 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:ring-transparent cursor-pointer"
           />
         </CardHeader>
         <CardContent>
+          {/* Line Chart */}
           <LineChart
             className="h-60"
             data={[
