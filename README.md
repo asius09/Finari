@@ -74,34 +74,98 @@ Finari is a minimalist, AI-assisted personal finance app designed to track every
 - [x] Build dashboard page (show cards, charts, reminders)
 - [x] Add forms to manually input data (transactions, assets, etc.)
 
-### Phase 4: Data Visualization
+### Phase 4: Data Visualization ✅
 
 - [x] Integrate charts using tremor.so
-- [ ] Create donut chart for asset types
-- [ ] Bar graph for monthly income vs expense
-- [ ] Line chart for debt repayment over time
-- [ ] Add filters (monthly, yearly, category-wise)
+- [x] Create donut chart for asset types
+- [x] Bar graph for monthly income vs expense
+- [x] Line chart for debt repayment over time
+- [x] Add filters (monthly, yearly, category-wise)
 
-### Phase 5: Smart Reminders
+### Phase 5: Assets & Debts Management
 
-- [ ] Design UI for setting custom reminders (EMIs, bills)
-- [ ] Store reminder data in DB
-- [ ] Use Supabase Edge Functions or CRON jobs to trigger email/push
-- [ ] Display upcoming reminders on dashboard
+- [ ] Create assets page with CRUD operations
+- [ ] Add form for new assets (type, value, description)
+- [ ] Display assets in table with sorting/filtering
+- [ ] Implement edit/delete functionality
+- [ ] Add asset type categorization (cash, investments, property, etc.)
+- [ ] Create debts page with CRUD operations
+- [ ] Add form for new debts (type, amount, interest rate, due date)
+- [ ] Display debts in table with sorting/filtering
+- [ ] Implement edit/delete functionality
+- [ ] Add debt type categorization (loans, credit cards, mortgages, etc.)
+- [ ] Add net worth calculation (assets - debts)
+- [ ] Create visualizations for assets/debts breakdown
 
-### Phase 6: Password Vault (Optional)
+### Phase 6: Reports & Analytics
 
-- [ ] Create vault_items table with encrypted fields
-- [ ] Add client-side encryption before storing data
-- [ ] Create secure UI to view/add/delete vault items
-- [ ] Implement master password or pin for extra safety
+- [ ] Build reports page with multiple views
+- [ ] Monthly/yearly financial summary
+- [ ] Income vs expense comparison
+- [ ] Asset allocation breakdown
+- [ ] Debt repayment progress
+- [ ] Add advanced filtering options
+- [ ] Date range selector
+- [ ] Category filters
+- [ ] Custom grouping options
+- [ ] Implement export functionality
+- [ ] PDF report generation
+- [ ] CSV data export
+- [ ] Add visualization customization
+- [ ] Chart type selection
+- [ ] Color scheme options
+- [ ] Data point display settings
 
-### Phase 7: AI Assistant (Future)
+### Phase 7: Settings & Configuration
 
-- [ ] Connect OpenAI API
-- [ ] Train prompt to give smart financial summaries
-- [ ] Suggest budgeting tips or detect spending spikes
-- [ ] UI assistant (chat-based or smart cards)
+- [ ] Create settings page with sections
+- [ ] Profile management
+- [ ] Account preferences
+- [ ] Notification settings
+- [ ] Security settings
+- [ ] Implement profile editing
+- [ ] Update personal info
+- [ ] Change password
+- [ ] Manage connected accounts
+- [ ] Add preference controls
+- [ ] Theme selection (light/dark/system)
+- [ ] Default currency setting
+- [ ] Date format options
+- [ ] Implement notification management
+- [ ] Email notification preferences
+- [ ] Push notification settings
+- [ ] Reminder frequency options
+
+### Phase 8: Currency Management
+
+- [ ] Integrate free currency conversion API
+- [ ] Add currency converter widget
+- [ ] Implement real-time exchange rates
+- [ ] Add historical rate viewing
+- [ ] Create currency settings
+- [ ] Set default display currency
+- [ ] Add multi-currency support
+- [ ] Implement currency conversion for all values
+- [ ] Add currency conversion features
+- [ ] Inline value conversion
+- [ ] Bulk conversion for reports
+- [ ] Currency-specific formatting
+
+### Phase 9: Data Visualization Enhancements
+
+- [ ] Improve existing charts
+- [ ] Add tooltips and data labels
+- [ ] Implement zoom/pan functionality
+- [ ] Add comparison features
+- [ ] Create new visualizations
+- [ ] Cash flow waterfall chart
+- [ ] Net worth timeline
+- [ ] Debt repayment schedule
+- [ ] Budget vs actual comparison
+- [ ] Add interactive features
+- [ ] Click-to-filter functionality
+- [ ] Drill-down capabilities
+- [ ] Custom date range selection
 
 ### Bonus: Polish & Launch
 
