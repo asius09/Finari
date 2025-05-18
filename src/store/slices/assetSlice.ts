@@ -2,15 +2,19 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { Asset } from "@/types/modelTypes";
 import { LoadingType } from "@/constants/constant";
+import { assetFormSchema } from "@/schema/asset.schema";
+import { z } from "zod";
 
 interface AssetsState {
   assets: Asset[];
+  totalAssetsValue: number;
   loading: LoadingType;
   error: string | null;
 }
 
 const initialState: AssetsState = {
   assets: [],
+  totalAssetsValue: 0,
   loading: "idle",
   error: null,
 };
@@ -18,14 +22,65 @@ const initialState: AssetsState = {
 // Async Thunk for fetching initial assets
 export const fetchInitialAssets = createAsyncThunk(
   "assets/fetchInitialAssets",
-  async () => {
-    const response = await fetch("/api/assets"); // Create this API route
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+  async (userId: string) => {
+    try {
+      const response = await fetch(`/api/assets?userId=${userId}`); // Create this API route
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      if (!response.ok) {
+        throw new Error(`HTTP ERROR, Failed to add Asset ${response.status}`);
+      }
+      const data = await response.json();
+      return data.data;
+    } catch (error: unknown) {
+      console.log("Failed to fetch asset");
+      if (error instanceof Error) {
+        throw new Error("Failed to fetch asset", error);
+      }
     }
-    return await response.json();
   }
 );
+
+//Async Thunk for Add Asset
+export const addAsset = createAsyncThunk(
+  "assets/addAsset",
+  async ({
+    userId,
+    asset,
+  }: {
+    userId: string;
+    asset: z.infer<typeof assetFormSchema>;
+  }) => {
+    try {
+      const validateAsset = assetFormSchema.safeParse(asset);
+      if (!validateAsset.success) {
+        throw new Error("Asset missing Property", validateAsset.error);
+      }
+      const response = await fetch(`/api/assets?userId=${userId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(asset),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP ERROR, Failed to add Asset ${response.status}`);
+      }
+      const data = await response.json();
+      return data.data;
+    } catch (error: unknown) {
+      console.log("Failed to add asset");
+      if (error instanceof Error) {
+        throw new Error("Failed to add asset", error);
+      }
+    }
+  }
+);
+
+const calculateAssetValue = (assets: Asset[]): number => {
+  return assets.reduce((sum, asset) => sum + asset.current_value, 0);
+};
 
 const assetsSlice = createSlice({
   name: "assets",
@@ -56,21 +111,36 @@ const assetsSlice = createSlice({
   },
   extraReducers: builder => {
     builder
-      .addCase(fetchInitialAssets.pending, state => {
-        state.loading = "pending";
-        state.error = null;
-      })
       .addCase(
         fetchInitialAssets.fulfilled,
         (state, action: PayloadAction<Asset[]>) => {
           state.loading = "succeeded";
           state.error = null;
           state.assets = action.payload;
+          state.totalAssetsValue = calculateAssetValue(action.payload);
         }
       )
+      .addCase(fetchInitialAssets.pending, state => {
+        state.loading = "pending";
+        state.error = null;
+      })
       .addCase(fetchInitialAssets.rejected, (state, action) => {
         state.loading = "failed";
         state.error = action.error.message || "Failed to fetch assets.";
+      })
+      .addCase(addAsset.fulfilled, (state, action: PayloadAction<Asset>) => {
+        state.loading = "succeeded";
+        state.error = null;
+        state.assets.push(action.payload);
+        state.totalAssetsValue = calculateAssetValue(state.assets);
+      })
+      .addCase(addAsset.pending, state => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(addAsset.rejected, (state, action) => {
+        state.loading = "failed";
+        state.error = action.error.message || "Failed to add assets.";
       });
   },
 });

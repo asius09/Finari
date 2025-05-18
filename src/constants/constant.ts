@@ -74,7 +74,7 @@ export enum AppRoutes {
   DASHBOARD = "/dashboard",
   TRANSACTIONS = "/transactions",
   WALLETS = "/wallets",
-  NETWORTH = "/net-worth",
+  NETWORTH = "/networth",
   REPORT = "/report",
   NOTIFICATION = "/notification",
   PROFILE = "/profile",
@@ -98,8 +98,6 @@ export enum LoadingTypeEnum {
   SUCCEEDED = "succeeded",
   FAILED = "failed",
 }
-
-
 
 // Error Types
 export enum ErrorType {
@@ -137,6 +135,17 @@ export enum AssetType {
   PERSONAL_ITEM = "personal_item",
   OTHER = "other",
 }
+
+//asset types array
+export const assetTypes = [
+  "cash",
+  "bank_account",
+  "investment",
+  "stock",
+  "property",
+  "personal_item",
+  "other",
+];
 
 // Transaction Types
 export enum TransactionType {

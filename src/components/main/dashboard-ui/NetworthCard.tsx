@@ -62,6 +62,21 @@ const fixedData = {
 };
 
 export const NetworthCard = () => {
+  const {
+    assets,
+    loading: assetLoading,
+    error: assetError,
+    totalAssetsValue,
+  } = useAppSelector(state => state.asset);
+  const {
+    debts,
+    loading: debtLoading,
+    error: debtError,
+    totalOutstanding,
+  } = useAppSelector(state => state.debt);
+
+  const currentNetworth = totalOutstanding - totalAssetsValue;
+  const isNetWorthPostive = currentNetworth > 0; //TODO: make it better.
   // TODO: Replace mock data with real data from financialOverview state
   //   const { totalNetworth, networthChangePercentage } = useAppSelector(
   //     state => state.financialOverview
@@ -104,10 +119,7 @@ export const NetworthCard = () => {
               {currency === "USD" ? "$" : "₹"}
             </span>
             <p className="text-3xl font-bold text-foreground">
-              {new Intl.NumberFormat("en-US", {
-                style: "decimal",
-                maximumFractionDigits: 2,
-              }).format(totalNetworth)}
+              {currencyFormatter(currentNetworth)}
             </p>
           </div>
         </div>

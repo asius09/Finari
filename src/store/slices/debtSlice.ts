@@ -5,11 +5,16 @@ import { LoadingType } from "@/constants/constant";
 
 interface DebtsState {
   debts: Debt[];
+  totalOutstanding: number;
+  totalToPay: number;
+  //TODO: add total time to pay all
   loading: LoadingType;
   error: string | null;
 }
 
 const initialState: DebtsState = {
+  totalOutstanding: 0,
+  totalToPay: 0,
   debts: [],
   loading: "idle",
   error: null,
@@ -35,6 +40,10 @@ const debtsSlice = createSlice({
       state.debts = action.payload;
       state.loading = "succeeded";
       state.error = null;
+      state.totalOutstanding = action.payload.reduce(
+        (sum, debt) => sum + debt.outstanding_balance,
+        0
+      );
     },
     addOptimisticDebt(state, action: PayloadAction<Debt>) {
       state.debts.push(action.payload);
@@ -66,6 +75,10 @@ const debtsSlice = createSlice({
           state.loading = "succeeded";
           state.error = null;
           state.debts = action.payload;
+          state.totalOutstanding = action.payload.reduce(
+            (sum, debt) => sum + debt.outstanding_balance,
+            0
+          );
         }
       )
       .addCase(fetchInitialDebts.rejected, (state, action) => {
