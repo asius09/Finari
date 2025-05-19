@@ -40,6 +40,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { MyTextarea } from "@/components/my-ui/MyTextarea";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { addAsset } from "@/store/slices/assetSlice";
+import { CustomToast } from "@/components/my-ui/CustomToast";
+import { toast } from "sonner";
 
 type AssetFormType = z.infer<typeof assetFormSchema>;
 
@@ -48,6 +50,7 @@ interface AssetComposerProps {
   btnChildren: React.ReactNode;
   formTitle?: string;
   formDescription?: string;
+  assetId?: string;
 }
 
 export const AssetComposer = ({
@@ -55,6 +58,7 @@ export const AssetComposer = ({
   btnChildren,
   formDescription = "",
   formTitle = "Add Assets",
+  assetId,
 }: AssetComposerProps) => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(state => state.auth);
@@ -71,7 +75,7 @@ export const AssetComposer = ({
       name: "",
       asset_type: AssetType.INVESTMENT,
       purchase_price: 0,
-      purchase_date: format(new Date(), "PPP"),
+      purchase_date: format(new Date(), "yyyy-MM-dd"),
       notes: "",
     },
   });
@@ -79,7 +83,6 @@ export const AssetComposer = ({
   const onSubmit = async (data: AssetFormType) => {
     try {
       setLoading(true);
-      console.log("Asset Form Data is: ", data);
       const asset = {
         ...data,
         user_id: userId,
@@ -88,14 +91,29 @@ export const AssetComposer = ({
       if (!userId) {
         throw new Error("User ID is required to add an asset");
       }
-      setLoading(true);
       const response = await dispatch(addAsset({ userId, asset }));
       if (addAsset.fulfilled.match(response)) {
+        toast.custom(() => (
+          <CustomToast
+            type="success"
+            title={assetId ? "Asset Updated" : "Asset Add"}
+            message={`Your asset was successfully ${assetId ? "updated" : "Added"}`}
+          />
+        ));
         setOpen(false);
         assetForm.reset();
       }
-    } catch (error) {
-      console.error("Error submitting asset:", error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log("Error submitting asset:", error);
+      }
+      toast.custom(() => (
+        <CustomToast
+          type="error"
+          title={assetId ? "Failed to Updated Asset" : "Failed to Add Asset"}
+          message={`Something went wrong, Please Try again`}
+        />
+      ));
     } finally {
       setLoading(false);
     }
@@ -105,6 +123,7 @@ export const AssetComposer = ({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
+          disabled={loading || open}
           variant="default"
           className={cn("cursor-pointer", btnClassName)}
         >
@@ -134,8 +153,10 @@ export const AssetComposer = ({
                   <FormLabel>Asset Name</FormLabel>
                   <FormControl>
                     <MyInput
+                      disabled={loading}
                       type="text"
                       placeholder="Asset Name"
+                      autoComplete="off"
                       {...field}
                       onChange={e => {
                         field.onChange(e.target.value);
@@ -162,6 +183,7 @@ export const AssetComposer = ({
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
+                        disabled={loading}
                         variant="ghost"
                         className={cn(
                           "w-full flex items-center justify-between h-10 bg-input border border-input-border cursor-pointer",
@@ -212,6 +234,7 @@ export const AssetComposer = ({
                         {currency}
                       </span>
                       <MyInput
+                        disabled={loading}
                         type="number"
                         placeholder="0.00"
                         {...field}
@@ -250,6 +273,7 @@ export const AssetComposer = ({
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
+                          disabled={loading}
                           variant="ghost"
                           className={cn(
                             "w-full justify-start text-left font-normal h-10 bg-input border border-input-border Hover:bg-input",
@@ -271,7 +295,7 @@ export const AssetComposer = ({
                           selected={date}
                           onSelect={date => {
                             setDate(date || new Date());
-                            field.onChange(date?.toISOString());
+                            field.onChange(date);
                           }}
                           initialFocus
                         />
@@ -292,6 +316,7 @@ export const AssetComposer = ({
                   <FormLabel>Note</FormLabel>
                   <FormControl>
                     <MyTextarea
+                      disabled={loading}
                       placeholder="Add any additional notes..."
                       className="resize-none min-h-10"
                       {...field}
@@ -302,7 +327,7 @@ export const AssetComposer = ({
               )}
             />
 
-            <Button type="submit" className="w-full h-10">
+            <Button disabled={loading} type="submit" className="w-full h-10">
               Add Asset
             </Button>
           </form>

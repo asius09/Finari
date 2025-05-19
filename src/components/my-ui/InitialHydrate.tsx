@@ -5,6 +5,7 @@ import { useAppDispatch } from "@/store/hook";
 import { fetchUserProfile } from "@/store/slices/userSlice";
 import { fetchWallets } from "@/store/slices/walletSlice";
 import { fetchTransactions } from "@/store/slices/transactionSlice";
+import { fetchInitialAssets } from "@/store/slices/assetSlice";
 
 interface InitialHydrateProps {
   userId: string | null;
@@ -19,9 +20,9 @@ export function InitialHydrate({ userId, children }: InitialHydrateProps) {
       dispatch(fetchUserProfile(userId));
       dispatch(fetchWallets(userId));
       dispatch(fetchTransactions(userId));
+      dispatch(fetchInitialAssets(userId));
     }
 
-    // TODO: Add dispatch for assets
     // TODO: Add dispatch for debts
   }, [userId]);
 

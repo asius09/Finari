@@ -60,30 +60,12 @@ export const AssetDebtList = () => {
             Debts
           </Button>
         </div>
+
         <AssetComposer
           btnChildren="Add Asset"
           formTitle="Create Asset"
           btnClassName="py-0"
         />
-        {viewSelection === "asset"
-          ? assets.length > 5 && (
-              <Button
-                variant={"ghost"}
-                className="text-sm text-muted-foreground hover:underline hover:text-primary"
-              >
-                view more
-                <ArrowRight />
-              </Button>
-            )
-          : debts.length > 5 && (
-              <Button
-                variant={"ghost"}
-                className="text-sm text-muted-foreground hover:underline hover:text-primary"
-              >
-                view more
-                <ArrowRight />
-              </Button>
-            )}
       </CardHeader>
       <CardContent>
         <ul className="mt-4" id={`${viewSelection}-list`}>
@@ -106,7 +88,6 @@ export const AssetDebtList = () => {
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col justify-start items-start">
-                    {/* TODO: add asset name  */}
                     <p className="text-base text-foreground font-semibold">
                       {asset.name}
                     </p>
@@ -185,6 +166,25 @@ export const AssetDebtList = () => {
                 </div>
               </li>
             ))}
+          {viewSelection === "asset"
+            ? assets.length > 5 && (
+                <Button
+                  variant={"ghost"}
+                  className="text-sm text-muted-foreground hover:underline hover:text-primary"
+                >
+                  view more
+                  <ArrowRight />
+                </Button>
+              )
+            : debts.length > 5 && (
+                <Button
+                  variant={"ghost"}
+                  className="text-sm text-muted-foreground hover:underline hover:text-primary"
+                >
+                  view more
+                  <ArrowRight />
+                </Button>
+              )}
         </ul>
       </CardContent>
     </Card>
