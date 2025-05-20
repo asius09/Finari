@@ -2,24 +2,7 @@
 
 import React, { useState } from "react";
 import { LineChart, TooltipProps } from "@/components/tremorCharts/LineChart";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
 import { MyFilter } from "../my-ui/MyFilter";
-
-interface NetWorthData {
-  date: string;
-  assets: number;
-  liabilities: number;
-  netWorth: number;
-}
 
 const fixedData = {
   "1 Month": [

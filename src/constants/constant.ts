@@ -115,7 +115,7 @@ export enum DebtType {
   P2P = "p2p",
   OTHER = "other",
 }
-
+export const debtTypes = ["Loan", "Credit Card", "P2P", "Other"];
 // Repayment Frequency
 export enum RepaymentFrequency {
   WEEKLY = "weekly",
@@ -125,6 +125,14 @@ export enum RepaymentFrequency {
   YEARLY = "yearly",
   CUSTOM = "custom",
 }
+
+export const repaymentFrequency = [
+  "Weekly",
+  "Bi-Weekly",
+  "Monthly",
+  "Quarterly",
+  "Yearly",
+];
 
 // Asset Types
 export enum AssetType {

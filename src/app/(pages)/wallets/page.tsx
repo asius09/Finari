@@ -1,7 +1,6 @@
 "use client";
 
 import { BalanceCard } from "@/components/main/wallets-ui/BalanceCard";
-import { demoWallets } from "@/data/demo.wallets-data";
 
 export default function WalletsPage() {
   return (

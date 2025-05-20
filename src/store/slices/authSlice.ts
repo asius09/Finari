@@ -52,10 +52,8 @@ export const loginUser = createAsyncThunk(
         throw new Error(errorMessage);
       }
 
-      const {
-        data: { user },
-      } = responseData;
-      return user;
+      const { data } = responseData;
+      return data || null;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new Error(error.message);

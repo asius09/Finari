@@ -1,4 +1,3 @@
-import { WalletTypes } from "@/constants/constant";
 // --- User Profile  ---
 export interface UserProfile {
   id: string; // UUID (same as auth.user id)
@@ -33,14 +32,16 @@ export interface Transaction {
   created_at: string;
 }
 
-// --- Monthly Summary Table ---
-export interface MonthlySummary {
+// --- Financial Summary Table ---
+export interface FinacialSummary {
   id: string;
   user_id: string;
-  month: string; // format: 'YYYY-MM'
-  total_income: number;
-  total_expense: number;
-  total_saveing: number;
+  date: string; // format: 'YYYY-MM-DD'
+  income: number; //total income till now
+  expense: number; //total expense
+  saveing: number; //total saving
+  asets: number; //total assets till now
+  debts: number; //total debts till now
   created_at: string;
 }
 
@@ -58,6 +59,8 @@ export interface Debt {
   next_payment_date?: string; // ISO date
   payment_amount?: number; // Regular payment amount (if applicable)
   notes?: string; // For additional details (e.g., interest terms for P2P)
+  tenure: number;
+  tenure_type: "once" | "weekly" | "monthly" | "annually" | "custom";
   created_at: string;
 }
 

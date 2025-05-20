@@ -9,7 +9,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { InputComposer } from "@/components/main/transactions-ui/transaction-composers/InputComposer";
-import { Plus } from "lucide-react";
 import { useState } from "react";
 
 interface TransactionComposerProps {

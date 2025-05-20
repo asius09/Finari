@@ -23,7 +23,7 @@ const myData = [
 export const AssetCard = ({ setFilters, filter }: AssetCardProps) => {
   const currency = null; //TODO: add currecy
   const totalValue: number = 0; //TODO: add total value
-  const totalInvestmentValue = 0; //TODO: add total value
+  // const totalInvestmentValue = 0; //TODO: add total value
   const positve = false; //TODO:  add total value is greater than invesment or not.
 
   return (

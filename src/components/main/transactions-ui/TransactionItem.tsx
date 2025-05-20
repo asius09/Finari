@@ -3,14 +3,12 @@ import { z } from "zod";
 import { formatDate } from "@/utils/formatDate";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { RemoveEntry } from "../RemoveEntry";
 import { deleteTransaction } from "@/store/slices/transactionSlice";
 import { CustomToast } from "@/components/my-ui/CustomToast";
 import { toast } from "sonner";
-import { InputComposer } from "./transaction-composers/InputComposer";
 import { TransactionComposer } from "@/components/main/transactions-ui/transaction-composers/TransactionComposer";
 
 type TransactionItemProps = {

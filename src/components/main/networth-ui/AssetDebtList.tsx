@@ -9,6 +9,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { formatDate } from "@/utils/formatDate";
 import { AssetComposer } from "./AssetComposer";
+import { DebtComposer } from "./DebtComposer";
 
 type ViewSelectionType = "asset" | "debt";
 
@@ -61,11 +62,19 @@ export const AssetDebtList = () => {
           </Button>
         </div>
 
-        <AssetComposer
-          btnChildren="Add Asset"
-          formTitle="Create Asset"
-          btnClassName="py-0"
-        />
+        {viewSelection === "asset" ? (
+          <AssetComposer
+            btnChildren="Add Asset"
+            formTitle="Create Asset"
+            btnClassName="py-0"
+          />
+        ) : (
+          <DebtComposer
+            btnChildren="Add Dabt"
+            formTitle="Create Debt"
+            btnClassName="py-0"
+          />
+        )}
       </CardHeader>
       <CardContent>
         <ul className="mt-4" id={`${viewSelection}-list`}>

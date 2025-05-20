@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useAppSelector } from "@/store/hook";
 // import { formatCurrency } from "@/utils/formatCurrency";
 import { FinanceArrow } from "@/components/my-ui/FinanceArrow";
@@ -9,13 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import React, { useState } from "react";
 import { LineChart, TooltipProps } from "@/components/tremorCharts/LineChart";
 import { MyFilter } from "@/components/my-ui/MyFilter";
-
-interface NetWorthData {
-  date: string;
-  assets: number;
-  liabilities: number;
-  netWorth: number;
-}
 
 const fixedData = {
   "1 Month": [

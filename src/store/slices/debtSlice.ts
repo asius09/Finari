@@ -2,6 +2,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { Debt } from "@/types/modelTypes";
 import { LoadingType } from "@/constants/constant";
+import { z } from "zod";
+import { debtFormSchema, debtsSchema } from "@/schema/debts.schema";
 
 interface DebtsState {
   debts: Debt[];
@@ -23,15 +25,132 @@ const initialState: DebtsState = {
 // Async Thunk for fetching initial debts
 export const fetchInitialDebts = createAsyncThunk(
   "debts/fetchInitialDebts",
-  async () => {
-    const response = await fetch("/api/debts"); // Create this API route
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+  async ({ userId }: { userId: string }) => {
+    try {
+      if (!userId || userId === "") {
+        console.error("Fetching Debts Failed, no user ID present");
+        return;
+      }
+      const response = await fetch(`/api/debts?userId=${userId}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      return data.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log("Failed to Fetch Debts", error);
+      }
+      console.log("Failed to Fetch Debts", error);
     }
-    return await response.json();
   }
 );
 
+// Async Thunk for Add Debts
+export const addDebts = createAsyncThunk(
+  "debts/addwallet",
+  async ({
+    userId,
+    debt,
+  }: {
+    userId: string;
+    debt: z.infer<typeof debtFormSchema>;
+  }) => {
+    try {
+      if (!userId || userId === "") {
+        console.error("Fetching Debts Failed, no user ID present");
+        return;
+      }
+      const validateDebt = debtFormSchema.safeParse(debt);
+      if (!validateDebt.success) {
+        const error = validateDebt.error.flatten().fieldErrors;
+        console.error("Adding Debt Failed", error);
+      }
+      const response = await fetch(`/api/debts?userId=${userId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "applicaton/json",
+        },
+        body: JSON.stringify(debt),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP Error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      return data.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Failed to add debts: ", error);
+      }
+      console.error("Failed to add debts: ", error);
+    }
+  }
+);
+
+export const updateDebt = createAsyncThunk(
+  "debts/updatedDebt",
+  async ({
+    userId,
+    debt,
+  }: {
+    userId: string;
+    debt: z.infer<typeof debtsSchema>;
+  }) => {
+    try {
+      if (!userId || userId === "") {
+        console.error("Updating Debts Failed, no user ID present");
+        return;
+      }
+      const validateDebt = debtsSchema.safeParse(debt);
+      if (!validateDebt.success) {
+        const error = validateDebt.error.flatten().fieldErrors;
+        console.error("Updating Debt Failed", error);
+      }
+      const response = await fetch(`/api/debts?userId=${userId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(debt),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP Error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      return data.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error("Failed to update dabts:", error);
+      }
+      console.error("Failed to update debts: ", error);
+    }
+  }
+);
+
+export const deleteDebt = createAsyncThunk(
+  "debts/deleteDebt",
+  async (debtId: string) => {
+    try {
+      if (!debtId) {
+        console.error("Failed to delete debt, No Debt ID Present");
+      }
+      const response = await fetch(`/api/debts?id=${debtId}`);
+      if (!response.ok) {
+        throw new Error(`HTTP Error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      return { ...data.data, id: debtId };
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error("Failed to delete dabts:", error);
+      }
+      console.error("Failed to delete debts: ", error);
+    }
+  }
+);
+const calculateTotalOutstanding = (debts: Debt[]) => {
+  return debts.reduce((sum, debt) => sum + debt.outstanding_balance, 0);
+};
 const debtsSlice = createSlice({
   name: "debts",
   initialState,
@@ -40,10 +159,7 @@ const debtsSlice = createSlice({
       state.debts = action.payload;
       state.loading = "succeeded";
       state.error = null;
-      state.totalOutstanding = action.payload.reduce(
-        (sum, debt) => sum + debt.outstanding_balance,
-        0
-      );
+      state.totalOutstanding = calculateTotalOutstanding(action.payload);
     },
     addOptimisticDebt(state, action: PayloadAction<Debt>) {
       state.debts.push(action.payload);
@@ -75,15 +191,57 @@ const debtsSlice = createSlice({
           state.loading = "succeeded";
           state.error = null;
           state.debts = action.payload;
-          state.totalOutstanding = action.payload.reduce(
-            (sum, debt) => sum + debt.outstanding_balance,
-            0
-          );
+          state.totalOutstanding = calculateTotalOutstanding(action.payload);
         }
       )
       .addCase(fetchInitialDebts.rejected, (state, action) => {
         state.loading = "failed";
         state.error = action.error.message || "Failed to fetch debts.";
+      })
+      .addCase(addDebts.pending, state => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(addDebts.fulfilled, (state, action: PayloadAction<Debt>) => {
+        state.loading = "succeeded";
+        state.error = null;
+        state.debts.push(action.payload);
+        state.totalOutstanding = calculateTotalOutstanding(state.debts);
+      })
+      .addCase(addDebts.rejected, (state, action) => {
+        state.loading = "failed";
+        state.error = action.error.message || "Failed to add debt.";
+      })
+      .addCase(updateDebt.pending, state => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(updateDebt.fulfilled, (state, action: PayloadAction<Debt>) => {
+        state.loading = "succeeded";
+        state.error = null;
+        const index = state.debts.findIndex(
+          debt => debt.id === action.payload.id
+        );
+        state.debts[index] = action.payload;
+        state.totalOutstanding = calculateTotalOutstanding(state.debts);
+      })
+      .addCase(updateDebt.rejected, (state, action) => {
+        state.loading = "failed";
+        state.error = action.error.message || "Failed to update debt.";
+      })
+      .addCase(deleteDebt.pending, state => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(deleteDebt.fulfilled, (state, action: PayloadAction<Debt>) => {
+        state.loading = "succeeded";
+        state.error = null;
+        state.debts = state.debts.filter(debt => debt.id !== action.payload.id);
+        state.totalOutstanding = calculateTotalOutstanding(state.debts);
+      })
+      .addCase(deleteDebt.rejected, (state, action) => {
+        state.loading = "failed";
+        state.error = action.error.message || "Failed to delete debt.";
       });
   },
 });
