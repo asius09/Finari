@@ -5,6 +5,7 @@ import { MyFilter } from "@/components/my-ui/MyFilter";
 import { SparkLineChart } from "@/components/tremorCharts/SparkChart";
 import { Filters } from "@/constants/filter-constant";
 import { FinanceArrow } from "@/components/my-ui/FinanceArrow";
+import { useAppSelector } from "@/store/hook";
 
 interface AssetCardProps {
   //TODO: Decide do or not.
@@ -21,9 +22,10 @@ const myData = [
   // ... more data points
 ];
 export const AssetCard = ({ setFilters, filter }: AssetCardProps) => {
+  const { totalAssetsValue, totalInvestment } = useAppSelector(
+    state => state.asset
+  );
   const currency = null; //TODO: add currecy
-  const totalValue: number = 0; //TODO: add total value
-  // const totalInvestmentValue = 0; //TODO: add total value
   const positve = false; //TODO:  add total value is greater than invesment or not.
 
   return (
@@ -43,14 +45,14 @@ export const AssetCard = ({ setFilters, filter }: AssetCardProps) => {
         <div id="asset-content">
           <p className="text-lg font-semibold text-foreground flex items-center justify-start gap-1">
             <span className="text-muted-foreground">{currency || "$"}</span>
-            {totalValue}
+            {totalAssetsValue}
           </p>
 
           <p className="text-xs text-muted-foreground mt-4 flex flex-col justify-start items-start">
             <span>Investment</span>
             <span className="flex items-center justify-start">
               {currency || "$"}
-              {totalValue}
+              {totalInvestment}
             </span>
           </p>
         </div>

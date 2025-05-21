@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 
 /**
  * Generic API response type with type safety
@@ -27,7 +27,7 @@ export type ApiResponse<T = unknown> = {
  */
 export function successResponse<T>(
   data: T,
-  message: string = 'Success',
+  message: string = "Success",
   status: number = 200
 ): NextResponse<ApiResponse<T>> {
   return NextResponse.json<ApiResponse<T>>(
@@ -50,7 +50,7 @@ export function successResponse<T>(
  * errorResponse('Validation failed', 400, { email: ['Invalid email format'] })
  */
 export function errorResponse(
-  message: string = 'Something went wrong',
+  message: string = "Something went wrong",
   status: number = 500,
   errors?: Record<string, string[]>
 ): NextResponse<ApiResponse> {

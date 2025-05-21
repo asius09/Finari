@@ -2,13 +2,16 @@
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useAppSelector } from "@/store/hook";
-// import { formatCurrency } from "@/utils/formatCurrency";
 import { FinanceArrow } from "@/components/my-ui/FinanceArrow";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import React, { useState } from "react";
-import { LineChart, TooltipProps } from "@/components/tremorCharts/LineChart";
+import {
+  LineChart,
+  //  TooltipProps
+} from "@/components/tremorCharts/LineChart";
 import { MyFilter } from "@/components/my-ui/MyFilter";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const fixedData = {
   "1 Month": [
@@ -55,14 +58,13 @@ const fixedData = {
 };
 
 export const NetworthCard = () => {
+  // const isMobile = useIsMobile();
   const {
-    assets,
     loading: assetLoading,
     error: assetError,
     totalAssetsValue,
   } = useAppSelector(state => state.asset);
   const {
-    debts,
     loading: debtLoading,
     error: debtError,
     totalOutstanding,
@@ -88,17 +90,16 @@ export const NetworthCard = () => {
   graph btns 
   graph for all the networth
   */
-  const totalNetworth = Math.floor(Math.random() * 1000000) + 10000; // Random net worth between 10,000 and 1,000,000
-  const networthChangePercentage = (Math.random() * 20 - 10).toFixed(2); // Random percentage change between -10% and +10%
+  const networthChangePercentage = -20; // Random percentage change between -10% and +10%
   const isPositiveChange = Number(networthChangePercentage) >= 0;
   const [period, setPeriod] = useState("1 Year");
-  const [tooltipData, setTooltipData] = useState<TooltipProps | null>(null);
+  // const [tooltipData, setTooltipData] = useState<TooltipProps | null>(null);
   const currencyFormatter = (number: number) =>
-    `$${Intl.NumberFormat("us").format(number)}`;
+    `${Intl.NumberFormat("us").format(number)}`;
 
   const data = fixedData[period as keyof typeof fixedData];
   return (
-    <Card className="w-full flex-1 max-w-lg md:max-w-2xl p-4">
+    <Card className="w-full flex-1 md:max-w-2xl p-4">
       <CardHeader className="flex justify-between items-start gap-0">
         <div>
           <h3 className="text-sm font-medium text-muted-foreground">
@@ -108,10 +109,15 @@ export const NetworthCard = () => {
             className="flex items-baseline gap-1"
             aria-labelledby="networth-value"
           >
-            <span className="text-lg font-medium text-muted-foreground">
+            <span className="text-base md:text-lg font-medium text-muted-foreground">
               {currency === "USD" ? "$" : "₹"}
             </span>
-            <p className="text-3xl font-bold text-foreground">
+            <p
+              className={cn(
+                "text-2xl lg:text-3xl font-bold",
+                isNetWorthPostive ? "text-positive" : "text-negative"
+              )}
+            >
               {currencyFormatter(currentNetworth)}
             </p>
           </div>
@@ -127,7 +133,7 @@ export const NetworthCard = () => {
           <span
             className={cn(
               isPositiveChange ? "text-positive" : "text-negative",
-              "text-xs font-medium"
+              "text-[10px] lg:text-xs font-medium"
             )}
           >
             ({isPositiveChange ? "+" : "-"}512.20){" "}
@@ -146,7 +152,7 @@ export const NetworthCard = () => {
           />
         </div>
         <LineChart
-          className="h-36"
+          className="h-36 lg:h-56"
           data={data}
           index="date"
           categories={["netWorth"]}
@@ -159,14 +165,14 @@ export const NetworthCard = () => {
           valueFormatter={currencyFormatter}
           enableLegendSlider={true}
           colors={["primary"]}
-          tooltipCallback={props => {
-            if (props.active) {
-              setTooltipData(props);
-            } else {
-              setTooltipData(null);
-            }
-            return null;
-          }}
+          // tooltipCallback={props => {
+          //   if (props.active) {
+          //     setTooltipData(props);
+          //   } else {
+          //     // setTooltipData(null);
+          //   }
+          //   return null;
+          // }}
         />
       </CardContent>
     </Card>

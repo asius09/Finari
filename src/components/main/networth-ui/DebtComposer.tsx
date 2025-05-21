@@ -451,7 +451,7 @@ export function DebtComposer({
                     <FormField
                       control={debtForm.control}
                       name="repayment_frequency"
-                      render={({ field, fieldState }) => (
+                      render={({ field }) => (
                         <FormItem className="w-32">
                           <FormControl>
                             <DropdownMenu>

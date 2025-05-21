@@ -14,8 +14,8 @@ import { Greetings } from "@/constants/constant";
  */
 
 export const greetings = (
-  name: string = "Adiba",
-  lastlogin?: number, //TODO: implemnet Welcome messege and then dynamic good morning after some time.
+  name: string = "Adiba"
+  // lastlogin?: number, //TODO: implemnet Welcome messege and then dynamic good morning after some time.
 ): string => {
   const hour = new Date().getHours();
   const formatName = name.charAt(0).toUpperCase() + name.slice(1); //to make sure the first letter is capital

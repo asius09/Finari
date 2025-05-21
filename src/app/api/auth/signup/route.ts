@@ -1,12 +1,12 @@
-import { signupFormSchema } from '@/schema/signupForm.schema';
-import { createClient } from '@/utils/supabase/server';
+import { signupFormSchema } from "@/schema/signupForm.schema";
+import { createClient } from "@/utils/supabase/server";
 import {
   successResponse,
   errorResponse,
   ApiResponse,
-} from '@/types/api-response';
-import { DBTables } from '@/constants/constant';
-import { NextResponse } from 'next/server';
+} from "@/types/api-response";
+import { DBTables } from "@/constants/constant";
+import { NextResponse } from "next/server";
 
 /**
  * POST - /api/auth/signup
@@ -64,7 +64,7 @@ export async function POST(
 
     if (!parsed.success) {
       return errorResponse(
-        'Validation failed',
+        "Validation failed",
         400,
         parsed.error.flatten().fieldErrors
       );
@@ -74,13 +74,13 @@ export async function POST(
 
     const { data: userProfileData } = await supabase
       .from(DBTables.USER_PROFILES)
-      .select('*')
-      .eq('email', email)
+      .select("*")
+      .eq("email", email)
       .maybeSingle();
 
     if (userProfileData) {
-      return errorResponse('User already exists with the given email', 400, {
-        email: ['User already exists with the given email', 'Validation Error'],
+      return errorResponse("User already exists with the given email", 400, {
+        email: ["User already exists with the given email", "Validation Error"],
       });
     }
 
@@ -98,12 +98,12 @@ export async function POST(
       return errorResponse(error.message, 500);
     }
 
-    return successResponse(data, 'User created successfully', 201);
+    return successResponse(data, "User created successfully", 201);
   } catch (error: unknown) {
     if (error instanceof Error) {
       return errorResponse(error.message, 500);
     }
 
-    return errorResponse('An unknown error occurred', 500);
+    return errorResponse("An unknown error occurred", 500);
   }
 }

@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
+import Image from "next/image";
 
 interface LogoProps {
-  size?: 'small' | 'medium' | 'large' | 'xlarge';
+  size?: "small" | "medium" | "large" | "xlarge";
   aspectRatio?: number;
-  variant?: 'full' | 'character'; // Added variant prop to choose between full logo and character
+  variant?: "full" | "character"; // Added variant prop to choose between full logo and character
   className?: string;
 }
 
@@ -17,27 +17,30 @@ const sizeMap = {
 };
 
 export const Logo = ({
-  size = 'small',
+  size = "small",
   aspectRatio = 2,
-  variant = 'full',
-  className = '',
+  variant = "full",
+  className = "",
 }: LogoProps) => {
   const width = sizeMap[size];
   const height = width / aspectRatio;
 
   const imageSrc =
-    variant === 'full' ? '/finari-logo.svg' : '/finari-character.svg';
-  const altText = variant === 'full' ? 'Finari Logo' : 'Finari Character';
+    variant === "full" ? "/finari-logo.svg" : "/finari-character.svg";
+  const altText = variant === "full" ? "Finari Logo" : "Finari Character";
 
   return (
     <div style={{ width, height }} className={className}>
       <Image
+        priority={true}
+        placeholder="blur"
+        blurDataURL="/finari-logo.svg"
         src={imageSrc}
         alt={altText}
         width={width}
         height={height}
         className="w-full h-full"
-        style={{ objectFit: 'contain' }}
+        style={{ objectFit: "contain" }}
       />
     </div>
   );

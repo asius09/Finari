@@ -13,7 +13,7 @@ interface User {
 
 interface AuthState {
   isAuthenticated: boolean;
-  user: User | null;
+  user: Partial<User> | null;
   loading: LoadingType;
   error: string | null;
 }

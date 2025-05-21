@@ -22,9 +22,11 @@ export default async function SidebarLayout({ children }: SidebarLayoutProps) {
       <InitialHydrate userId={userId}>
         <div className="w-full min-h-screen flex bg-background overflow-x-hidden">
           <AppSidebar />
-          <main className="rounded-l-3xl w-full grid grid-rows-[auto_1fr] gap-6 bg-background pt-6 px-6">
+          <main className="rounded-l-3xl w-full grid grid-rows-[auto_1fr] gap-6 bg-background px-3 pt-3 md:pt-6 md:px-6">
             <Header />
-            <section id="main-content">{children}</section>
+            <section id="main-content" className="relative top-20 md:top-0">
+              {children}
+            </section>
           </main>
         </div>
       </InitialHydrate>

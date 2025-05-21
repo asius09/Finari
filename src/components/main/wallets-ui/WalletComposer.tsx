@@ -30,7 +30,7 @@ import { cn } from "@/lib/utils";
 import {
   addWallet,
   modifyWallet,
-  updateWallet,
+  // updateWallet,
 } from "@/store/slices/walletSlice";
 import { CustomToast } from "@/components/my-ui/CustomToast";
 import { toast } from "sonner";
@@ -108,7 +108,7 @@ export function WalletComposer({
         const result = await dispatch(
           addWallet({
             wallet: { ...data },
-            userId: user.id,
+            userId: user.id || "",
           })
         );
         if (addWallet.rejected.match(result)) {

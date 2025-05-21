@@ -8,6 +8,7 @@ import { z } from "zod";
 interface AssetsState {
   assets: Asset[];
   totalAssetsValue: number;
+  totalInvestment: number;
   loading: LoadingType;
   error: string | null;
 }
@@ -15,6 +16,7 @@ interface AssetsState {
 const initialState: AssetsState = {
   assets: [],
   totalAssetsValue: 0,
+  totalInvestment: 0,
   loading: "idle",
   error: null,
 };
@@ -82,6 +84,10 @@ const calculateAssetValue = (assets: Asset[]): number => {
   return assets.reduce((sum, asset) => sum + asset.current_value, 0);
 };
 
+const calculateTotalInvesment = (assets: Asset[]): number => {
+  return assets.reduce((sum, asset) => sum + (asset?.purchase_price || 0), 0);
+};
+
 const assetsSlice = createSlice({
   name: "assets",
   initialState,
@@ -118,6 +124,7 @@ const assetsSlice = createSlice({
           state.error = null;
           state.assets = action.payload;
           state.totalAssetsValue = calculateAssetValue(action.payload);
+          state.totalInvestment = calculateTotalInvesment(action.payload);
         }
       )
       .addCase(fetchInitialAssets.pending, state => {
@@ -133,6 +140,7 @@ const assetsSlice = createSlice({
         state.error = null;
         state.assets.push(action.payload);
         state.totalAssetsValue = calculateAssetValue(state.assets);
+        state.totalInvestment = calculateTotalInvesment(state.assets);
       })
       .addCase(addAsset.pending, state => {
         state.loading = "pending";

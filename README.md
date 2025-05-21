@@ -84,12 +84,12 @@ Finari is a minimalist, AI-assisted personal finance app designed to track every
 
 ### Phase 5: Assets & Debts Management
 
-- [ ] Create assets page with CRUD operations
-- [ ] Add form for new assets (type, value, description)
+- [x] Create assets page with CRUD operations
+- [x] Add form for new assets (type, value, description)
 - [ ] Display assets in table with sorting/filtering
 - [ ] Implement edit/delete functionality
 - [ ] Add asset type categorization (cash, investments, property, etc.)
-- [ ] Create debts page with CRUD operations
+- [x] Create debts page with CRUD operations
 - [ ] Add form for new debts (type, amount, interest rate, due date)
 - [ ] Display debts in table with sorting/filtering
 - [ ] Implement edit/delete functionality
@@ -249,6 +249,5 @@ We welcome contributions! Please follow these steps:
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-
 //API RESPONSE
-https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/inr.json 
+https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/inr.json
