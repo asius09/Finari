@@ -77,6 +77,8 @@ export enum AppRoutes {
   NETWORTH = "/networth",
   REPORT = "/report",
   NOTIFICATION = "/notification",
+  ASSETS = "/assets",
+  DEBTS = "/debts",
   PROFILE = "/profile",
   SETTINGS = "/settings",
   HELP = "/help",
@@ -135,12 +137,13 @@ export const repaymentFrequency = [
 ];
 
 // Asset Types
-export enum AssetType {
+export enum AssetTypeEnum {
   CASH = "cash",
   BANK_ACCOUNT = "bank_account",
   INVESTMENT = "investment",
   PROPERTY = "property",
   PERSONAL_ITEM = "personal_item",
+  STOCK = "stock",
   OTHER = "other",
 }
 

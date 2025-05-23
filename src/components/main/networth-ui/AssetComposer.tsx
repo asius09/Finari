@@ -29,7 +29,7 @@ import {
 } from "@radix-ui/react-dropdown-menu";
 import { Calendar as CalendarIcon, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { AssetType, assetTypes } from "@/constants/constant";
+import { AssetTypeEnum, assetTypes } from "@/constants/constant";
 import { MyInput } from "@/components/my-ui/MyInput";
 import {
   Popover,

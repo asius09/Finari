@@ -1,9 +1,11 @@
 // features/assets/assetsSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { Asset } from "@/types/modelTypes";
+import { assetSchema } from "@/schema/asset.schema";
 import { LoadingType } from "@/constants/constant";
 import { assetFormSchema } from "@/schema/asset.schema";
 import { z } from "zod";
+
+type Asset = z.infer<typeof assetSchema>;
 
 interface AssetsState {
   assets: Asset[];

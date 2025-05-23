@@ -10,6 +10,8 @@ import { cn } from "@/lib/utils";
 import { formatDate } from "@/utils/formatDate";
 import { AssetComposer } from "./AssetComposer";
 import { DebtComposer } from "./DebtComposer";
+import Link from "next/link";
+import { AppRoutes } from "@/constants/constant";
 
 type ViewSelectionType = "asset" | "debt";
 
@@ -177,22 +179,22 @@ export const AssetDebtList = () => {
             ))}
           {viewSelection === "asset"
             ? assets.length > 5 && (
-                <Button
-                  variant={"ghost"}
-                  className="text-sm text-muted-foreground hover:underline hover:text-primary"
+                <Link
+                  href={AppRoutes.ASSETS}
+                  className="text-sm text-muted-foreground hover:underline hover:text-primary flex justify-center items-center gap-2"
                 >
                   view more
-                  <ArrowRight />
-                </Button>
+                  <ArrowRight className="size-4" />
+                </Link>
               )
             : debts.length > 5 && (
-                <Button
-                  variant={"ghost"}
-                  className="text-sm text-muted-foreground hover:underline hover:text-primary"
+                <Link
+                  href={AppRoutes.DEBTS}
+                  className="text-sm text-muted-foreground hover:underline hover:text-primary flex justify-center items-center gap-2"
                 >
                   view more
-                  <ArrowRight />
-                </Button>
+                  <ArrowRight className="size-4" />
+                </Link>
               )}
         </ul>
       </CardContent>
