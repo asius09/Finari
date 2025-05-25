@@ -21,15 +21,15 @@ import {
   CardFooter,
   CardContent,
 } from "../ui/card";
-import { Logo } from "@/components/common/Logo";
+import { Logo } from "@/components/my-ui/Logo";
 import { useState } from "react";
-import { apiResponseSchema } from "@/schema/ApiResponse.schema";
 import { toast } from "sonner";
-import { CustomToast } from "@/components/common/CustomToast";
+import { CustomToast } from "@/components/my-ui/CustomToast";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { AppRoutes } from "@/constants/constant";
-import { PasswordInput } from "../common/PasswordInput";
+import { PasswordInput } from "@/components/my-ui/PasswordInput";
+import { MyButton } from "../my-ui/MyButton";
 
 export const SignupForm = () => {
   const route = useRouter();
@@ -52,9 +52,8 @@ export const SignupForm = () => {
         body: JSON.stringify(data),
       });
 
-      const responseData = apiResponseSchema.parse(await response.json());
-
-      if (responseData.success) {
+      const responseData = await response.json();
+      if (responseData) {
         toast.custom(() => (
           <CustomToast
             type="success"
@@ -62,15 +61,7 @@ export const SignupForm = () => {
             message="Account created successfully! Redirecting to login..."
           />
         ));
-        setTimeout(() => route.replace(AppRoutes.LOGIN), 2000);
-      } else {
-        toast.custom(() => (
-          <CustomToast
-            type="error"
-            title="Signup Failed"
-            message={responseData.message || "Failed to create account"}
-          />
-        ));
+        route.replace(AppRoutes.LOGIN);
       }
     } catch (error) {
       console.error("Signup error:", error);
@@ -165,14 +156,14 @@ export const SignupForm = () => {
                 </FormItem>
               )}
             />
-            <Button
+            <MyButton
               type="submit"
               variant="gradient"
               className="font-medium w-full h-10"
               disabled={loading}
             >
               {loading ? <Loader className="animate-spin" /> : "Enter Finari"}
-            </Button>
+            </MyButton>
           </form>
         </Form>
         <p className="text-center text-xs mt-4">

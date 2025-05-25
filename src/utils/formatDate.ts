@@ -99,7 +99,7 @@ export const formatDate = (
 
     case "dayleft":
       const toDate = dateObj.getTime();
-      const nowDate = now.getTime();
+      const nowDate = from ? new Date(from).getTime() : now.getTime();
       const timeDifference = toDate - nowDate;
       const dayLeft = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
       return `${dayLeft}d`;

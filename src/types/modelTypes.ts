@@ -83,7 +83,7 @@ export interface Asset {
   updated_at?: string; // ISO timestamp (when current_value was last updated)
 
   // Flexible details object to hold any asset-specific information
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
 }
 
 /*

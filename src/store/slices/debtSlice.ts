@@ -254,8 +254,4 @@ export const {
   resetState,
 } = debtsSlice.actions;
 
-export const selectDebts = (state: any) => state.debts.debts;
-export const selectDebtsLoading = (state: any) => state.debts.loading;
-export const selectDebtsError = (state: any) => state.debts.error;
-
 export default debtsSlice.reducer;

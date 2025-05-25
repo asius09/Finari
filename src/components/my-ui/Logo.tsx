@@ -25,9 +25,8 @@ export const Logo = ({
   const width = sizeMap[size];
   const height = width / aspectRatio;
 
-  const imageSrc =
-    variant === "full" ? "/finari-logo.svg" : "/finari-character.svg";
-  const altText = variant === "full" ? "Finari Logo" : "Finari Character";
+  const imageSrc = variant === "full" ? "/finari-logo.svg" : "/f-logo.svg";
+  const altText = "Finari Logo";
 
   return (
     <div style={{ width, height }} className={className}>

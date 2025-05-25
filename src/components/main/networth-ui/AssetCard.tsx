@@ -3,7 +3,7 @@
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { MyFilter } from "@/components/my-ui/MyFilter";
 import { SparkLineChart } from "@/components/tremorCharts/SparkChart";
-import { Filters } from "@/constants/filter-constant";
+import { Filters } from "@/constants/filter.constant";
 import { FinanceArrow } from "@/components/my-ui/FinanceArrow";
 import { useAppSelector } from "@/store/hook";
 

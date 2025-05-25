@@ -330,3 +330,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 //API RESPONSE
 https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/inr.json
+## Documentation
+
+The documentation in the `docs` folder is organized into the following categories:
+
+- **Components**: Documentation for components
+- **Configuration**: Documentation for configuration
+- **Commit Standards**: Documentation for commit standards
+- **Contributing**: Documentation for contributing
+- **License**: Documentation for license

@@ -73,7 +73,7 @@ export const AssetComposer = ({
     resolver: zodResolver(assetFormSchema),
     defaultValues: {
       name: "",
-      asset_type: AssetType.INVESTMENT,
+      asset_type: AssetTypeEnum.INVESTMENT,
       purchase_price: 0,
       purchase_date: format(new Date(), "yyyy-MM-dd"),
       notes: "",

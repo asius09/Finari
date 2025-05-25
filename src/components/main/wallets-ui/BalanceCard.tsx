@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { MyFilter } from "@/components/my-ui/MyFilter";
 import { LoadingTypeEnum } from "@/constants/constant";
-import { Filters, PERIOD_FILTERS } from "@/constants/filter-constant";
+import { Filters, PERIOD_FILTERS } from "@/constants/filter.constant";
 import { LineChart } from "@/components/tremorCharts/LineChart";
 import { Separator } from "@/components/ui/separator";
 import { chartColors } from "@/lib/charUtils";

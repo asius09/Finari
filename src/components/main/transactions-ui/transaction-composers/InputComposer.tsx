@@ -47,7 +47,7 @@ import {
 } from "@/store/slices/transactionSlice";
 import { toast } from "sonner";
 import { CustomToast } from "@/components/my-ui/CustomToast";
-import { CATEGORY_FILTERS } from "@/constants/filter-constant";
+import { CATEGORY_FILTERS } from "@/constants/filter.constant";
 import { Transaction } from "@/types/modelTypes";
 
 // Define the type for transaction form values using Zod schema

@@ -10,9 +10,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { assetSchema } from "@/schema/asset.schema";
 import { z } from "zod";
+import { formatAssetType } from "@/utils/formateAssetType";
+import { cn } from "@/lib/utils";
+import { assetTypeColorMap } from "@/constants/colors";
+import { chartColors } from "@/lib/charUtils";
 
 type AssetType = z.infer<typeof assetSchema>;
 
@@ -25,14 +28,13 @@ export const AssetTable = ({
   assets = [],
   currency = "₹",
 }: AssetTableProps) => {
-  const isMobile = useIsMobile();
   let count = 0;
 
   return (
-    <div className="rounded-lg border bg-background shadow-sm">
+    <div className=" bg-background shadow-sm">
       <Table className="min-w-full p-2 lg:p-4">
         <TableHeader>
-          <TableRow className="bg-muted/30 hover:bg-muted/30 text-sm md:text-base">
+          <TableRow className="bg-muted/30 hover:bg-muted/30 text-sm md:text-sm border">
             <TableHead className="text-muted/90">#</TableHead>
             <TableHead className="min-w-[60px] hidden md:table-cell">
               Type
@@ -54,8 +56,20 @@ export const AssetTable = ({
             <TableRow key={asset.id}>
               <TableCell>{++count}</TableCell>
               <TableCell className="hidden md:table-cell">
-                <Badge variant="outline" className="text-xs px-2 py-0.5">
-                  {asset.asset_type}
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    "text-xs px-2 py-0.5",
+                    `${
+                      chartColors[
+                        assetTypeColorMap[
+                          asset.asset_type as keyof typeof assetTypeColorMap
+                        ] as keyof typeof chartColors
+                      ].bg
+                    }/30`
+                  )}
+                >
+                  {formatAssetType(asset.asset_type)}
                 </Badge>
               </TableCell>
               <TableCell>{asset.name}</TableCell>

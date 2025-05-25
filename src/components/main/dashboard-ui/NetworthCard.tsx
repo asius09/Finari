@@ -11,7 +11,6 @@ import {
   //  TooltipProps
 } from "@/components/tremorCharts/LineChart";
 import { MyFilter } from "@/components/my-ui/MyFilter";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 const fixedData = {
   "1 Month": [

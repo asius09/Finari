@@ -162,10 +162,4 @@ const userSlice = createSlice({
 export const { setUserProfileFromHydration, clearUserProfileError } =
   userSlice.actions;
 
-export const selectUserProfile = (state: any) => state.user.profile;
-export const selectUserProfileLoading = (state: any) => state.user.loading;
-export const selectUserProfileError = (state: any) => state.user.error;
-export const selectUserTheme = (state: any) => state.user.profile?.theme;
-export const selectUserCurrency = (state: any) => state.user.profile?.currency;
-
 export default userSlice.reducer;

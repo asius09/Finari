@@ -3,7 +3,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { LoadingType } from "@/constants/constant";
 import { loginFormSchema } from "@/schema/loginForm.schema";
-import { apiResponseSchema } from "@/schema/ApiResponse.schema";
 import { z } from "zod";
 
 interface User {
@@ -35,7 +34,7 @@ export const loginUser = createAsyncThunk(
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(credentials),
       });
-      const responseData = apiResponseSchema.parse(await response.json());
+      const responseData = await response.json();
 
       if (!responseData.success) {
         const { errors } = responseData;
@@ -180,10 +179,5 @@ const authSlice = createSlice({
 });
 
 export const { setAuthStateFromHydration, clearAuthError } = authSlice.actions;
-
-export const selectIsAuthenticated = (state: any) => state.auth.isAuthenticated;
-export const selectUser = (state: any) => state.auth.user;
-export const selectAuthLoading = (state: any) => state.auth.loading;
-export const selectAuthError = (state: any) => state.auth.error;
 
 export default authSlice.reducer;

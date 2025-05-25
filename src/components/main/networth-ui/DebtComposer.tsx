@@ -174,7 +174,7 @@ export function DebtComposer({
         notes: debt.notes,
       });
     }
-  }, [debtId]);
+  }, [debtId, debt]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

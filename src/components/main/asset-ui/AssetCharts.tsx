@@ -3,7 +3,7 @@
 import { MyFilter } from "@/components/my-ui/MyFilter";
 import { LineChart } from "@/components/tremorCharts/LineChart";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Filters, PeriodFilter } from "@/constants/filter-constant";
+import { Filters, PeriodFilter } from "@/constants/filter.constant";
 import {
   endOfMonth,
   endOfWeek,
@@ -22,10 +22,10 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { assetSchema } from "@/schema/asset.schema";
-import { string, z } from "zod";
+import { z } from "zod";
 import { chartColors } from "@/lib/charUtils";
-import { assetTypes, AssetTypeEnum } from "@/constants/constant";
-import { assetTypeColors } from "@/constants/colors";
+import { assetTypes } from "@/constants/constant";
+import { assetTypeColorMap } from "@/constants/colors";
 import { DonutChart } from "@/components/tremorCharts/DonutChart";
 
 type AssetType = z.infer<typeof assetSchema>;
@@ -160,7 +160,6 @@ export const AssetCharts = ({
     filter: PeriodFilter
   ): string => {
     const date = parseISO(dateString);
-    const now = new Date();
     let formattedDate: string;
 
     switch (filter) {
@@ -274,28 +273,21 @@ export const AssetCharts = ({
     processAssetData(data, selectedPeriod);
   }, [selectedPeriod, data]);
 
-  const assetTypeColorMap: Record<AssetTypeEnum, keyof typeof chartColors> = {
-    [AssetTypeEnum.CASH]: "emerald",
-    [AssetTypeEnum.BANK_ACCOUNT]: "blue",
-    [AssetTypeEnum.INVESTMENT]: "orange",
-    [AssetTypeEnum.STOCK]: "yellow",
-    [AssetTypeEnum.PROPERTY]: "violet",
-    [AssetTypeEnum.PERSONAL_ITEM]: "rose",
-    [AssetTypeEnum.OTHER]: "gray",
-  };
-
   useEffect(() => {
     const assetTypesValue = assetTypes.map(type => {
       const value = assets
         .filter(asset => asset.asset_type === type)
         .reduce((sum, asset) => sum + asset.current_value, 0);
 
-      const color : string =
-        chartColors[assetTypeColorMap[type]].text +
+      const color: string =
+        chartColors[assetTypeColorMap[type as keyof typeof assetTypeColorMap]]
+          .text +
         " " +
-        chartColors[assetTypeColorMap[type]].bg;
+        chartColors[assetTypeColorMap[type as keyof typeof assetTypeColorMap]]
+          .bg;
 
-      const colorKey = assetTypeColorMap[type] || "gray";
+      const colorKey =
+        assetTypeColorMap[type as keyof typeof assetTypeColorMap] || "gray";
 
       return {
         type: type.charAt(0).toUpperCase() + type.slice(1).replace("_", " "),
@@ -307,6 +299,10 @@ export const AssetCharts = ({
 
     setAssetTypesValue(assetTypesValue);
   }, [assets]);
+
+  const chartCategoryColors: (keyof typeof chartColors)[] = assetTypesValue.map(
+    type => type.chartColor as keyof typeof chartColors
+  );
 
   return (
     <section className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -332,7 +328,7 @@ export const AssetCharts = ({
         </CardHeader>
         <CardContent>
           <LineChart
-            className="h-60"
+            className="h-40"
             data={filterData}
             index="date"
             categories={["asset"]}
@@ -371,7 +367,10 @@ export const AssetCharts = ({
           <ul className="w-40">
             {assetTypesValue.map(type =>
               type.value ? (
-                <li className="flex items-center justify-start gap-2">
+                <li
+                  className="flex items-center justify-start gap-2"
+                  key={type.type}
+                >
                   <div className={cn("h-2 w-2 rounded-full", type.color)}></div>
                   <p className="text-sm font-light">{type.type}</p>
                 </li>
@@ -380,12 +379,12 @@ export const AssetCharts = ({
           </ul>
           <div className="w-full h-full flex items-center justify-cente">
             <DonutChart
-              className="h-64 cursor-pointer mx-auto"
+              className="h-40 cursor-pointer mx-auto"
               data={assetTypesValue}
               variant="pie"
               category="type"
               value="value"
-              colors={assetTypesValue.map(type => type.chartColor)}
+              colors={chartCategoryColors}
               showLabel={true}
             />
           </div>
