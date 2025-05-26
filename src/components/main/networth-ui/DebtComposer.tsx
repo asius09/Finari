@@ -11,7 +11,7 @@ import {
   debtTypes,
   repaymentFrequency,
   RepaymentFrequency,
-} from "@/constants/constant";
+} from "@/constants";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import {

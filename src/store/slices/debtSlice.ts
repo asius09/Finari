@@ -1,7 +1,7 @@
 // features/debts/debtsSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { Debt } from "@/types/modelTypes";
-import { LoadingType } from "@/constants/constant";
+import { LoadingTypeEnum } from "@/constants";
 import { z } from "zod";
 import { debtFormSchema, debtsSchema } from "@/schema/debts.schema";
 
@@ -10,7 +10,7 @@ interface DebtsState {
   totalOutstanding: number;
   totalToPay: number;
   //TODO: add total time to pay all
-  loading: LoadingType;
+  loading: LoadingTypeEnum;
   error: string | null;
 }
 
@@ -18,7 +18,7 @@ const initialState: DebtsState = {
   totalOutstanding: 0,
   totalToPay: 0,
   debts: [],
-  loading: "idle",
+  loading: LoadingTypeEnum.IDLE,
   error: null,
 };
 
@@ -157,7 +157,7 @@ const debtsSlice = createSlice({
   reducers: {
     setInitialDebts(state, action: PayloadAction<Debt[]>) {
       state.debts = action.payload;
-      state.loading = "succeeded";
+      state.loading = LoadingTypeEnum.SUCCEEDED;
       state.error = null;
       state.totalOutstanding = calculateTotalOutstanding(action.payload);
     },
@@ -182,42 +182,42 @@ const debtsSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchInitialDebts.pending, state => {
-        state.loading = "pending";
+        state.loading = LoadingTypeEnum.PENDING;
         state.error = null;
       })
       .addCase(
         fetchInitialDebts.fulfilled,
         (state, action: PayloadAction<Debt[]>) => {
-          state.loading = "succeeded";
+          state.loading = LoadingTypeEnum.SUCCEEDED;
           state.error = null;
           state.debts = action.payload;
           state.totalOutstanding = calculateTotalOutstanding(action.payload);
         }
       )
       .addCase(fetchInitialDebts.rejected, (state, action) => {
-        state.loading = "failed";
+        state.loading = LoadingTypeEnum.FAILED;
         state.error = action.error.message || "Failed to fetch debts.";
       })
       .addCase(addDebts.pending, state => {
-        state.loading = "pending";
+        state.loading = LoadingTypeEnum.PENDING;
         state.error = null;
       })
       .addCase(addDebts.fulfilled, (state, action: PayloadAction<Debt>) => {
-        state.loading = "succeeded";
+        state.loading = LoadingTypeEnum.SUCCEEDED;
         state.error = null;
         state.debts.push(action.payload);
         state.totalOutstanding = calculateTotalOutstanding(state.debts);
       })
       .addCase(addDebts.rejected, (state, action) => {
-        state.loading = "failed";
+        state.loading = LoadingTypeEnum.FAILED;
         state.error = action.error.message || "Failed to add debt.";
       })
       .addCase(updateDebt.pending, state => {
-        state.loading = "pending";
+        state.loading = LoadingTypeEnum.PENDING;
         state.error = null;
       })
       .addCase(updateDebt.fulfilled, (state, action: PayloadAction<Debt>) => {
-        state.loading = "succeeded";
+        state.loading = LoadingTypeEnum.SUCCEEDED;
         state.error = null;
         const index = state.debts.findIndex(
           debt => debt.id === action.payload.id
@@ -226,21 +226,21 @@ const debtsSlice = createSlice({
         state.totalOutstanding = calculateTotalOutstanding(state.debts);
       })
       .addCase(updateDebt.rejected, (state, action) => {
-        state.loading = "failed";
+        state.loading = LoadingTypeEnum.FAILED;
         state.error = action.error.message || "Failed to update debt.";
       })
       .addCase(deleteDebt.pending, state => {
-        state.loading = "pending";
+        state.loading = LoadingTypeEnum.PENDING;
         state.error = null;
       })
       .addCase(deleteDebt.fulfilled, (state, action: PayloadAction<Debt>) => {
-        state.loading = "succeeded";
+        state.loading = LoadingTypeEnum.SUCCEEDED;
         state.error = null;
         state.debts = state.debts.filter(debt => debt.id !== action.payload.id);
         state.totalOutstanding = calculateTotalOutstanding(state.debts);
       })
       .addCase(deleteDebt.rejected, (state, action) => {
-        state.loading = "failed";
+        state.loading = LoadingTypeEnum.FAILED;
         state.error = action.error.message || "Failed to delete debt.";
       });
   },

@@ -1,5 +1,5 @@
 "use client";
-import { Greetings } from "@/constants/constant";
+import { Greetings } from "@/constants";
 
 /**
  * Returns an appropriate greeting based on the current time of day.

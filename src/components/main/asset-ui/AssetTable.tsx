@@ -14,7 +14,7 @@ import { assetSchema } from "@/schema/asset.schema";
 import { z } from "zod";
 import { formatAssetType } from "@/utils/formateAssetType";
 import { cn } from "@/lib/utils";
-import { assetTypeColorMap } from "@/constants/colors";
+import { assetTypeColorMap } from "@/constants";
 import { chartColors } from "@/lib/charUtils";
 
 type AssetType = z.infer<typeof assetSchema>;

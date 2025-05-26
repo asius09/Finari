@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { z } from "zod";
-import { LoadingType, WalletType } from "@/constants/constant";
+import { LoadingTypeEnum, WalletTypesEnum } from "@/constants";
 
 export const walletSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1, "Wallet name is required"),
-  type: z.enum(Object.values(WalletType) as [string, ...string[]]),
+  type: z.enum(Object.values(WalletTypesEnum) as [string, ...string[]]),
   balance: z.number().min(0, "Balance cannot be negative"),
   icon: z.string().optional(),
 });
@@ -14,7 +14,7 @@ export type Wallet = z.infer<typeof walletSchema>;
 
 interface WalletState {
   wallets: Wallet[];
-  loading: LoadingType;
+  loading: LoadingTypeEnum;
   error: string | null;
   totalBalance: number;
 }
@@ -22,7 +22,7 @@ interface WalletState {
 const initialState: WalletState = {
   wallets: [],
   totalBalance: 0,
-  loading: "idle",
+  loading: LoadingTypeEnum.IDLE,
   error: null,
 };
 
@@ -173,63 +173,63 @@ const walletSlice = createSlice({
     hydrateWallets: (state, action: PayloadAction<Wallet[]>) => {
       state.wallets = action.payload;
       state.totalBalance = calculateTotalBalance(action.payload);
-      state.loading = "succeeded";
+      state.loading = LoadingTypeEnum.SUCCEEDED;
       state.error = null;
     },
   },
   extraReducers: builder => {
     builder
       .addCase(fetchWallets.pending, state => {
-        state.loading = "pending";
+        state.loading = LoadingTypeEnum.PENDING;
         state.error = null;
       })
       .addCase(fetchWallets.fulfilled, (state, action) => {
-        state.loading = "succeeded";
+        state.loading = LoadingTypeEnum.SUCCEEDED;
         state.wallets = action.payload;
         state.totalBalance = calculateTotalBalance(action.payload);
       })
       .addCase(fetchWallets.rejected, (state, action) => {
-        state.loading = "failed";
+        state.loading = LoadingTypeEnum.FAILED;
         state.error = (action.payload as string) || "Failed to fetch wallets";
       })
       .addCase(addWallet.pending, state => {
-        state.loading = "pending";
+        state.loading = LoadingTypeEnum.PENDING;
         state.error = null;
       })
       .addCase(addWallet.fulfilled, (state, action) => {
-        state.loading = "succeeded";
+        state.loading = LoadingTypeEnum.SUCCEEDED;
         state.wallets.push(action.payload);
         state.totalBalance = calculateTotalBalance(state.wallets);
       })
       .addCase(addWallet.rejected, (state, action) => {
-        state.loading = "failed";
+        state.loading = LoadingTypeEnum.FAILED;
         state.error = (action.payload as string) || "Failed to add wallet";
       })
       .addCase(removeWallet.pending, state => {
-        state.loading = "pending";
+        state.loading = LoadingTypeEnum.PENDING;
         state.error = null;
       })
       .addCase(removeWallet.fulfilled, (state, action) => {
-        state.loading = "succeeded";
+        state.loading = LoadingTypeEnum.SUCCEEDED;
         state.wallets = state.wallets.filter(
           wallet => wallet.id !== action.payload.id
         );
         state.totalBalance = calculateTotalBalance(state.wallets);
       })
       .addCase(removeWallet.rejected, (state, action) => {
-        state.loading = "failed";
+        state.loading = LoadingTypeEnum.FAILED;
         state.error = (action.payload as string) || "Failed to remove wallet";
       })
       .addCase(modifyWallet.pending, state => {
-        state.loading = "pending";
+        state.loading = LoadingTypeEnum.PENDING;
         state.error = null;
       })
       .addCase(modifyWallet.rejected, (state, action) => {
-        state.loading = "failed";
+        state.loading = LoadingTypeEnum.FAILED;
         state.error = (action.payload as string) || "Failed to update wallet";
       })
       .addCase(modifyWallet.fulfilled, (state, action) => {
-        state.loading = "succeeded";
+        state.loading = LoadingTypeEnum.SUCCEEDED;
         state.wallets = state.wallets.map(wallet =>
           wallet.id === action.payload?.id ? action.payload : wallet
         );

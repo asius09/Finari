@@ -6,7 +6,7 @@ import { formatDate } from "@/utils/formatDate";
 import { greetings } from "@/utils/greetings";
 import { Bell, Plus } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { AppRoutes } from "@/constants/constant";
+import { AppRoutes } from "@/constants";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { TransactionComposer } from "@/components/main/transactions-ui/transaction-composers/TransactionComposer";

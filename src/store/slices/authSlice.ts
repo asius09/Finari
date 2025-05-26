@@ -1,7 +1,7 @@
 "use client";
 // features/auth/authSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { LoadingType } from "@/constants/constant";
+import { LoadingTypeEnum } from "@/constants";
 import { loginFormSchema } from "@/schema/loginForm.schema";
 import { z } from "zod";
 
@@ -13,14 +13,14 @@ interface User {
 interface AuthState {
   isAuthenticated: boolean;
   user: Partial<User> | null;
-  loading: LoadingType;
+  loading: LoadingTypeEnum;
   error: string | null;
 }
 
 const initialState: AuthState = {
   isAuthenticated: false,
   user: null,
-  loading: "idle",
+  loading: LoadingTypeEnum.IDLE,
   error: null,
 };
 
@@ -111,7 +111,7 @@ const authSlice = createSlice({
     ) {
       state.isAuthenticated = action.payload.isAuthenticated;
       state.user = action.payload.user;
-      state.loading = "succeeded";
+      state.loading = LoadingTypeEnum.SUCCEEDED;
       state.error = null;
     },
     clearAuthError(state) {
@@ -121,37 +121,37 @@ const authSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(loginUser.pending, state => {
-        state.loading = "pending";
+        state.loading = LoadingTypeEnum.PENDING;
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.loading = "succeeded";
+        state.loading = LoadingTypeEnum.SUCCEEDED;
         state.isAuthenticated = true;
         state.user = action.payload;
         state.error = null;
       })
       .addCase(loginUser.rejected, (state, action) => {
-        state.loading = "failed";
+        state.loading = LoadingTypeEnum.FAILED;
         state.error = action.error?.message || "Login failed.";
         state.isAuthenticated = false;
         state.user = null;
       })
       .addCase(logoutUser.pending, state => {
-        state.loading = "pending";
+        state.loading = LoadingTypeEnum.PENDING;
         state.error = null;
       })
       .addCase(logoutUser.fulfilled, state => {
-        state.loading = "succeeded";
+        state.loading = LoadingTypeEnum.SUCCEEDED;
         state.isAuthenticated = false;
         state.user = null;
         state.error = null;
       })
       .addCase(logoutUser.rejected, (state, action) => {
-        state.loading = "failed";
+        state.loading = LoadingTypeEnum.FAILED;
         state.error = action.error?.message || "Logout failed.";
       })
       .addCase(checkAuthStatus.pending, state => {
-        state.loading = "pending";
+        state.loading = LoadingTypeEnum.PENDING;
         state.error = null;
       })
       .addCase(
@@ -163,14 +163,14 @@ const authSlice = createSlice({
             user: User | null;
           }>
         ) => {
-          state.loading = "succeeded";
+          state.loading = LoadingTypeEnum.SUCCEEDED;
           state.isAuthenticated = action.payload.isAuthenticated;
           state.user = action.payload.user;
           state.error = null;
         }
       )
       .addCase(checkAuthStatus.rejected, (state, action) => {
-        state.loading = "failed";
+        state.loading = LoadingTypeEnum.FAILED;
         state.error = action.error?.message || "Failed to check auth status.";
         state.isAuthenticated = false;
         state.user = null;

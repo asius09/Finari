@@ -11,18 +11,21 @@ export enum DBTables {
 }
 
 // App theme
-export enum Theme {
-  LIGHT = "light",
-  DARK = "dark",
-}
+export const Theme = {
+  LIGHT: "light",
+  DARK: "dark",
+} as const;
+
+export type ThemeTypes = (typeof Theme)[keyof typeof Theme];
 
 // Currency options (add more as needed)
-export enum Currency {
-  INR = "INR",
-  USD = "USD",
-  EUR = "EUR",
-}
+export const Currency = {
+  INR: "INR",
+  USD: "USD",
+  EUR: "EUR",
+} as const;
 
+export type CurrencyTypes = (typeof Currency)[keyof typeof Currency];
 // App routes
 export enum AppRoutes {
   HOME = "/",

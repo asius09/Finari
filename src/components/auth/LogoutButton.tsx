@@ -6,7 +6,7 @@ import { Loader2, LogOutIcon } from "lucide-react";
 import { CustomToast } from "../my-ui/CustomToast";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { AppRoutes } from "@/constants/constant";
+import { AppRoutes } from "@/constants";
 import { useState } from "react";
 import { logoutUser } from "@/store/slices/authSlice";
 

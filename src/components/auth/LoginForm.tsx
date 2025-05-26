@@ -24,14 +24,14 @@ import { Logo } from "@/components/my-ui/Logo";
 import { toast } from "sonner";
 import { CustomToast } from "@/components/my-ui/CustomToast";
 import { Loader } from "lucide-react";
-import { AppRoutes } from "@/constants/constant";
+import { AppRoutes } from "@/constants";
 import { useRouter } from "next/navigation";
 import { PasswordInput } from "../my-ui/PasswordInput";
 import { MyButton } from "../my-ui/MyButton";
 import { MyInput } from "../my-ui/MyInput";
 import { loginUser } from "@/store/slices/authSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { LoadingTypeEnum } from "@/constants/constant";
+import { LoadingTypeEnum } from "@/constants";
 
 export const LoginForm = () => {
   const route = useRouter();

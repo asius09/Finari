@@ -47,7 +47,7 @@ import {
 } from "@/store/slices/transactionSlice";
 import { toast } from "sonner";
 import { CustomToast } from "@/components/my-ui/CustomToast";
-import { CATEGORY_FILTERS } from "@/constants/filter.constant";
+import { CATEGORY_FILTERS } from "@/constants";
 import { Transaction } from "@/types/modelTypes";
 
 // Define the type for transaction form values using Zod schema
@@ -91,7 +91,7 @@ export const InputComposer = ({
   });
 
   useEffect(() => {
-    if (transactionId) {
+    if (transactionId && isEdit) {
       const foundTransaction = transactions.find(
         transaction => transactionId === transaction.id
       );
@@ -105,9 +105,23 @@ export const InputComposer = ({
           description: foundTransaction.description,
           date: foundTransaction.date,
         });
+      } else {
+        console.error("Transaction not found for ID:", transactionId);
+        setOpen(false); // Close the dialog if transaction not found
       }
+    } else {
+      // Reset form for new transaction
+      form.reset({
+        wallet_id: "",
+        amount: 0,
+        type: "expense",
+        category: "",
+        description: "",
+        date: new Date().toISOString(),
+      });
+      setTransactionToUpdate(null);
     }
-  }, [transactionId, isEdit]);
+  }, [transactionId, isEdit, transactions, form, setOpen]);
 
   const [date, setDate] = useState<Date | undefined>(new Date());
 

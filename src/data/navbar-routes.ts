@@ -1,4 +1,4 @@
-import { AppRoutes } from "@/constants/constant";
+import { AppRoutes } from "@/constants";
 import {
   List,
   Proportions,

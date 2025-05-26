@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { LoadingTypeEnum, WalletTypes } from "@/constants/constant";
+import { LoadingTypeEnum, WalletTypesEnum } from "@/constants";
 import { cn } from "@/lib/utils";
 import {
   addWallet,
@@ -139,7 +139,7 @@ export function WalletComposer({
     }
   };
 
-  const walletOptions = WalletTypes.map(type => ({
+  const walletOptions = Object.values(WalletTypesEnum).map((type: string) => ({
     title: type.charAt(0).toUpperCase() + type.slice(1),
     value: type,
     icon:

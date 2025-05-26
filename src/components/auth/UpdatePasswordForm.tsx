@@ -14,14 +14,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
-import { Logo } from "@/components/common/Logo";
+import { Logo } from "@/components/my-ui/Logo";
 import { useState } from "react";
 import { toast } from "sonner";
-import { CustomToast } from "@/components/common/CustomToast";
+import { CustomToast } from "@/components/my-ui/CustomToast";
 import { Loader } from "lucide-react";
-import { AppRoutes } from "@/constants/constant";
+import { AppRoutes } from "@/constants";
 import { useRouter } from "next/navigation";
-import { PasswordInput } from "../common/PasswordInput";
+import { PasswordInput } from "@/components/my-ui/PasswordInput";
 import { createClient } from "@/utils/supabase/client";
 
 export const UpdatePasswordForm = () => {

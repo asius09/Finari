@@ -14,7 +14,7 @@ import {
   WALLET_FILTERS,
   Filters,
   CATEGORY_FILTERS,
-} from "@/constants/filter.constant";
+} from "@/constants";
 import { cn } from "@/lib/utils";
 
 interface FilterProps {

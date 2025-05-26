@@ -3,7 +3,7 @@
 import { MyFilter } from "@/components/my-ui/MyFilter";
 import { LineChart } from "@/components/tremorCharts/LineChart";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Filters, PeriodFilter } from "@/constants/filter.constant";
+import { Filters, PeriodFilter } from "@/constants";
 import {
   endOfMonth,
   endOfWeek,
@@ -24,8 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { assetSchema } from "@/schema/asset.schema";
 import { z } from "zod";
 import { chartColors } from "@/lib/charUtils";
-import { assetTypes } from "@/constants/constant";
-import { assetTypeColorMap } from "@/constants/colors";
+import { assetTypes, assetTypeColorMap } from "@/constants";
 import { DonutChart } from "@/components/tremorCharts/DonutChart";
 
 type AssetType = z.infer<typeof assetSchema>;
@@ -270,8 +269,10 @@ export const AssetCharts = ({
   };
 
   useEffect(() => {
-    processAssetData(data, selectedPeriod);
-  }, [selectedPeriod, data]);
+    if (data && selectedPeriod) {
+      processAssetData(data, selectedPeriod);
+    }
+  }, [selectedPeriod, data, processAssetData]);
 
   useEffect(() => {
     const assetTypesValue = assetTypes.map(type => {

@@ -2,6 +2,17 @@
 
 export type ColorUtility = "bg" | "stroke" | "fill" | "text";
 
+interface ChartColor {
+  bg: string;
+  stroke: string;
+  fill: string;
+  text: string;
+}
+
+interface ChartColors {
+  [color: string]: ChartColor;
+}
+
 export const chartColors = {
   rose: {
     bg: "bg-rose-500 dark:bg-rose-400",
@@ -154,11 +165,7 @@ export const chartColors = {
     fill: "fill-info dark:fill-info-bg",
     text: "text-info dark:text-info-bg",
   },
-} as const satisfies {
-  [color: string]: {
-    [key in ColorUtility]: string;
-  };
-};
+} as const satisfies ChartColors;
 
 export type AvailableChartColorsKeys = keyof typeof chartColors;
 
@@ -181,7 +188,7 @@ export const getColorClassName = (
   color: AvailableChartColorsKeys,
   type: ColorUtility
 ): string => {
-  const fallbackColor = {
+  const fallbackColor: ChartColor = {
     bg: "bg-gray-500",
     stroke: "stroke-gray-500",
     fill: "fill-gray-500",
@@ -190,30 +197,26 @@ export const getColorClassName = (
   return chartColors[color]?.[type] ?? fallbackColor[type];
 };
 
-// Tremor Raw getYAxisDomain [v0.0.0]
-
 export const getYAxisDomain = (
   autoMinValue: boolean,
   minValue: number | undefined,
   maxValue: number | undefined
-) => {
+): [string | number, string | number] => {
   const minDomain = autoMinValue ? "auto" : (minValue ?? 0);
   const maxDomain = maxValue ?? "auto";
   return [minDomain, maxDomain];
 };
 
-// Tremor Raw hasOnlyOneValueForKey [v0.1.0]
-
-export function hasOnlyOneValueForKey(
-  array: any[],
-  keyToCheck: string
+export function hasOnlyOneValueForKey<T extends object>(
+  array: T[],
+  keyToCheck: keyof T
 ): boolean {
-  const val: any[] = [];
+  const values: unknown[] = [];
 
   for (const obj of array) {
     if (Object.prototype.hasOwnProperty.call(obj, keyToCheck)) {
-      val.push(obj[keyToCheck]);
-      if (val.length > 1) {
+      values.push(obj[keyToCheck]);
+      if (values.length > 1) {
         return false;
       }
     }

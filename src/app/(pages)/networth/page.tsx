@@ -2,7 +2,7 @@
 import { AssetCard } from "@/components/main/networth-ui/AssetCard";
 import { DebtCard } from "@/components/main/networth-ui/DebtCard";
 import { NetworthMainCard } from "@/components/main/networth-ui/NetworthMainCard";
-import { PERIOD_FILTERS, PeriodFilter } from "@/constants/constant";
+import { PERIOD_FILTERS, PeriodFilter } from "@/constants";
 import { AssetDebtList } from "@/components/main/networth-ui/AssetDebtList";
 import { useState } from "react";
 

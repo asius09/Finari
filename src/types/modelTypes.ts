@@ -1,10 +1,12 @@
+import { CurrencyTypes } from "@/constants";
+
 // --- User Profile  ---
 export interface UserProfile {
   id: string; // UUID (same as auth.user id)
   full_name: string;
+  email: string;
+  currency: CurrencyTypes; // e.g. 'INR', 'USD'
   avatar_url?: string;
-  theme?: "light" | "dark";
-  currency?: string; // e.g. 'INR', 'USD'
   created_at: string; // ISO timestamp
 }
 

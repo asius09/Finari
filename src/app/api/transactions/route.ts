@@ -8,7 +8,7 @@ import {
   errorResponse,
   ApiResponse,
 } from "@/types/api-response";
-import { DBTables } from "@/constants/constant";
+import { DBTables } from "@/constants";
 import { NextResponse } from "next/server";
 
 /**

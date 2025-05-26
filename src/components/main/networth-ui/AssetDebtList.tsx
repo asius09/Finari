@@ -11,7 +11,7 @@ import { formatDate } from "@/utils/formatDate";
 import { AssetComposer } from "./AssetComposer";
 import { DebtComposer } from "./DebtComposer";
 import Link from "next/link";
-import { AppRoutes } from "@/constants/constant";
+import { AppRoutes } from "@/constants";
 
 type ViewSelectionType = "asset" | "debt";
 

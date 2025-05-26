@@ -1,8 +1,8 @@
 import { TransactionItem } from "./TransactionItem";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { AppRoutes, LoadingTypeEnum } from "@/constants/constant";
-import { Filters } from "@/constants/filter.constant";
+import { AppRoutes, LoadingTypeEnum } from "@/constants";
+import { Filters } from "@/constants";
 import { MyFilter } from "@/components/my-ui/MyFilter";
 import { useAppSelector } from "@/store/hook";
 import { Transaction } from "@/types/modelTypes";

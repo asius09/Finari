@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { MyFilter } from "@/components/my-ui/MyFilter";
-import { Filters } from "@/constants/filter.constant";
+import { Filters } from "@/constants";
 import { FinanceArrow } from "@/components/my-ui/FinanceArrow";
 import { SparkLineChart } from "@/components/tremorCharts/SparkChart";
 

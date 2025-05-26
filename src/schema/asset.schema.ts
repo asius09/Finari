@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { assetTypes } from "@/constants/constant";
+import { assetTypes } from "@/constants";
 const types: string[] = [...assetTypes];
 const assetTypeREnums = z.enum(types as [string, ...string[]]);
 

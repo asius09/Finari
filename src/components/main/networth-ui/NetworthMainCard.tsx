@@ -3,7 +3,7 @@
 import { MyFilter } from "@/components/my-ui/MyFilter";
 import { LineChart } from "@/components/tremorCharts/LineChart";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Filters } from "@/constants/filter.constant";
+import { Filters } from "@/constants";
 
 const myData = [
   { date: "2025-01-01", networth: 45000, debts: 400, assets: 45400 },

@@ -5,7 +5,7 @@ import {
   ApiResponse,
 } from "@/types/api-response";
 import { NextResponse } from "next/server";
-import { AppRoutes, DBTables } from "@/constants/constant";
+import { AppRoutes, DBTables } from "@/constants";
 
 /**
  * POST - /api/auth/reset-password?email="user@example.com"

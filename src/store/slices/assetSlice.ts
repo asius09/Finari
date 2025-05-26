@@ -1,7 +1,7 @@
 // features/assets/assetsSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { assetSchema } from "@/schema/asset.schema";
-import { LoadingType } from "@/constants/constant";
+import { LoadingTypeEnum } from "@/constants";
 import { assetFormSchema } from "@/schema/asset.schema";
 import { z } from "zod";
 
@@ -11,7 +11,7 @@ interface AssetsState {
   assets: Asset[];
   totalAssetsValue: number;
   totalInvestment: number;
-  loading: LoadingType;
+  loading: LoadingTypeEnum;
   error: string | null;
 }
 
@@ -19,7 +19,7 @@ const initialState: AssetsState = {
   assets: [],
   totalAssetsValue: 0,
   totalInvestment: 0,
-  loading: "idle",
+  loading: LoadingTypeEnum.IDLE,
   error: null,
 };
 
@@ -96,7 +96,7 @@ const assetsSlice = createSlice({
   reducers: {
     setInitialAssets(state, action: PayloadAction<Asset[]>) {
       state.assets = action.payload;
-      state.loading = "succeeded";
+      state.loading = LoadingTypeEnum.SUCCEEDED;
       state.error = null;
     },
     addOptimisticAsset(state, action: PayloadAction<Asset>) {
@@ -122,7 +122,7 @@ const assetsSlice = createSlice({
       .addCase(
         fetchInitialAssets.fulfilled,
         (state, action: PayloadAction<Asset[]>) => {
-          state.loading = "succeeded";
+          state.loading = LoadingTypeEnum.SUCCEEDED;
           state.error = null;
           state.assets = action.payload;
           state.totalAssetsValue = calculateAssetValue(action.payload);
@@ -130,26 +130,26 @@ const assetsSlice = createSlice({
         }
       )
       .addCase(fetchInitialAssets.pending, state => {
-        state.loading = "pending";
+        state.loading = LoadingTypeEnum.PENDING;
         state.error = null;
       })
       .addCase(fetchInitialAssets.rejected, (state, action) => {
-        state.loading = "failed";
+        state.loading = LoadingTypeEnum.FAILED;
         state.error = action.error.message || "Failed to fetch assets.";
       })
       .addCase(addAsset.fulfilled, (state, action: PayloadAction<Asset>) => {
-        state.loading = "succeeded";
+        state.loading = LoadingTypeEnum.SUCCEEDED;
         state.error = null;
         state.assets.push(action.payload);
         state.totalAssetsValue = calculateAssetValue(state.assets);
         state.totalInvestment = calculateTotalInvesment(state.assets);
       })
       .addCase(addAsset.pending, state => {
-        state.loading = "pending";
+        state.loading = LoadingTypeEnum.PENDING;
         state.error = null;
       })
       .addCase(addAsset.rejected, (state, action) => {
-        state.loading = "failed";
+        state.loading = LoadingTypeEnum.FAILED;
         state.error = action.error.message || "Failed to add assets.";
       });
   },
@@ -162,9 +162,5 @@ export const {
   updateOptimisticAsset,
   resetState,
 } = assetsSlice.actions;
-
-export const selectAssets = (state: any) => state.assets.assets;
-export const selectAssetsLoading = (state: any) => state.assets.loading;
-export const selectAssetsError = (state: any) => state.assets.error;
 
 export default assetsSlice.reducer;

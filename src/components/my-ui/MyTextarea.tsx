@@ -19,3 +19,5 @@ export const MyTextarea = React.forwardRef<
     />
   );
 });
+
+MyTextarea.displayName = "MyTextarea";

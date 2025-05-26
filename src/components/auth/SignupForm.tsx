@@ -27,7 +27,7 @@ import { toast } from "sonner";
 import { CustomToast } from "@/components/my-ui/CustomToast";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { AppRoutes } from "@/constants/constant";
+import { AppRoutes } from "@/constants";
 import { PasswordInput } from "@/components/my-ui/PasswordInput";
 import { MyButton } from "../my-ui/MyButton";
 

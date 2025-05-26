@@ -1,24 +1,24 @@
 // features/transactions/transactionsSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { Transaction } from "@/types/modelTypes";
-import { LoadingType } from "@/constants/constant";
+import { Filters, LoadingTypeEnum } from "@/constants";
 
 interface TransactionsState {
   transactions: Transaction[];
-  loading: LoadingType;
+  loading: LoadingTypeEnum;
   error: string | null;
   hasMore: boolean;
   totalCount: number | null;
-  filters: any; // TODO: Replace 'any' with specific filter interface
+  filters: Filters;
 }
 
 const initialState: TransactionsState = {
   transactions: [],
-  loading: "idle",
+  loading: LoadingTypeEnum.IDLE,
   error: null,
   hasMore: false,
   totalCount: null,
-  filters: {},
+  filters: Filters.PERIOD_FILTERS,
 };
 
 // TODO: Add error handling middleware for consistent error reporting
@@ -121,7 +121,7 @@ const transactionsSlice = createSlice({
     ) {
       state.transactions = action.payload.data;
       state.totalCount = action.payload.totalCount ?? null;
-      state.loading = "succeeded";
+      state.loading = LoadingTypeEnum.SUCCEEDED;
       state.error = null;
       state.hasMore =
         action.payload.data.length > 0 &&
@@ -147,10 +147,10 @@ const transactionsSlice = createSlice({
         state.transactions[index] = action.payload;
       }
     },
-    setFilters(state, action: PayloadAction<any>) {
+    setFilters(state, action: PayloadAction<Filters>) {
       state.filters = action.payload;
       state.transactions = [];
-      state.loading = "idle";
+      state.loading = LoadingTypeEnum.IDLE;
       state.hasMore = false;
     },
     resetState(state) {
@@ -160,7 +160,7 @@ const transactionsSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchTransactions.pending, state => {
-        state.loading = "pending";
+        state.loading = LoadingTypeEnum.PENDING;
         state.error = null;
       })
       .addCase(
@@ -175,7 +175,7 @@ const transactionsSlice = createSlice({
               !state.transactions.some(existingTx => existingTx.id === newTx.id)
           );
 
-          state.loading = "succeeded";
+          state.loading = LoadingTypeEnum.SUCCEEDED;
           state.error = null;
           state.transactions = [...state.transactions, ...newTransactions];
           state.totalCount = action.payload.totalCount ?? state.totalCount;
@@ -186,11 +186,11 @@ const transactionsSlice = createSlice({
         }
       )
       .addCase(fetchTransactions.rejected, (state, action) => {
-        state.loading = "failed";
+        state.loading = LoadingTypeEnum.FAILED;
         state.error = action.error.message || "Failed to fetch transactions.";
       })
       .addCase(addTransaction.pending, state => {
-        state.loading = "pending";
+        state.loading = LoadingTypeEnum.PENDING;
         state.error = null;
       })
       .addCase(addTransaction.fulfilled, (state, action) => {
@@ -198,15 +198,15 @@ const transactionsSlice = createSlice({
         if (!state.transactions.some(tx => tx.id === action.payload.id)) {
           state.transactions.unshift(action.payload);
         }
-        state.loading = "succeeded";
+        state.loading = LoadingTypeEnum.SUCCEEDED;
         state.error = null;
       })
       .addCase(addTransaction.rejected, (state, action) => {
-        state.loading = "failed";
+        state.loading = LoadingTypeEnum.FAILED;
         state.error = action.error.message || "Failed to add transaction.";
       })
       .addCase(updateTransaction.pending, state => {
-        state.loading = "pending";
+        state.loading = LoadingTypeEnum.PENDING;
         state.error = null;
       })
       .addCase(updateTransaction.fulfilled, (state, action) => {
@@ -216,26 +216,26 @@ const transactionsSlice = createSlice({
         if (index !== -1) {
           state.transactions[index] = action.payload;
         }
-        state.loading = "succeeded";
+        state.loading = LoadingTypeEnum.SUCCEEDED;
         state.error = null;
       })
       .addCase(updateTransaction.rejected, (state, action) => {
-        state.loading = "failed";
+        state.loading = LoadingTypeEnum.FAILED;
         state.error = action.error.message || "Failed to update transaction.";
       })
       .addCase(deleteTransaction.pending, state => {
-        state.loading = "pending";
+        state.loading = LoadingTypeEnum.PENDING;
         state.error = null;
       })
       .addCase(deleteTransaction.fulfilled, (state, action) => {
         state.transactions = state.transactions.filter(
           tx => tx.id !== action.payload
         );
-        state.loading = "succeeded";
+        state.loading = LoadingTypeEnum.SUCCEEDED;
         state.error = null;
       })
       .addCase(deleteTransaction.rejected, (state, action) => {
-        state.loading = "failed";
+        state.loading = LoadingTypeEnum.FAILED;
         state.error = action.error.message || "Failed to delete transaction.";
       });
   },
@@ -249,21 +249,5 @@ export const {
   setFilters,
   resetState,
 } = transactionsSlice.actions;
-
-export const selectTransactions = (state: {
-  transactions: { transactions: Transaction[] };
-}) => state.transactions.transactions;
-export const selectTransactionsLoading = (state: {
-  transactions: { loading: LoadingType };
-}) => state.transactions.loading;
-export const selectTransactionsError = (state: {
-  transactions: { error: string | null };
-}) => state.transactions.error;
-export const selectHasMoreTransactions = (state: {
-  transactions: { hasMore: boolean };
-}) => state.transactions.hasMore;
-export const selectTransactionsFilters = (state: {
-  transactions: { filters: any };
-}) => state.transactions.filters;
 
 export default transactionsSlice.reducer;
