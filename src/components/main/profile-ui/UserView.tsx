@@ -89,26 +89,40 @@ export function UserView() {
   if (loading === LoadingTypeEnum.PENDING) {
     return (
       <div className="flex flex-col gap-4">
+        {/* Profile card skeleton */}
         <Card className="p-4">
           <CardContent className="flex flex-col items-center gap-4 md:flex-row md:justify-between md:items-start">
+            {/* Profile content wrapper */}
             <div className="w-full flex flex-col items-center justify-center gap-6 md:flex-row md:items-start md:justify-start">
+              {/* Avatar placeholder */}
               <Skeleton className="h-24 w-24 rounded-full" />
-              <div className="flex flex-col gap-2 justify-center text-center md:text-left">
+
+              {/* Profile text content placeholders */}
+              <div className="flex flex-col gap-2 justify-center items-center md:justify-start md:items-start">
+                {/* Full name placeholder */}
                 <Skeleton className="h-8 w-48" />
-                <div className="space-y-0.5">
+
+                {/* Email and member since placeholders */}
+                <div className="space-y-0.5 flex flex-col justify-center items-center md:justify-start md:items-start">
                   <Skeleton className="h-4 w-64" />
                   <Skeleton className="h-4 w-32" />
                 </div>
               </div>
             </div>
+            <Skeleton className="w-full h-10 md:w-24" />
           </CardContent>
         </Card>
+
+        {/* Settings card skeleton */}
         <Card className="p-4">
           <CardContent className="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
+            {/* Theme selector placeholder */}
             <div className="flex flex-col w-full gap-2 md:flex-row md:items-center md:gap-4">
               <Skeleton className="h-4 w-20" />
               <Skeleton className="h-10 w-full md:max-w-[200px]" />
             </div>
+
+            {/* Currency selector placeholder */}
             <div className="flex flex-col w-full gap-2 md:flex-row md:items-center md:gap-4">
               <Skeleton className="h-4 w-20" />
               <Skeleton className="h-10 w-full md:max-w-[200px]" />

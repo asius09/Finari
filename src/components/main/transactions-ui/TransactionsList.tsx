@@ -6,6 +6,7 @@ import { Filters } from "@/constants";
 import { MyFilter } from "@/components/my-ui/MyFilter";
 import { useAppSelector } from "@/store/hook";
 import { Transaction } from "@/types/modelTypes";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type TransactionsListProps = {
   title: string;
@@ -115,16 +116,29 @@ export const TransactionsList = ({
       <div className="min-w-[600px] sm:min-w-0">
         {loading === LoadingTypeEnum.PENDING ? (
           <div className="space-y-4">
-            {Array.from({ length: 5 }).map((_, i) => (
+            {Array.from({ length: 7 }).map((_, i) => (
               <div
                 key={i}
-                className="animate-pulse flex items-center justify-between p-4 border rounded-lg"
+                className="flex flex-row items-start sm:items-center justify-between p-3 gap-2 sm:gap-4 border-b"
               >
-                <div className="space-y-2">
-                  <div className="h-4 bg-gray-200 rounded w-24"></div>
-                  <div className="h-3 bg-gray-200 rounded w-32"></div>
+                <div className="flex items-center gap-3 w-full sm:flex-1 sm:min-w-0">
+                  <Skeleton className="h-8 w-8 sm:h-9 sm:w-9 rounded-full" />
+                  <div className="flex-1 min-w-0">
+                    <Skeleton className="h-4 w-32 rounded" />
+                    <Skeleton className="h-3 w-24 rounded mt-1" />
+                  </div>
                 </div>
-                <div className="h-4 bg-gray-200 rounded w-16"></div>
+                <div className="w-full sm:w-auto sm:flex-1 flex justify-start sm:justify-center min-w-0 mt-2 sm:mt-0">
+                  <Skeleton className="h-5 w-16 rounded-full" />
+                </div>
+                <div className="w-full sm:w-auto sm:flex-1 text-right sm:text-left min-w-0 mt-2 sm:mt-0">
+                  <Skeleton className="h-5 w-20 rounded" />
+                  <Skeleton className="h-3 w-24 rounded mt-1" />
+                </div>
+                <div className="flex items-center gap-4 sm:gap-4 mt-2 sm:mt-0">
+                  <Skeleton className="h-8 w-8 rounded" />
+                  <Skeleton className="h-8 w-8 rounded" />
+                </div>
               </div>
             ))}
           </div>
