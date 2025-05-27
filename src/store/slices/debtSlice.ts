@@ -8,7 +8,7 @@ import { debtFormSchema, debtsSchema } from "@/schema/debts.schema";
 interface DebtsState {
   debts: Debt[];
   totalOutstanding: number;
-  totalToPay: number;
+  totalMonltyPayment: number;
   //TODO: add total time to pay all
   loading: LoadingTypeEnum;
   error: string | null;
@@ -16,7 +16,7 @@ interface DebtsState {
 
 const initialState: DebtsState = {
   totalOutstanding: 0,
-  totalToPay: 0,
+  totalMonltyPayment: 0,
   debts: [],
   loading: LoadingTypeEnum.IDLE,
   error: null,
@@ -148,7 +148,22 @@ export const deleteDebt = createAsyncThunk(
     }
   }
 );
-const calculateTotalOutstanding = (debts: Debt[]) => {
+
+/**
+ * Calculates the total monthly payment across all debts
+ * @param {Debt[]} debts - Array of debt objects
+ * @returns {number} - Sum of all monthly payments (defaults to 0 if payment_amount is undefined)
+ */
+const calculateTotalMonthlyPayment = (debts: Debt[]): number => {
+  return debts.reduce((sum, debt) => sum + (debt.payment_amount || 0), 0);
+};
+
+/**
+ * Calculates the total outstanding balance across all debts
+ * @param {Debt[]} debts - Array of debt objects
+ * @returns {number} - Sum of all outstanding balances
+ */
+const calculateTotalOutstanding = (debts: Debt[]): number => {
   return debts.reduce((sum, debt) => sum + debt.outstanding_balance, 0);
 };
 const debtsSlice = createSlice({
@@ -160,6 +175,7 @@ const debtsSlice = createSlice({
       state.loading = LoadingTypeEnum.SUCCEEDED;
       state.error = null;
       state.totalOutstanding = calculateTotalOutstanding(action.payload);
+      state.totalMonltyPayment = calculateTotalMonthlyPayment(action.payload);
     },
     addOptimisticDebt(state, action: PayloadAction<Debt>) {
       state.debts.push(action.payload);
@@ -192,6 +208,9 @@ const debtsSlice = createSlice({
           state.error = null;
           state.debts = action.payload;
           state.totalOutstanding = calculateTotalOutstanding(action.payload);
+          state.totalMonltyPayment = calculateTotalMonthlyPayment(
+            action.payload
+          );
         }
       )
       .addCase(fetchInitialDebts.rejected, (state, action) => {
@@ -207,6 +226,7 @@ const debtsSlice = createSlice({
         state.error = null;
         state.debts.push(action.payload);
         state.totalOutstanding = calculateTotalOutstanding(state.debts);
+        state.totalMonltyPayment = calculateTotalMonthlyPayment(state.debts);
       })
       .addCase(addDebts.rejected, (state, action) => {
         state.loading = LoadingTypeEnum.FAILED;
@@ -224,6 +244,7 @@ const debtsSlice = createSlice({
         );
         state.debts[index] = action.payload;
         state.totalOutstanding = calculateTotalOutstanding(state.debts);
+        state.totalMonltyPayment = calculateTotalMonthlyPayment(state.debts);
       })
       .addCase(updateDebt.rejected, (state, action) => {
         state.loading = LoadingTypeEnum.FAILED;
@@ -238,6 +259,7 @@ const debtsSlice = createSlice({
         state.error = null;
         state.debts = state.debts.filter(debt => debt.id !== action.payload.id);
         state.totalOutstanding = calculateTotalOutstanding(state.debts);
+        state.totalMonltyPayment = calculateTotalMonthlyPayment(state.debts);
       })
       .addCase(deleteDebt.rejected, (state, action) => {
         state.loading = LoadingTypeEnum.FAILED;

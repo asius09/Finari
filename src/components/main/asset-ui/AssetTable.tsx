@@ -12,7 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { assetSchema } from "@/schema/asset.schema";
 import { z } from "zod";
-import { formatAssetType } from "@/utils/formateAssetType";
+import { formatStringType } from "@/utils/formatStringType";
 import { cn } from "@/lib/utils";
 import { assetTypeColorMap } from "@/constants";
 import { chartColors } from "@/lib/charUtils";
@@ -69,7 +69,7 @@ export const AssetTable = ({
                     }/30`
                   )}
                 >
-                  {formatAssetType(asset.asset_type)}
+                  {formatStringType(asset.asset_type)}
                 </Badge>
               </TableCell>
               <TableCell>{asset.name}</TableCell>

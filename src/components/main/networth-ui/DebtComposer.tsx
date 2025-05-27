@@ -7,10 +7,10 @@ import { z } from "zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
-  DebtType,
+  DebtTypeEnum,
   debtTypes,
-  repaymentFrequency,
-  RepaymentFrequency,
+  repaymentFrequencies,
+  RepaymentFrequencyEnum,
 } from "@/constants";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
@@ -82,15 +82,15 @@ export function DebtComposer({
     resolver: zodResolver(debtFormSchema),
     defaultValues: {
       name: "",
-      debt_type: DebtType.LOAN,
+      debt_type: DebtTypeEnum.LOAN,
       interest_rate: 0,
       principal_amount: 0,
       outstanding_balance: 0,
       payment_amount: 0,
-      repayment_frequency: RepaymentFrequency.MONTHLY,
+      repayment_frequency: RepaymentFrequencyEnum.MONTHLY,
       repayment_start_date: format(new Date(), "yyyy-MM-dd"),
       tenure: 12,
-      tenure_type: RepaymentFrequency.MONTHLY,
+      tenure_type: RepaymentFrequencyEnum.MONTHLY,
       notes: "",
     },
   });
@@ -393,7 +393,7 @@ export function DebtComposer({
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent className="w-28 z-50 border-input-border border-t-0">
-                                {repaymentFrequency.map(unit => (
+                                {repaymentFrequencies.map(unit => (
                                   <DropdownMenuItem
                                     className="bg-input outline-0 hover:bg-input-border p-2"
                                     key={unit}
@@ -467,7 +467,7 @@ export function DebtComposer({
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent className="w-40 z-50">
-                                {repaymentFrequency.map(freq => (
+                                {repaymentFrequencies.map(freq => (
                                   <DropdownMenuItem
                                     key={freq.toLowerCase().replace("_", "")}
                                     onSelect={() =>

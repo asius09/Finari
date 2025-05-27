@@ -53,7 +53,9 @@ export interface Debt {
   name: string; // e.g., 'Loan from Sarah', 'Credit Card Balance'
   debt_type: "loan" | "credit_card" | "p2p" | "other";
   principal_amount?: number; // Original amount (if applicable)
-  outstanding_balance: number;
+  payment_status: "paid" | "upcoming" | "due" | "overdue";
+  overdueSince?: string; // ISO date when debt became overdue
+  outstanding_balance: number; // Current remaining balance
   interest_rate?: number; // Annual rate (e.g., 0.05 for 5%)
   repayment_frequency?: "once" | "weekly" | "monthly" | "annually" | "custom";
   repayment_start_date?: string; // ISO date
@@ -61,9 +63,9 @@ export interface Debt {
   next_payment_date?: string; // ISO date
   payment_amount?: number; // Regular payment amount (if applicable)
   notes?: string; // For additional details (e.g., interest terms for P2P)
-  tenure: number;
-  tenure_type: "once" | "weekly" | "monthly" | "annually" | "custom";
-  created_at: string;
+  tenure: number; // Duration of the debt
+  tenure_type: "once" | "weekly" | "monthly" | "annually" | "custom"; // Duration unit
+  created_at: string; // ISO timestamp
 }
 
 export interface Asset {
