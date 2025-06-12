@@ -1,5 +1,5 @@
 import { TransactionItem } from "./TransactionItem";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Filter } from "lucide-react";
 import Link from "next/link";
 import { AppRoutes, LoadingTypeEnum } from "@/constants";
 import { Filters } from "@/constants";
@@ -7,6 +7,7 @@ import { MyFilter } from "@/components/my-ui/MyFilter";
 import { useAppSelector } from "@/store/hook";
 import { Transaction } from "@/types/modelTypes";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useEffect, useState } from "react";
 
 type TransactionsListProps = {
   title: string;
@@ -30,7 +31,45 @@ export const TransactionsList = ({
   const { transactions, loading, error } = useAppSelector(
     state => state.transaction
   );
-  const displayTransactions: Transaction[] = transactions;
+
+  const [displayTransactions, setDisplayTransactions] =
+    useState<Transaction[]>(transactions);
+
+  const [selectedFilters, setSelectedFilters] = useState({
+    category: "Category", //category filter
+    period: "Period", //period filter
+    wallet: "Wallet", //wallet filter
+    type: "Type", //type filter
+  });
+  const handleFilterChange = (filter: string, value: string) => {
+    setSelectedFilters(prev => ({
+      ...prev,
+      [filter]:
+        value === "All"
+          ? filter.charAt(0).toUpperCase() + filter.slice(1)
+          : value,
+    }));
+  };
+
+  useEffect(() => {
+    if (
+      selectedFilters.category === "Category" &&
+      selectedFilters.period === "Period" &&
+      selectedFilters.wallet === "Wallet" &&
+      selectedFilters.type === "Type"
+    ) {
+      setDisplayTransactions(transactions);
+      return;
+    }
+    const filteredTransactions = transactions.filter(
+      transaction =>
+        transaction.category === selectedFilters.category ||
+        transaction.type === selectedFilters.type ||
+        transaction.date === selectedFilters.period ||
+        transaction.wallet_id === selectedFilters.wallet
+    );
+    setDisplayTransactions(filteredTransactions);
+  }, [selectedFilters, transactions]);
 
   return (
     <div className="space-y-4 w-full overflow-x-auto">
@@ -42,30 +81,30 @@ export const TransactionsList = ({
             <div className="flex flex-wrap gap-2">
               {/* Category Filter */}
               <MyFilter
-                selectedFilter="Category"
+                selectedFilter={selectedFilters.category}
                 filterType={Filters.CATEGORY_FILTERS}
-                onFilterChange={value => console.log(value)}
+                onFilterChange={value => handleFilterChange("category", value)}
               />
 
               {/* Period Filter  */}
               <MyFilter
-                selectedFilter="Period"
+                selectedFilter={selectedFilters.period}
                 filterType={Filters.PERIOD_FILTERS}
-                onFilterChange={value => console.log(value)}
+                onFilterChange={value => handleFilterChange("period", value)}
               />
 
               {/* Wallet Filter */}
               <MyFilter
-                selectedFilter="Wallet"
+                selectedFilter={selectedFilters.wallet}
                 filterType={Filters.WALLET_FILTERS}
-                onFilterChange={value => console.log(value)}
+                onFilterChange={value => handleFilterChange("wallet", value)}
               />
 
               {/* Type Filter */}
               <MyFilter
-                selectedFilter="Type"
+                selectedFilter={selectedFilters.type}
                 filterType={Filters.TRANSACTION_TYPE_FILTERS}
-                onFilterChange={value => console.log(value)}
+                onFilterChange={value => handleFilterChange("type", value)}
               />
             </div>
           ) : (
@@ -73,30 +112,30 @@ export const TransactionsList = ({
               {showCategoryFilter && (
                 <MyFilter
                   filterType={Filters.PERIOD_FILTERS}
-                  onFilterChange={value => console.log(value)}
+                  onFilterChange={value => handleFilterChange("period", value)}
                 />
               )}
 
               {showPeriodFilter && (
                 <MyFilter
-                  selectedFilter="Period"
+                  selectedFilter={selectedFilters.period}
                   filterType={Filters.PERIOD_FILTERS}
-                  onFilterChange={value => console.log(value)}
+                  onFilterChange={value => handleFilterChange("wallet", value)}
                 />
               )}
               {showWalletFilter && (
                 <MyFilter
-                  selectedFilter="Wallet"
+                  selectedFilter={selectedFilters.wallet}
                   filterType={Filters.WALLET_FILTERS}
-                  onFilterChange={value => console.log(value)}
+                  onFilterChange={value => handleFilterChange("wallet", value)}
                 />
               )}
 
               {showTypeFilter && (
                 <MyFilter
-                  selectedFilter="Type"
+                  selectedFilter={selectedFilters.type}
                   filterType={Filters.TRANSACTION_TYPE_FILTERS}
-                  onFilterChange={value => console.log(value)}
+                  onFilterChange={value => handleFilterChange("type", value)}
                 />
               )}
             </div>
