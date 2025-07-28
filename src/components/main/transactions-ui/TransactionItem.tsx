@@ -19,7 +19,7 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
   const dispatch = useAppDispatch();
   const { id, wallet_id, amount, description, date, category, type } =
     transaction;
-  const { profile } = useAppSelector(state => state.userProfile);
+  // const { profile } = useAppSelector(state => state.userProfile); TODO: ADD CURRENCY
   const { wallets } = useAppSelector(state => state.wallet);
   const wallet = wallets.find(wallet => wallet.id === wallet_id);
 
@@ -100,7 +100,7 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
           <p className="text-sm font-medium text-foreground line-clamp-1">
             {description}
           </p>
-          <p className="text-xs text-muted-foreground line-clamp-1">
+          <p className="text-[10px] text-muted-foreground line-clamp-1">
             {formatDate(date, "relative")}
           </p>
         </div>
@@ -114,10 +114,9 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
 
       <div className="w-full sm:w-auto sm:flex-1 text-right sm:text-left min-w-0 mt-2 sm:mt-0">
         <p className={`text-base font-semibold ${getAmountColor(type)}`}>
-          {profile?.currency}
-          {Number(amount).toFixed(2) || 0}
+          {Number(amount)}
         </p>
-        <p className="text-xs text-muted-foreground line-clamp-1">
+        <p className="text-[10px] text-muted-foreground line-clamp-1">
           {getWalletPrefix(type)} {wallet?.name}
         </p>
       </div>

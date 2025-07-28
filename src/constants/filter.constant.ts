@@ -1,4 +1,5 @@
 export const PERIOD_FILTERS = [
+  "All",
   "Today",
   "Yesterday",
   "This Week",

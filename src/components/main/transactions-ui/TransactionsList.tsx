@@ -1,5 +1,5 @@
 import { TransactionItem } from "./TransactionItem";
-import { ArrowRight, Filter } from "lucide-react";
+import { ArrowRight, Filter, XCircle } from "lucide-react";
 import Link from "next/link";
 import { AppRoutes, LoadingTypeEnum } from "@/constants";
 import { Filters } from "@/constants";
@@ -8,6 +8,9 @@ import { useAppSelector } from "@/store/hook";
 import { Transaction } from "@/types/modelTypes";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect, useState } from "react";
+
+//TODO: add "wallet" filter with user wallets
+//TODO: add "period" filter with transaction types
 
 type TransactionsListProps = {
   title: string;
@@ -45,13 +48,14 @@ export const TransactionsList = ({
     setSelectedFilters(prev => ({
       ...prev,
       [filter]:
-        value === "All"
-          ? filter.charAt(0).toUpperCase() + filter.slice(1)
+        value.toLowerCase() === "all"
+          ? filter.charAt(0).toUpperCase() + filter.slice(1).toLowerCase()
           : value,
     }));
   };
 
   useEffect(() => {
+    //if all the filters are "All" then show all the transactions
     if (
       selectedFilters.category === "Category" &&
       selectedFilters.period === "Period" &&
@@ -61,18 +65,21 @@ export const TransactionsList = ({
       setDisplayTransactions(transactions);
       return;
     }
+    //if any of the filters are not "All" then filter the transactions
     const filteredTransactions = transactions.filter(
       transaction =>
-        transaction.category === selectedFilters.category ||
-        transaction.type === selectedFilters.type ||
-        transaction.date === selectedFilters.period ||
-        transaction.wallet_id === selectedFilters.wallet
+        transaction.category.toLowerCase() ===
+          selectedFilters.category.toLowerCase() ||
+        transaction.type.toLowerCase() === selectedFilters.type.toLowerCase() ||
+        transaction.date.toLowerCase() === selectedFilters.period.toLowerCase() ||
+        transaction.wallet_id.toLowerCase() ===
+          selectedFilters.wallet.toLowerCase()
     );
     setDisplayTransactions(filteredTransactions);
   }, [selectedFilters, transactions]);
 
   return (
-    <div className="space-y-4 w-full overflow-x-auto">
+    <div className="space-y-4 w-full max-w-2xl overflow-x-auto">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
         <h2 className="text-lg font-semibold whitespace-nowrap">{title}</h2>
 
