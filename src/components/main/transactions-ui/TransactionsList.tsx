@@ -26,6 +26,7 @@ type TransactionsListProps = {
   showTypeFilter?: boolean;
   showPeriodFilter?: boolean;
   showWalletFilter?: boolean;
+  limit?: number;
 };
 
 export const TransactionsList = ({
@@ -36,8 +37,10 @@ export const TransactionsList = ({
   showPeriodFilter = false,
   showWalletFilter = false,
   showTypeFilter = false,
+  limit = 0,
 }: TransactionsListProps) => {
   const { wallets } = useAppSelector(state => state.wallet);
+  let limitCount = 0;
 
   const { transactions, loading, error } = useAppSelector(
     state => state.transaction
@@ -110,7 +113,7 @@ export const TransactionsList = ({
 
     filterTransactions();
   }, [selectedFilters, transactions, wallets]);
-  
+
   const groupedTransactions = groupTransactionByMonth(displayTransactions);
   const groupedTransactionsArray = Object.entries(groupedTransactions);
 
@@ -217,21 +220,29 @@ export const TransactionsList = ({
             </div>
           ) : displayTransactions?.length > 0 ? (
             <div className="space-y-6">
-              {groupedTransactionsArray.map(([month, transactions]) => (
-                <div key={month} className="space-y-4">
-                  <h3 className="text-lg font-semibold sticky top-0 bg-background py-2">
-                    {month}
-                  </h3>
-                  <div className="space-y-3">
-                    {transactions.map(transaction => (
-                      <TransactionItem
-                        key={"list" + transaction.id}
-                        transaction={transaction}
-                      />
-                    ))}
+              {groupedTransactionsArray.map(([month, transactions]) => {
+                if (limit > 0 && limitCount >= limit) return null;
+                
+                return (
+                  <div key={month} className="space-y-4">
+                    <h3 className="text-lg font-semibold sticky top-0 bg-background py-2">
+                      {month}
+                    </h3>
+                    <div className="space-y-3">
+                      {transactions.map(transaction => {
+                        if (limit > 0 && limitCount >= limit) return null;
+                        limitCount++;
+                        return (
+                          <TransactionItem
+                            key={"list" + transaction.id}
+                            transaction={transaction}
+                          />
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
               {showViewMore && (
                 <div className="flex justify-center pt-6">
                   <Link
