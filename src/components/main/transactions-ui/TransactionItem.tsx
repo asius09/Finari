@@ -49,17 +49,6 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
     }
   };
 
-  const getWalletPrefix = (type: string) => {
-    switch (type) {
-      case "expense":
-        return "from";
-      case "investment":
-        return "through";
-      default:
-        return "in";
-    }
-  };
-
   const handleDelete = async (id: string) => {
     try {
       await dispatch(deleteTransaction(id));
@@ -88,39 +77,39 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
   };
 
   return (
-    <div className="flex flex-row items-start sm:items-center justify-between p-3 hover:bg-muted/50 transition-colors gap-2 sm:gap-4 border-b">
-      <div className="flex items-center gap-3 w-full sm:flex-1 sm:min-w-0">
-        <Avatar className="h-8 w-8 sm:h-9 sm:w-9 border">
-          <AvatarImage src="" />
-          <AvatarFallback className="bg-muted">
+    <div className="w-full flex justify-between transition-colors">
+      {/* Avatar, Transaction Name, Transaction Time and Category */}
+      <div className="flex items-start gap-1.5">
+        <Avatar className="h-10 w-10 border shrink-0">
+          <AvatarFallback className="bg-muted text-sm">
             {description?.charAt(0).toUpperCase() || "T"}
           </AvatarFallback>
         </Avatar>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-foreground line-clamp-1">
+          <p className="text-sm font-medium text-foreground truncate">
             {description}
           </p>
-          <p className="text-[10px] text-muted-foreground line-clamp-1">
-            {formatDate(date, "relative")}
-          </p>
+          <div className="flex items-center gap-1">
+            <p className="text-[11px] text-muted-foreground truncate">
+              {category}
+              {" • "}
+              {formatDate(date, "relative")}
+            </p>
+          </div>
         </div>
       </div>
 
-      <div className="w-full sm:w-auto sm:flex-1 flex justify-start sm:justify-center min-w-0 mt-2 sm:mt-0">
-        <Badge className={`text-xs font-medium ${getBadgeClass(type)}`}>
-          {category}
-        </Badge>
-      </div>
-
-      <div className="w-full sm:w-auto sm:flex-1 text-right sm:text-left min-w-0 mt-2 sm:mt-0">
-        <p className={`text-base font-semibold ${getAmountColor(type)}`}>
-          {Number(amount)}
+      <div className="text-right shrink-0">
+        <p className={`text-base font-bold ${getAmountColor(type)}`}>
+          {Number(amount).toLocaleString()}
         </p>
-        <p className="text-[10px] text-muted-foreground line-clamp-1">
-          {getWalletPrefix(type)} {wallet?.name}
+        <p className="text-[11px] text-muted-foreground truncate max-w-[80px] sm:max-w-none">
+          {wallet?.name}
         </p>
       </div>
 
+      {/* 
+      //TODO: Add edit and delete buttons
       <div className="flex items-center gap-4 sm:gap-4 mt-2 sm:mt-0">
         <TransactionComposer
           isEdit={true}
@@ -136,7 +125,8 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
           content="This action cannot be undone. The transaction will be permanently removed from your records."
           btnClassName="cursor-pointer"
         />
-      </div>
+      </div> 
+      */}
     </div>
   );
 };
