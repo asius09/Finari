@@ -1,7 +1,14 @@
 import { TransactionItem } from "./TransactionItem";
 import { ArrowRight, ChevronDown, Filter, XCircle } from "lucide-react";
 import Link from "next/link";
-import { AppRoutes, LoadingTypeEnum, WALLET_FILTERS } from "@/constants";
+import {
+  AppRoutes,
+  CategoryFilter,
+  LoadingTypeEnum,
+  PeriodFilter,
+  TransactionType,
+  WALLET_FILTERS,
+} from "@/constants";
 import { Filters } from "@/constants";
 import { MyFilter } from "@/components/my-ui/MyFilter";
 import { useAppSelector } from "@/store/hook";
@@ -9,6 +16,7 @@ import { Transaction } from "@/types/modelTypes";
 import { Skeleton } from "@/components/ui/skeleton";
 import { groupTransactionByMonth } from "@/utils/groupTransactionByMonth";
 import { useEffect, useState } from "react";
+import { filterTransactionByPeriod } from "@/utils/filterTransactionByPeriod";
 
 //TODO: add "period" filter with transaction types
 
@@ -58,30 +66,52 @@ export const TransactionsList = ({
   };
 
   useEffect(() => {
-    //if all the filters are "All" then show all the transactions
-    if (
-      selectedFilters.category === "Category" &&
-      selectedFilters.period === "Period" &&
-      selectedFilters.wallet === "Wallet" &&
-      selectedFilters.type === "Type"
-    ) {
-      setDisplayTransactions(transactions);
-      return;
-    }
-    //if any of the filters are not "All" then filter the transactions
-    const filteredTransactions = transactions.filter(
-      transaction =>
-        transaction.category.toLowerCase() ===
-          selectedFilters.category.toLowerCase() ||
-        transaction.type.toLowerCase() === selectedFilters.type.toLowerCase() ||
-        transaction.wallet_id ===
-          wallets.find(
-            wallet =>
-              wallet.name.toLowerCase() === selectedFilters.wallet.toLowerCase()
-          )?.id
-    );
-    setDisplayTransactions(filteredTransactions);
-  }, [selectedFilters, transactions]);
+    const filterTransactions = () => {
+      // If all filters are default, show all transactions
+      if (
+        selectedFilters.category === "Category" &&
+        selectedFilters.period === "Period" &&
+        selectedFilters.wallet === "Wallet" &&
+        selectedFilters.type === "Type"
+      ) {
+        setDisplayTransactions(transactions);
+        return;
+      }
+
+      // First filter by period
+      let filtered = filterTransactionByPeriod(
+        transactions,
+        selectedFilters.period as PeriodFilter
+      );
+
+      // Then apply other filters using AND logic instead of OR
+      filtered = filtered.filter(transaction => {
+        const categoryMatch =
+          selectedFilters.category === "Category" ||
+          transaction.category.toLowerCase() ===
+            selectedFilters.category.toLowerCase();
+
+        const typeMatch =
+          selectedFilters.type === "Type" ||
+          transaction.type.toLowerCase() === selectedFilters.type.toLowerCase();
+
+        const walletMatch =
+          selectedFilters.wallet === "Wallet" ||
+          transaction.wallet_id ===
+            wallets.find(
+              wallet =>
+                wallet.name.toLowerCase() ===
+                selectedFilters.wallet.toLowerCase()
+            )?.id;
+
+        return categoryMatch && typeMatch && walletMatch;
+      });
+
+      setDisplayTransactions(filtered);
+    };
+
+    filterTransactions();
+  }, [selectedFilters, transactions, wallets]);
 
   const groupedTransactions = groupTransactionByMonth(displayTransactions);
   const groupedTransactionsArray = Object.entries(groupedTransactions);
