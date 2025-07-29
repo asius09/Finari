@@ -18,8 +18,6 @@ import { groupTransactionByMonth } from "@/utils/groupTransactionByMonth";
 import { useEffect, useState } from "react";
 import { filterTransactionByPeriod } from "@/utils/filterTransactionByPeriod";
 
-//TODO: add "period" filter with transaction types
-
 type TransactionsListProps = {
   title: string;
   showViewMore?: boolean;
@@ -112,7 +110,7 @@ export const TransactionsList = ({
 
     filterTransactions();
   }, [selectedFilters, transactions, wallets]);
-
+  
   const groupedTransactions = groupTransactionByMonth(displayTransactions);
   const groupedTransactionsArray = Object.entries(groupedTransactions);
 
