@@ -16,19 +16,17 @@ import { formatAssetType } from "@/utils/formateAssetType";
 import { cn } from "@/lib/utils";
 import { assetTypeColorMap } from "@/constants";
 import { chartColors } from "@/lib/charUtils";
+import { useAppSelector } from "@/store/hook";
 
 type AssetType = z.infer<typeof assetSchema>;
 
 interface AssetTableProps {
   assets: AssetType[];
-  currency?: string;
 }
 
-export const AssetTable = ({
-  assets = [],
-  currency = "₹",
-}: AssetTableProps) => {
+export const AssetTable = ({ assets = [] }: AssetTableProps) => {
   let count = 0;
+  const { currencySymbol } = useAppSelector(state => state.userProfile);
 
   return (
     <div className=" bg-background shadow-sm">
@@ -74,7 +72,7 @@ export const AssetTable = ({
               </TableCell>
               <TableCell>{asset.name}</TableCell>
               <TableCell>
-                {currency}
+                {currencySymbol}
                 {asset.current_value?.toLocaleString()}
               </TableCell>
               <TableCell className="hidden md:table-cell">

@@ -5,6 +5,7 @@ import { ArrowUpRight, ArrowDownLeft } from "lucide-react";
 interface FinanceArrowProps {
   positive: boolean;
   bg: boolean;
+  opposite?: boolean;
 }
 
 const Arrows = {
@@ -12,13 +13,15 @@ const Arrows = {
   NEGATIVE: ArrowDownLeft,
 } as const;
 
-export const FinanceArrow = ({ positive, bg = true }: FinanceArrowProps) => {
+export const FinanceArrow = ({ positive, bg = true, opposite = false }: FinanceArrowProps) => {
   const Icon = positive ? Arrows.POSITIVE : Arrows.NEGATIVE;
+  const isPositive = opposite;
+  
   return (
     <span
       className={cn(
         bg
-          ? positive
+          ? isPositive
             ? "bg-positive-bg p-1.5 "
             : "bg-negative-bg p-1.5 "
           : "",
@@ -26,7 +29,7 @@ export const FinanceArrow = ({ positive, bg = true }: FinanceArrowProps) => {
       )}
     >
       <Icon
-        className={cn("h-4 w-4", positive ? "text-positive" : "text-negative")}
+        className={cn("h-4 w-4", !isPositive ? "text-positive" : "text-negative")}
       />
     </span>
   );

@@ -73,7 +73,7 @@ export function DebtComposer({
   const [loading, setLoading] = useState<boolean>(false);
   const [date, setDate] = useState<Date>(new Date());
   const { debts } = useAppSelector(state => state.debt);
-  const currency = "$";
+  const { currencySymbol } = useAppSelector(state => state.userProfile);
 
   const index = debts.findIndex(debt => debt.id === debtId);
   const debt = debts[index];
@@ -283,7 +283,7 @@ export function DebtComposer({
                     <FormControl>
                       <div className="relative">
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                          {currency}
+                          {currencySymbol}
                         </span>
                         <MyInput
                           disabled={loading}
@@ -322,7 +322,7 @@ export function DebtComposer({
                     <FormControl>
                       <div className="relative">
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                          {currency}
+                          {currencySymbol}
                         </span>
                         <MyInput
                           disabled={loading}
@@ -423,7 +423,7 @@ export function DebtComposer({
                   <FormLabel>EMI</FormLabel>
                   <div className="relative flex items-center space-x-2">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                      {currency}
+                      {currencySymbol}
                     </span>
                     <MyInput
                       disabled={loading}

@@ -1,17 +1,22 @@
+
 "use client";
 
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { MyFilter } from "@/components/my-ui/MyFilter";
 import { SparkLineChart } from "@/components/tremorCharts/SparkChart";
 import { Filters } from "@/constants";
 import { FinanceArrow } from "@/components/my-ui/FinanceArrow";
 import { useAppSelector } from "@/store/hook";
+import { formatCurrency } from "@/utils/currency";
+import { CurrencyCode } from "@/constants/currencies.constant";
 
 interface AssetCardProps {
   //TODO: Decide do or not.
   setFilters: (filter: string) => void;
   filter: string;
 }
+
+//TODO: make it responsive 
 
 const myData = [
   { date: "2024-01-01", value: 10 },
@@ -25,54 +30,71 @@ export const AssetCard = ({ setFilters, filter }: AssetCardProps) => {
   const { totalAssetsValue, totalInvestment } = useAppSelector(
     state => state.asset
   );
-  const currency = null; //TODO: add currecy
-  const positve = false; //TODO:  add total value is greater than invesment or not.
+  const { currencySymbol, profile } = useAppSelector(
+    state => state.userProfile
+  );
+  const currency = profile?.currency as CurrencyCode;
+  const assetValue = totalAssetsValue - totalInvestment;
+  const assetGain = assetValue > 0;
+  const percentageChange = ((assetValue / totalInvestment) * 100).toFixed(2);
 
   return (
-    <Card className="w-full h-36 p-4">
-      <CardHeader className="w-full flex justify-between items-center">
-        <span id="asset" className="text-md font-semibold">
-          Assets
-        </span>
+    <Card className="w-full p-4 flex flex-col">
+      <div className="w-full flex justify-between items-center">
+        <h3 className="text-lg font-semibold text-foreground">Assets</h3>
         <MyFilter
           onFilterChange={filter => setFilters(filter)}
           selectedFilter={filter}
           filterType={Filters.PERIOD_FILTERS}
         />
-      </CardHeader>
+      </div>
 
-      <CardContent className="w-full flex justify-between items-center">
-        <div id="asset-content">
-          <p className="text-lg font-semibold text-foreground flex items-center justify-start gap-1">
-            <span className="text-muted-foreground">{currency || "$"}</span>
-            {totalAssetsValue}
-          </p>
-
-          <p className="text-xs text-muted-foreground mt-4 flex flex-col justify-start items-start">
-            <span>Investment</span>
-            <span className="flex items-center justify-start">
-              {currency || "$"}
-              {totalInvestment}
+      <div className="w-full flex flex-col md:flex-row justify-between gap-4">
+        {/* Left Section - Values */}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-baseline gap-1">
+            <span className="text-muted-foreground text-sm">
+              {currencySymbol}
             </span>
-          </p>
+            <p className="text-xl font-semibold text-foreground">
+              {formatCurrency(totalAssetsValue, currency, false)}
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <span className="text-sm text-muted-foreground">Investment</span>
+            <span className="text-sm font-medium text-foreground">
+              {formatCurrency(totalInvestment, currency)}
+            </span>
+          </div>
         </div>
 
-        <div className="flex flex-col justify-between items-end">
-          <SparkLineChart
-            categories={["value"]}
-            data={myData}
-            index={"date"}
-            colors={["emerald"]}
-            className="align-start"
-          />
-          {/* //TODO: add increase or decrease lines... */}
-          {/* Demo Showcase  */}
-          <span className="flex text-xs gap-1 text-foreground">
-            <FinanceArrow positive={positve} bg={false} />
-            -$234.09 (4.00%)
-          </span>
+        {/* Right Section - Chart and Change */}
+        <div className="flex flex-col items-end gap-2">
+          <div className="w-32 h-10">
+            <SparkLineChart
+              categories={["value"]}
+              data={myData}
+              index={"date"}
+              colors={["emerald"]}
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <div className={`p-1.5 rounded-full ${assetGain ? "bg-positive-bg" : "bg-negative-bg"}`}>
+              <FinanceArrow positive={assetGain} bg={false} />
+            </div>
+            <div className="flex flex-col items-end">
+              <span className={`text-sm font-medium ${assetGain ? "text-positive" : "text-negative"}`}>
+                {formatCurrency(assetValue, currency)}
+              </span>
+              <span className={`text-xs ${assetGain ? "text-positive" : "text-negative"}`}>
+                ({percentageChange}%)
+              </span>
+            </div>
+          </div>
         </div>
-      </CardContent>
+      </div>
     </Card>
   );
 };

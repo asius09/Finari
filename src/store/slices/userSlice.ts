@@ -3,17 +3,20 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { UserProfile } from "@/types/modelTypes";
 import { LoadingTypeEnum } from "@/constants";
 import { ApiResponse } from "@/types/api-response";
+import { CURRENCIES } from "@/constants/currencies.constant";
 
 interface UserState {
   profile: UserProfile | null;
   loading: LoadingTypeEnum;
   error: string | null;
+  currencySymbol: string | null;
 }
 
 const initialState: UserState = {
   profile: null,
   loading: LoadingTypeEnum.IDLE,
   error: null,
+  currencySymbol: null,
 };
 
 /**
@@ -202,6 +205,7 @@ const userSlice = createSlice({
           state.loading = LoadingTypeEnum.SUCCEEDED;
           state.profile = action.payload;
           state.error = null;
+          state.currencySymbol = CURRENCIES.find(currency => currency.code.toLowerCase() === action.payload.currency.toLowerCase())?.symbol || null;
         }
       )
       .addCase(fetchUserProfile.rejected, (state, action) => {

@@ -1,14 +1,7 @@
 import { TransactionItem } from "./TransactionItem";
-import { ArrowRight, ChevronDown, Filter, XCircle } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import {
-  AppRoutes,
-  CategoryFilter,
-  LoadingTypeEnum,
-  PeriodFilter,
-  TransactionType,
-  WALLET_FILTERS,
-} from "@/constants";
+import { AppRoutes, LoadingTypeEnum, PeriodFilter } from "@/constants";
 import { Filters } from "@/constants";
 import { MyFilter } from "@/components/my-ui/MyFilter";
 import { useAppSelector } from "@/store/hook";
@@ -222,7 +215,7 @@ export const TransactionsList = ({
             <div className="space-y-6">
               {groupedTransactionsArray.map(([month, transactions]) => {
                 if (limit > 0 && limitCount >= limit) return null;
-                
+
                 return (
                   <div key={month} className="space-y-4">
                     <h3 className="text-lg font-semibold sticky top-0 bg-background py-2">

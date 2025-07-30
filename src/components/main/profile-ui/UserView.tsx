@@ -4,13 +4,8 @@ import { MyDropdownInput } from "@/components/my-ui/MyDropdowns";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Currency,
-  CurrencyTypes,
-  LoadingTypeEnum,
-  Theme,
-  ThemeTypes,
-} from "@/constants";
+import { LoadingTypeEnum, Theme, ThemeTypes } from "@/constants";
+import { CurrencyCode, CURRENCIES } from "@/constants/currencies.constant";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { format } from "date-fns";
 import { Pencil } from "lucide-react";
@@ -27,21 +22,21 @@ export function UserView() {
   const dispatch = useAppDispatch();
   const { theme, setTheme } = useTheme();
   const { profile, loading } = useAppSelector(state => state.userProfile);
-  const [userCurrency, setUserCurrency] = useState<CurrencyTypes>(
-    profile?.currency as CurrencyTypes
+  const [userCurrency, setUserCurrency] = useState<CurrencyCode>(
+    profile?.currency as CurrencyCode
   );
 
   const handleThemeChange = (theme: ThemeTypes) => {
     setTheme(theme);
   };
 
-  const handleCurrencyChange = (currency: CurrencyTypes) => {
+  const handleCurrencyChange = (currency: CurrencyCode) => {
     const debouncedUpdateProfile = debounce(async () => {
       try {
         if (profile?.id) {
           const result = await dispatch(
             updateUserProfile({
-              updatedProfile: { currency: currency },
+              updatedProfile: { currency: currency as CurrencyCode},
               userId: profile.id,
             })
           ).unwrap();
@@ -82,7 +77,7 @@ export function UserView() {
   // Update local state whenever profile changes
   useEffect(() => {
     if (profile) {
-      setUserCurrency(profile.currency as CurrencyTypes);
+      setUserCurrency(profile.currency as CurrencyCode);
     }
   }, [profile]);
 
@@ -195,15 +190,15 @@ export function UserView() {
               Currency
             </p>
             <MyDropdownInput
-              dropdownMenu={Object.values(Currency)}
-              value={userCurrency || "INR"}
+              dropdownMenu={CURRENCIES.map(currency => currency.code)}
+              value={userCurrency || "INR"} //Default Value
               placeholder="Select Currency"
               key={"user-currency"}
               onChange={currency =>
-                handleCurrencyChange(currency as CurrencyTypes)
+                handleCurrencyChange(currency as CurrencyCode)
               }
               onSelect={currency =>
-                handleCurrencyChange(currency as CurrencyTypes)
+                handleCurrencyChange(currency as CurrencyCode)
               }
               className="w-full md:max-w-[200px]"
             />

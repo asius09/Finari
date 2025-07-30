@@ -1,15 +1,15 @@
 import { transactionSchema } from "@/schema/transaction.schema";
 import { z } from "zod";
 import { formatDate } from "@/utils/formatDate";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Pencil } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { RemoveEntry } from "../RemoveEntry";
 import { deleteTransaction } from "@/store/slices/transactionSlice";
 import { CustomToast } from "@/components/my-ui/CustomToast";
 import { toast } from "sonner";
 import { TransactionComposer } from "@/components/main/transactions-ui/transaction-composers/TransactionComposer";
+import { formatCurrency } from "@/utils/currency";
+import { CurrencyCode } from "@/constants/currencies.constant";
 
 type TransactionItemProps = {
   transaction: z.infer<typeof transactionSchema>;
@@ -19,7 +19,10 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
   const dispatch = useAppDispatch();
   const { id, wallet_id, amount, description, date, category, type } =
     transaction;
-  // const { profile } = useAppSelector(state => state.userProfile); TODO: ADD CURRENCY
+
+  const { profile, currencySymbol } = useAppSelector(
+    state => state.userProfile
+  );
   const { wallets } = useAppSelector(state => state.wallet);
   const wallet = wallets.find(wallet => wallet.id === wallet_id);
 
@@ -101,7 +104,7 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
 
       <div className="text-right shrink-0">
         <p className={`text-base font-bold ${getAmountColor(type)}`}>
-          {Number(amount).toLocaleString()}
+          {formatCurrency(amount, profile?.currency as CurrencyCode)}
         </p>
         <p className="text-[11px] text-muted-foreground truncate max-w-[80px] sm:max-w-none">
           {wallet?.name}

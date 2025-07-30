@@ -1,6 +1,5 @@
 "use client";
 import { LoginForm } from "@/components/auth/LoginForm";
-import { createClient } from "@/utils/supabase/client";
 
 export default function LoginPage() {
   return (

@@ -160,7 +160,7 @@ export function WalletComposer({
             : "text-mute-forground",
   }));
 
-  const currency = "₹";
+  const {currencySymbol} = useAppSelector(state => state.userProfile);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -246,7 +246,7 @@ export function WalletComposer({
                     <FormControl>
                       <div className="relative">
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                          {currency}
+                          {currencySymbol}
                         </span>
                         <MyInput
                           type="number"

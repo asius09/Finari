@@ -12,6 +12,9 @@ import { AssetComposer } from "./AssetComposer";
 import { DebtComposer } from "./DebtComposer";
 import Link from "next/link";
 import { AppRoutes } from "@/constants";
+import { CurrencyCode } from "@/constants/currencies.constant";
+import { formatCurrency } from "@/utils/currency";
+import { LoadingTypeEnum } from "@/constants";
 
 type ViewSelectionType = "asset" | "debt";
 
@@ -26,11 +29,167 @@ export const AssetDebtList = () => {
     loading: debtLoading,
     error: debtError,
   } = useAppSelector(state => state.debt);
-
+  const { profile } = useAppSelector(state => state.userProfile);
+  const currency = profile?.currency as CurrencyCode;
   const [viewSelection, setViewSelection] =
     useState<ViewSelectionType>("asset");
 
-  const currency = null;
+  const renderLoadingState = () => {
+    const loadingText =
+      viewSelection === "asset"
+        ? "Fetching your assets..."
+        : "Retrieving your debts...";
+
+    return (
+      <div className="flex flex-col items-center justify-center py-8 space-y-3">
+        <div className="animate-pulse h-8 w-8 rounded-full bg-muted" />
+        <p className="text-muted-foreground text-sm">{loadingText}</p>
+      </div>
+    );
+  };
+
+  const renderErrorState = () => {
+    const errorMessage =
+      viewSelection === "asset"
+        ? `Failed to load assets: ${assetError}`
+        : `Failed to load debts: ${debtError}`;
+
+    return (
+      <div className="flex flex-col items-center justify-center py-8 space-y-3">
+        <div className="h-8 w-8 rounded-full bg-destructive/10 flex items-center justify-center">
+          <span className="text-destructive">!</span>
+        </div>
+        <p className="text-destructive text-sm">{errorMessage}</p>
+      </div>
+    );
+  };
+
+  const renderContent = () => {
+    if (viewSelection === "asset") {
+      if (assetLoading === LoadingTypeEnum.PENDING) {
+        return renderLoadingState();
+      }
+      if (assetError) {
+        return renderErrorState();
+      }
+    } else {
+      if (debtLoading === LoadingTypeEnum.PENDING) {
+        return renderLoadingState();
+      }
+      if (debtError) {
+        return renderErrorState();
+      }
+    }
+
+    return (
+      <ul className="mt-4" id={`${viewSelection}-list`}>
+        {/* Asset Shows Case */}
+        {viewSelection === "asset" &&
+          assets?.slice(0, 5).map(asset => (
+            <li
+              key={asset.id}
+              className="w-full border-t border-border flex justify-between items-start p-3 hover:bg-muted-foreground/5"
+            >
+              <div className="flex items-start justify-start gap-2">
+                <Avatar className="w-12 h-12 rounded-full border border-border flex justify-center items-center">
+                  <AvatarImage
+                    sizes="sm"
+                    src={asset?.details?.image}
+                    alt={asset.name}
+                  />
+                  <AvatarFallback>
+                    {asset.name.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col justify-start items-start">
+                  <p className="text-base text-foreground font-semibold line-clamp-1">
+                    {asset.name}
+                  </p>
+                  <span className="text-xs text-muted-foreground line-clamp-1">
+                    {formatCurrency(asset.purchase_price as number, currency)}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex flex-col justify-end items-end">
+                <p className="text-xs text-positive line-clamp-1">+340.09(4.02%)</p>
+                <span className="text-base text-foreground font-semibold line-clamp-1">
+                  {formatCurrency(asset.current_value, currency)}
+                </span>
+              </div>
+            </li>
+          ))}
+
+        {/* Debts Shows Case */}
+        {viewSelection !== "asset" &&
+          debts?.slice(0, 5).map(debt => (
+            <li
+              key={debt.id}
+              className="w-full border-t border-border flex justify-between items-start p-3 hover:bg-muted-foreground/5"
+            >
+              <div className="flex items-start justify-start gap-2">
+                <Avatar className="w-12 h-12 rounded-full border border-border flex justify-center items-center">
+                  <AvatarFallback>
+                    {debt.name.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col justify-start items-start">
+                  <p className="text-base text-foreground font-semibold line-clamp-1">
+                    {debt.name}
+                  </p>
+                  <p className="text-xs text-muted-foreground line-clamp-1">
+                    <span>
+                      {formatCurrency(debt.principal_amount || 0, currency)}
+                    </span>
+                    <span className="ml-0.5">
+                      | End: {formatDate(debt.repayment_end_date, "onlyDate")}
+                    </span>
+                  </p>
+                </div>
+              </div>
+              <div>
+                <span className="text-xs text-muted-foreground line-clamp-1">
+                  {formatDate(debt.next_payment_date, "dayleft")}
+                </span>
+              </div>
+
+              <div className="flex flex-col justify-end items-end">
+                <p className="text-base text-foreground font-semibold line-clamp-1">
+                  {formatCurrency(debt.payment_amount as number, currency)}
+                  <span className="text-xs text-muted-foreground ml-1 font-light">
+                    /{debt?.repayment_frequency?.slice(0, 3)}
+                  </span>
+                </p>
+                <p className="text-xs text-negative line-clamp-1">
+                  {formatCurrency(debt.outstanding_balance as number, currency)}
+                </p>
+              </div>
+            </li>
+          ))}
+
+        {viewSelection === "asset"
+          ? assets.length > 5 && (
+              <Link
+                href={AppRoutes.ASSETS}
+                className="text-sm text-muted-foreground hover:underline hover:text-primary flex justify-center items-center gap-2"
+              >
+                view more
+                <ArrowRight className="size-4" />
+              </Link>
+            )
+          : debts.length > 5 && (
+              <Link
+                href={AppRoutes.DEBTS}
+                className="text-sm text-muted-foreground hover:underline hover:text-primary flex justify-center items-center gap-2"
+              >
+                view more
+                <ArrowRight className="size-4" />
+              </Link>
+            )}
+      </ul>
+    );
+  };
+
   return (
     <Card className="w-full p-4">
       <CardHeader className="w-full flex justify-between items-center">
@@ -72,132 +231,13 @@ export const AssetDebtList = () => {
           />
         ) : (
           <DebtComposer
-            btnChildren="Add Dabt"
+            btnChildren="Add Debt"
             formTitle="Create Debt"
             btnClassName="py-0"
           />
         )}
       </CardHeader>
-      <CardContent>
-        <ul className="mt-4" id={`${viewSelection}-list`}>
-          {/* Asset Shows Case  */}
-          {viewSelection === "asset" &&
-            assets?.slice(0, 5).map(asset => (
-              <li
-                key={asset.id}
-                className="w-full border-t border-border flex justify-between items-start p-3 hover:bg-muted-foreground/5"
-              >
-                <div className="flex items-start justify-start gap-2">
-                  <Avatar className="w-12 h-12 rounded-full border border-border flex justify-center items-center">
-                    <AvatarImage
-                      sizes="sm"
-                      src={asset?.details?.image}
-                      alt={asset.name}
-                    />
-                    <AvatarFallback>
-                      {asset.name.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col justify-start items-start">
-                    <p className="text-base text-foreground font-semibold">
-                      {asset.name}
-                    </p>
-                    {/* Invesment  */}
-                    <span className="text-xs text-muted-foreground">
-                      {currency || "$"}
-                      {asset.purchase_price}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex flex-col justify-end items-end">
-                  {/* Current Value  */}
-                  <p className="text-xs text-positive">+340.09(4.02%)</p>
-                  <span className="text-base text-foreground font-semibold">
-                    {currency || "$"}
-                    {asset.current_value}
-                  </span>
-                </div>
-              </li>
-            ))}
-          {/* Debts Shows Case  */}
-          {viewSelection !== "asset" &&
-            debts?.slice(0, 5).map(debt => (
-              <li
-                key={debt.id}
-                className="w-full border-t border-border flex justify-between items-start p-3 hover:bg-muted-foreground/5"
-              >
-                <div className="flex items-start justify-start gap-2">
-                  <Avatar className="w-12 h-12 rounded-full border border-border flex justify-center items-center">
-                    {/* <AvatarImage
-                      sizes="sm"
-                      src={debt?.details?.image}
-                      alt={debt.name}
-                    /> */}
-                    <AvatarFallback>
-                      {debt.name.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col justify-start items-start">
-                    {/* TODO: add debt name  */}
-                    <p className="text-base text-foreground font-semibold">
-                      {debt.name}
-                    </p>
-                    {/* principal amount  */}
-                    <p className="text-xs text-muted-foreground">
-                      <span>
-                        {currency || "$"}
-                        {debt.principal_amount || 0}
-                      </span>
-                      <span className="ml-0.5">
-                        |{/* Last Date */} End:{" "}
-                        {formatDate(debt.repayment_end_date, "onlyDate")}
-                      </span>
-                    </p>
-                  </div>
-                </div>
-                <div>
-                  {/* TODO: handle next payment date and end date*/}
-                  <span>{formatDate(debt.next_payment_date, "dayleft")}</span>
-                </div>
-
-                <div className="flex flex-col justify-end items-end">
-                  {/* Emi */}
-                  <p className="text-base text-foreground font-semibold">
-                    {currency || "$"}
-                    {debt.payment_amount}
-                    <span className="text-xs text-muted-foreground ml-1 font-light">
-                      /{debt?.repayment_frequency?.slice(0, 3)}
-                    </span>
-                  </p>
-                  {/* Outstanding Balance*/}
-                  <p className="text-xs text-negative">
-                    {debt.outstanding_balance}
-                  </p>
-                </div>
-              </li>
-            ))}
-          {viewSelection === "asset"
-            ? assets.length > 5 && (
-                <Link
-                  href={AppRoutes.ASSETS}
-                  className="text-sm text-muted-foreground hover:underline hover:text-primary flex justify-center items-center gap-2"
-                >
-                  view more
-                  <ArrowRight className="size-4" />
-                </Link>
-              )
-            : debts.length > 5 && (
-                <Link
-                  href={AppRoutes.DEBTS}
-                  className="text-sm text-muted-foreground hover:underline hover:text-primary flex justify-center items-center gap-2"
-                >
-                  view more
-                  <ArrowRight className="size-4" />
-                </Link>
-              )}
-        </ul>
-      </CardContent>
+      <CardContent>{renderContent()}</CardContent>
     </Card>
   );
 };

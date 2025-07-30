@@ -9,6 +9,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { FinanceArrow } from "@/components/my-ui/FinanceArrow";
 import { cn } from "@/lib/utils";
 import { AlertCircle, AlertTriangle } from "lucide-react";
+import { CurrencyCode } from "@/constants/currencies.constant";
+import { useAppSelector } from "@/store/hook";
+import { formatCurrency } from "@/utils/currency";
 
 const fixedData = {
   "1 Month": [
@@ -58,16 +61,16 @@ export const NetworthCard = () => {
   // Hardcoded values
   const currentNetworth = 82500;
   const isNetWorthPositive = true;
-  const currency = "USD";
   const networthChangePercentage = 3.1;
   const isPositiveChange = true;
   const [period, setPeriod] = useState("1 Month");
   const isLoading = false;
   const hasError = false;
 
-  const currencyFormatter = (number: number) =>
-    `${Intl.NumberFormat("us").format(number)}`;
-
+  const { currencySymbol, profile } = useAppSelector(
+    state => state.userProfile
+  );
+  const currency = profile?.currency as CurrencyCode;
   const data = fixedData[period as keyof typeof fixedData];
 
   if (hasError) {
@@ -109,7 +112,7 @@ export const NetworthCard = () => {
             ) : (
               <>
                 <span className="text-base md:text-lg font-medium text-muted-foreground">
-                  {currency === "USD" ? "$" : "₹"}
+                  {currencySymbol}
                 </span>
                 <p
                   className={cn(
@@ -117,7 +120,7 @@ export const NetworthCard = () => {
                     isNetWorthPositive ? "text-positive" : "text-negative"
                   )}
                 >
-                  {currencyFormatter(currentNetworth)}
+                  {formatCurrency(currentNetworth, currency, false)}
                 </p>
               </>
             )}
@@ -172,7 +175,7 @@ export const NetworthCard = () => {
             yAxisWidth={60}
             intervalType="equidistantPreserveStart"
             autoMinValue={true}
-            valueFormatter={currencyFormatter}
+            valueFormatter={value => formatCurrency(value, currency)}
             enableLegendSlider={true}
             colors={["primary"]}
           />
