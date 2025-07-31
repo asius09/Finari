@@ -4,13 +4,8 @@ import { MyDropdownInput } from "@/components/my-ui/MyDropdowns";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Currency,
-  CurrencyTypes,
-  LoadingTypeEnum,
-  Theme,
-  ThemeTypes,
-} from "@/constants";
+import { LoadingTypeEnum, Theme, ThemeTypes } from "@/constants";
+import { CurrencyCode, CURRENCIES } from "@/constants/currencies.constant";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { format } from "date-fns";
 import { Pencil } from "lucide-react";
@@ -27,21 +22,21 @@ export function UserView() {
   const dispatch = useAppDispatch();
   const { theme, setTheme } = useTheme();
   const { profile, loading } = useAppSelector(state => state.userProfile);
-  const [userCurrency, setUserCurrency] = useState<CurrencyTypes>(
-    profile?.currency as CurrencyTypes
+  const [userCurrency, setUserCurrency] = useState<CurrencyCode>(
+    profile?.currency as CurrencyCode
   );
 
   const handleThemeChange = (theme: ThemeTypes) => {
     setTheme(theme);
   };
 
-  const handleCurrencyChange = (currency: CurrencyTypes) => {
+  const handleCurrencyChange = (currency: CurrencyCode) => {
     const debouncedUpdateProfile = debounce(async () => {
       try {
         if (profile?.id) {
           const result = await dispatch(
             updateUserProfile({
-              updatedProfile: { currency: currency },
+              updatedProfile: { currency: currency as CurrencyCode},
               userId: profile.id,
             })
           ).unwrap();
@@ -82,33 +77,47 @@ export function UserView() {
   // Update local state whenever profile changes
   useEffect(() => {
     if (profile) {
-      setUserCurrency(profile.currency as CurrencyTypes);
+      setUserCurrency(profile.currency as CurrencyCode);
     }
   }, [profile]);
 
   if (loading === LoadingTypeEnum.PENDING) {
     return (
       <div className="flex flex-col gap-4">
+        {/* Profile card skeleton */}
         <Card className="p-4">
           <CardContent className="flex flex-col items-center gap-4 md:flex-row md:justify-between md:items-start">
+            {/* Profile content wrapper */}
             <div className="w-full flex flex-col items-center justify-center gap-6 md:flex-row md:items-start md:justify-start">
+              {/* Avatar placeholder */}
               <Skeleton className="h-24 w-24 rounded-full" />
-              <div className="flex flex-col gap-2 justify-center text-center md:text-left">
+
+              {/* Profile text content placeholders */}
+              <div className="flex flex-col gap-2 justify-center items-center md:justify-start md:items-start">
+                {/* Full name placeholder */}
                 <Skeleton className="h-8 w-48" />
-                <div className="space-y-0.5">
+
+                {/* Email and member since placeholders */}
+                <div className="space-y-0.5 flex flex-col justify-center items-center md:justify-start md:items-start">
                   <Skeleton className="h-4 w-64" />
                   <Skeleton className="h-4 w-32" />
                 </div>
               </div>
             </div>
+            <Skeleton className="w-full h-10 md:w-24" />
           </CardContent>
         </Card>
+
+        {/* Settings card skeleton */}
         <Card className="p-4">
           <CardContent className="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
+            {/* Theme selector placeholder */}
             <div className="flex flex-col w-full gap-2 md:flex-row md:items-center md:gap-4">
               <Skeleton className="h-4 w-20" />
               <Skeleton className="h-10 w-full md:max-w-[200px]" />
             </div>
+
+            {/* Currency selector placeholder */}
             <div className="flex flex-col w-full gap-2 md:flex-row md:items-center md:gap-4">
               <Skeleton className="h-4 w-20" />
               <Skeleton className="h-10 w-full md:max-w-[200px]" />
@@ -181,15 +190,15 @@ export function UserView() {
               Currency
             </p>
             <MyDropdownInput
-              dropdownMenu={Object.values(Currency)}
-              value={userCurrency || "INR"}
+              dropdownMenu={CURRENCIES.map(currency => currency.code)}
+              value={userCurrency || "INR"} //Default Value
               placeholder="Select Currency"
               key={"user-currency"}
               onChange={currency =>
-                handleCurrencyChange(currency as CurrencyTypes)
+                handleCurrencyChange(currency as CurrencyCode)
               }
               onSelect={currency =>
-                handleCurrencyChange(currency as CurrencyTypes)
+                handleCurrencyChange(currency as CurrencyCode)
               }
               className="w-full md:max-w-[200px]"
             />

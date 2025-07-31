@@ -95,6 +95,7 @@
   --color-filter-hover: var(--filter-hover);
   --color-filter-active: var(--filter-active);
 
+  --color-accent: var(--color-muted);
   /* tremor animation classes  */
   --animate-hide: hide 150ms cubic-bezier(0.16, 1, 0.3, 1);
   --animate-slide-down-and-fade: slideDownAndFade 150ms

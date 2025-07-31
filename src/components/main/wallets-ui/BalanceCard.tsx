@@ -20,6 +20,8 @@ import { removeWallet } from "@/store/slices/walletSlice";
 import { RemoveEntry } from "../RemoveEntry";
 import { toast } from "sonner";
 import { CustomToast } from "@/components/my-ui/CustomToast";
+import { formatCurrency } from "@/utils/currency";
+import { CurrencyCode } from "@/constants/currencies.constant";
 
 interface BalanceCardProps {
   size?: "small" | "large";
@@ -27,6 +29,9 @@ interface BalanceCardProps {
 
 export const BalanceCard = ({ size = "large" }: BalanceCardProps) => {
   const dispatch = useAppDispatch();
+  const currency = useAppSelector(
+    state => state.userProfile.profile?.currency
+  ) as CurrencyCode;
   const { wallets, loading, totalBalance } = useAppSelector(
     state => state.wallet
   );
@@ -76,12 +81,6 @@ export const BalanceCard = ({ size = "large" }: BalanceCardProps) => {
   // Selected Wallet - @defaul{Total Balance}
   const [visibleWallet, setVisibleWallet] =
     useState<WalletType>(totalBalanceWallet);
-
-  // Format currency
-  const currencyFormatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  });
 
   const handleDelete = async (id: string) => {
     try {
@@ -148,7 +147,7 @@ export const BalanceCard = ({ size = "large" }: BalanceCardProps) => {
                       {wallet.name}
                     </p>
                     <p className="text-md font-semibold">
-                      {currencyFormatter.format(wallet.balance)}
+                      {formatCurrency(wallet.balance, currency)}
                     </p>
                   </div>
                 </Card>
@@ -213,7 +212,7 @@ export const BalanceCard = ({ size = "large" }: BalanceCardProps) => {
             {/* Wallet Balance Display */}
             <p className="text-xl font-semibold">
               {showBalance
-                ? currencyFormatter.format(visibleWallet.balance)
+                ? formatCurrency(visibleWallet.balance, currency)
                 : "*****"}
             </p>
           </div>
@@ -256,7 +255,7 @@ export const BalanceCard = ({ size = "large" }: BalanceCardProps) => {
                 <div className="flex flex-row items-center">
                   <p className="text-sm font-medium text-foreground mr-3 lg:mr-0">
                     {showBalance
-                      ? currencyFormatter.format(wallet.balance)
+                      ? formatCurrency(wallet.balance, currency)
                       : "*****"}
                   </p>
                   {/* Wallet Actions */}
@@ -357,7 +356,7 @@ export const BalanceCard = ({ size = "large" }: BalanceCardProps) => {
             categories={["amount"]}
             yAxisWidth={80}
             colors={[chartColor]}
-            valueFormatter={value => currencyFormatter.format(value)}
+            valueFormatter={value => formatCurrency(value, currency)}
             showLegend={false}
             showGridLines={true}
             autoMinValue={true}

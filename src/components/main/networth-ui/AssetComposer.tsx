@@ -66,8 +66,7 @@ export const AssetComposer = ({
   const [open, setOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [date, setDate] = useState<Date>(new Date());
-
-  const currency = "$";
+  const { currencySymbol } = useAppSelector(state => state.userProfile);
 
   const assetForm = useForm<AssetFormType>({
     resolver: zodResolver(assetFormSchema),
@@ -231,7 +230,7 @@ export const AssetComposer = ({
                   <FormControl>
                     <div className="relative">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                        {currency}
+                        {currencySymbol}
                       </span>
                       <MyInput
                         disabled={loading}

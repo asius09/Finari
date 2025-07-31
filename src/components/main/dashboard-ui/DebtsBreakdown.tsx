@@ -2,6 +2,9 @@
 
 import { DonutChart } from "@/components/tremorCharts/DonutChart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CurrencyCode } from "@/constants/currencies.constant";
+import { useAppSelector } from "@/store/hook";
+import { formatCurrency } from "@/utils/currency";
 
 const debtData = [
   {
@@ -19,6 +22,9 @@ const debtData = [
 ];
 
 export const DebtBreakdown = () => {
+  const currency = useAppSelector(
+    state => state.userProfile.profile?.currency
+  ) as CurrencyCode;
   return (
     <Card className="w-full min-w-xs p-4">
       <CardHeader className="px-0 pt-0">
@@ -42,7 +48,7 @@ export const DebtBreakdown = () => {
                   <div className="flex-1">
                     <p className="text-xs font-medium">{debt.name}</p>
                     <p className="text-xs text-muted-foreground">
-                      ${Intl.NumberFormat("us").format(debt.amount)}
+                      {formatCurrency(debt.amount, currency)}
                     </p>
                   </div>
                 </div>

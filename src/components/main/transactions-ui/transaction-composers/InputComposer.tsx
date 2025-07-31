@@ -65,7 +65,7 @@ export const InputComposer = ({
 }) => {
   // State for loading status and selected date
   const [loading, setLoading] = useState<boolean>(false);
-  const currency = "₹";
+  const { currencySymbol } = useAppSelector(state => state.userProfile);
   const dispatch = useAppDispatch();
   const { wallets } = useAppSelector(state => state.wallet);
   const { user } = useAppSelector(state => state.auth);
@@ -240,7 +240,7 @@ export const InputComposer = ({
               <FormControl>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                    {currency}
+                    {currencySymbol}
                   </span>
                   <MyInput
                     type="number"

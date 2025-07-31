@@ -15,7 +15,11 @@ export default function DashboardPage() {
       <BalanceCard size="small" />
       {/* Recent Transactions */}
       {/* TODO: ADD LIMIT  */}
-      <TransactionsList title="Recent Transactions" showViewMore={true} />
+      <TransactionsList
+        title="Recent Transactions"
+        showViewMore={true}
+        limit={5}
+      />
     </div>
   );
 }
