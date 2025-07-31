@@ -160,7 +160,7 @@ export function WalletComposer({
             : "text-mute-forground",
   }));
 
-  const {currencySymbol} = useAppSelector(state => state.userProfile);
+  const { currencySymbol } = useAppSelector(state => state.userProfile);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

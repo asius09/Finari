@@ -112,7 +112,9 @@ export const AssetDebtList = () => {
               </div>
 
               <div className="flex flex-col justify-end items-end">
-                <p className="text-xs text-positive line-clamp-1">+340.09(4.02%)</p>
+                <p className="text-xs text-positive line-clamp-1">
+                  +340.09(4.02%)
+                </p>
                 <span className="text-base text-foreground font-semibold line-clamp-1">
                   {formatCurrency(asset.current_value, currency)}
                 </span>

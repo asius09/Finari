@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Card } from "@/components/ui/card";
@@ -16,7 +15,7 @@ interface AssetCardProps {
   filter: string;
 }
 
-//TODO: make it responsive 
+//TODO: make it responsive
 
 const myData = [
   { date: "2024-01-01", value: 10 },
@@ -81,14 +80,20 @@ export const AssetCard = ({ setFilters, filter }: AssetCardProps) => {
           </div>
 
           <div className="flex items-center gap-2">
-            <div className={`p-1.5 rounded-full ${assetGain ? "bg-positive-bg" : "bg-negative-bg"}`}>
+            <div
+              className={`p-1.5 rounded-full ${assetGain ? "bg-positive-bg" : "bg-negative-bg"}`}
+            >
               <FinanceArrow positive={assetGain} bg={false} />
             </div>
             <div className="flex flex-col items-end">
-              <span className={`text-sm font-medium ${assetGain ? "text-positive" : "text-negative"}`}>
+              <span
+                className={`text-sm font-medium ${assetGain ? "text-positive" : "text-negative"}`}
+              >
                 {formatCurrency(assetValue, currency)}
               </span>
-              <span className={`text-xs ${assetGain ? "text-positive" : "text-negative"}`}>
+              <span
+                className={`text-xs ${assetGain ? "text-positive" : "text-negative"}`}
+              >
                 ({percentageChange}%)
               </span>
             </div>

@@ -62,9 +62,7 @@ export const NetworthMainCard = ({
           index="date"
           data={myData}
           categories={["networth", "debts", "assets"]}
-          valueFormatter={(number: number) =>
-            formatCurrency(number, currency)
-          }
+          valueFormatter={(number: number) => formatCurrency(number, currency)}
           yAxisWidth={80}
         />
       </CardContent>

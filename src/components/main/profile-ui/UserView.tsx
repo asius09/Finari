@@ -36,7 +36,7 @@ export function UserView() {
         if (profile?.id) {
           const result = await dispatch(
             updateUserProfile({
-              updatedProfile: { currency: currency as CurrencyCode},
+              updatedProfile: { currency: currency as CurrencyCode },
               userId: profile.id,
             })
           ).unwrap();

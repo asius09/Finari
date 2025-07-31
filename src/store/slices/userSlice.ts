@@ -205,7 +205,12 @@ const userSlice = createSlice({
           state.loading = LoadingTypeEnum.SUCCEEDED;
           state.profile = action.payload;
           state.error = null;
-          state.currencySymbol = CURRENCIES.find(currency => currency.code.toLowerCase() === action.payload.currency.toLowerCase())?.symbol || null;
+          state.currencySymbol =
+            CURRENCIES.find(
+              currency =>
+                currency.code.toLowerCase() ===
+                action.payload.currency.toLowerCase()
+            )?.symbol || null;
         }
       )
       .addCase(fetchUserProfile.rejected, (state, action) => {

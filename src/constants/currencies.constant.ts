@@ -1,4 +1,11 @@
-export type CurrencyCode = "USD" | "EUR" | "INR" | "GBP" | "JPY" | "CNY" | "AUD";
+export type CurrencyCode =
+  | "USD"
+  | "EUR"
+  | "INR"
+  | "GBP"
+  | "JPY"
+  | "CNY"
+  | "AUD";
 
 export interface Currency {
   code: CurrencyCode;

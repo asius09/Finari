@@ -13,10 +13,14 @@ const Arrows = {
   NEGATIVE: ArrowDownLeft,
 } as const;
 
-export const FinanceArrow = ({ positive, bg = true, opposite = false }: FinanceArrowProps) => {
+export const FinanceArrow = ({
+  positive,
+  bg = true,
+  opposite = false,
+}: FinanceArrowProps) => {
   const Icon = positive ? Arrows.POSITIVE : Arrows.NEGATIVE;
   const isPositive = opposite;
-  
+
   return (
     <span
       className={cn(
@@ -29,7 +33,10 @@ export const FinanceArrow = ({ positive, bg = true, opposite = false }: FinanceA
       )}
     >
       <Icon
-        className={cn("h-4 w-4", !isPositive ? "text-positive" : "text-negative")}
+        className={cn(
+          "h-4 w-4",
+          !isPositive ? "text-positive" : "text-negative"
+        )}
       />
     </span>
   );
