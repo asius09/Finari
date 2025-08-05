@@ -3,7 +3,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { Header } from "@/components/my-ui/Header";
 import { createClient } from "@/utils/supabase/server";
 import { InitialHydrate } from "@/components/my-ui/InitialHydrate";
-
+//changed made
 // Interface for the layout component props
 interface SidebarLayoutProps {
   children: React.ReactNode;
